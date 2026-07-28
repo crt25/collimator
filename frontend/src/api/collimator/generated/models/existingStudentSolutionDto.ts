@@ -12,8 +12,6 @@ export interface ExistingStudentSolutionDto {
   /** The solution's unique identifier, a positive integer. */
   id: number;
   createdAt: string;
-  /** Whether this solution is marked as a reference solution. */
-  isReference: boolean;
   studentId: number;
   sessionId: number;
   taskId: number;

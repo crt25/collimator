@@ -1,7 +1,7 @@
 import { NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
-import { AstVersion, PrismaClient } from "@prisma/client";
+import { AstVersion, PrismaClient, Solution } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
@@ -15,6 +15,14 @@ type QueryRow = getCurrentAnalysesWithActivities.Result;
 
 const sessionId = 1;
 const taskId = 2;
+const buildSolution = (hash: Uint8Array): Solution => ({
+  taskId,
+  hash,
+  data: new Uint8Array(),
+  mimeType: "application/octet-stream",
+  failedAnalyses: 0,
+  deletedAt: null,
+});
 
 const buildStudentAnalysisRow = (
   overrides: Partial<QueryRow> = {},
@@ -278,8 +286,8 @@ describe("SolutionsService", () => {
 
     it("creates all references in one batch and removes duplicate hashes", async () => {
       prismaMock.solution.findMany.mockResolvedValue([
-        { hash: firstHash },
-        { hash: secondHash },
+        buildSolution(firstHash),
+        buildSolution(secondHash),
       ]);
 
       await service.updateStudentReferenceSolutions(
@@ -304,8 +312,8 @@ describe("SolutionsService", () => {
 
     it("removes all requested references in one batch", async () => {
       prismaMock.solution.findMany.mockResolvedValue([
-        { hash: firstHash },
-        { hash: secondHash },
+        buildSolution(firstHash),
+        buildSolution(secondHash),
       ]);
 
       await service.updateStudentReferenceSolutions(
@@ -331,7 +339,9 @@ describe("SolutionsService", () => {
     });
 
     it("rejects the whole batch when any solution is unavailable", async () => {
-      prismaMock.solution.findMany.mockResolvedValue([{ hash: firstHash }]);
+      prismaMock.solution.findMany.mockResolvedValue([
+        buildSolution(firstHash),
+      ]);
 
       await expect(
         service.updateStudentReferenceSolutions(

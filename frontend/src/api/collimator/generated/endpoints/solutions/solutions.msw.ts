@@ -19,7 +19,6 @@ export const getSolutionsControllerCreateStudentSolutionV0ResponseMock = (
 ): ExistingStudentSolutionDto => ({
   id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  isReference: faker.datatype.boolean(),
   studentId: faker.number.float({
     min: undefined,
     max: undefined,
@@ -104,7 +103,6 @@ export const getSolutionsControllerFindAllStudentSolutionsV0ResponseMock =
         fractionDigits: 2,
       }),
       createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-      isReference: faker.datatype.boolean(),
       studentId: faker.number.float({
         min: undefined,
         max: undefined,
@@ -328,7 +326,6 @@ export const getSolutionsControllerDownloadLatestStudentSolutionV0ResponseMock =
       fractionDigits: 2,
     }),
     createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-    isReference: faker.datatype.boolean(),
     studentId: faker.number.float({
       min: undefined,
       max: undefined,
@@ -406,7 +403,6 @@ export const getSolutionsControllerFindOneStudentSolutionV0ResponseMock = (
 ): ExistingStudentSolutionDto => ({
   id: faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
   createdAt: `${faker.date.past().toISOString().split(".")[0]}Z`,
-  isReference: faker.datatype.boolean(),
   studentId: faker.number.float({
     min: undefined,
     max: undefined,

@@ -5,7 +5,6 @@ import {
   ReferenceSolution,
   Solution,
   SolutionAnalysis,
-  SolutionActivityReference,
   SolutionTest,
   StudentSolution,
 } from "@prisma/client";
@@ -50,19 +49,7 @@ type WithTestsAndSolution<T> = T & {
   solution: SolutionWithoutData;
 };
 
-type StudentSolutionWithReferences = Omit<
-  WithTestsAndSolution<StudentSolution>,
-  "solution"
-> & {
-  solution: SolutionWithoutData & {
-    activityReferences: SolutionActivityReference[];
-  };
-};
-
-export type StudentSolutionWithoutData =
-  WithTestsAndSolution<StudentSolution> & {
-    isReference: boolean;
-  };
+export type StudentSolutionWithoutData = WithTestsAndSolution<StudentSolution>;
 export type ReferenceSolutionWithoutData =
   WithTestsAndSolution<ReferenceSolution>;
 
@@ -129,52 +116,25 @@ export class SolutionsService {
     private readonly analysisService: SolutionAnalysisService,
   ) {}
 
-  private withReferenceFlag(
-    studentSolution: StudentSolutionWithReferences,
-  ): StudentSolutionWithoutData {
-    const { activityReferences, ...solution } = studentSolution.solution;
-    const isReference = activityReferences.some(
-      (reference) =>
-        reference.studentId === studentSolution.studentId &&
-        reference.sessionId === studentSolution.sessionId &&
-        reference.taskId === studentSolution.taskId,
-    );
-
-    return {
-      ...studentSolution,
-      solution,
-      isReference,
-    };
-  }
-
-  async findByStudentIdOrThrow(
+  findByStudentIdOrThrow(
     sessionId: number,
     taskId: number,
     id: StudentSolutionId,
     includeSoftDelete = false,
   ): Promise<StudentSolutionWithoutData> {
-    const studentSolution = await this.prisma.studentSolution.findUniqueOrThrow(
-      {
-        include: {
-          tests: {
-            where: includeSoftDelete ? {} : { deletedAt: null },
-          },
-          solution: {
-            omit: omitData,
-            include: {
-              activityReferences: {
-                where: { sessionId, taskId },
-              },
-            },
-          },
+    return this.prisma.studentSolution.findUniqueOrThrow({
+      include: {
+        tests: {
+          where: includeSoftDelete ? {} : { deletedAt: null },
         },
-        where: includeSoftDelete
-          ? { id, sessionId, taskId }
-          : { id, sessionId, taskId, deletedAt: null },
+        solution: {
+          omit: omitData,
+        },
       },
-    );
-
-    return this.withReferenceFlag(studentSolution);
+      where: includeSoftDelete
+        ? { id, sessionId, taskId }
+        : { id, sessionId, taskId, deletedAt: null },
+    });
   }
 
   async findCurrentAnalysesWithActivities(
@@ -566,7 +526,7 @@ export class SolutionsService {
     return (latestSubmittedSolution || solutionFromLatestActivity)!.solution;
   }
 
-  async findManyStudentSolutions(
+  findManyStudentSolutions(
     args?: Prisma.StudentSolutionFindManyArgs,
     includeSoftDeleted = false,
   ): Promise<StudentSolutionWithoutData[]> {
@@ -574,25 +534,18 @@ export class SolutionsService {
       ? args?.where
       : { ...args?.where, deletedAt: null };
 
-    const studentSolutions = await this.prisma.studentSolution.findMany({
+    return this.prisma.studentSolution.findMany({
       ...args,
       where,
       include: {
         solution: {
           omit: omitData,
-          include: {
-            activityReferences: true,
-          },
         },
         tests: {
           where: includeSoftDeleted ? {} : { deletedAt: null },
         },
       },
     });
-
-    return studentSolutions.map((studentSolution) =>
-      this.withReferenceFlag(studentSolution),
-    );
   }
 
   findMany(
@@ -678,13 +631,7 @@ export class SolutionsService {
     const studentSolution = await this.prisma.studentSolution.create({
       data: checkedStudentSolution,
       include: {
-        solution: {
-          include: {
-            activityReferences: {
-              where: { studentId, sessionId, taskId },
-            },
-          },
-        },
+        solution: true,
         tests: true,
       },
     });
@@ -700,7 +647,7 @@ export class SolutionsService {
       latestAstVersion,
     );
 
-    return this.withReferenceFlag(studentSolution);
+    return studentSolution;
   }
 
   // check every minute (with seconds = 0) whether there are analyses that were not performed
