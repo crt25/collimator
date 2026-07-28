@@ -5,6 +5,7 @@ import {
   ReferenceSolution,
   Solution,
   SolutionAnalysis,
+  SolutionActivityReference,
   SolutionTest,
   StudentSolution,
 } from "@prisma/client";
@@ -49,7 +50,19 @@ type WithTestsAndSolution<T> = T & {
   solution: SolutionWithoutData;
 };
 
-export type StudentSolutionWithoutData = WithTestsAndSolution<StudentSolution>;
+type StudentSolutionWithReferences = Omit<
+  WithTestsAndSolution<StudentSolution>,
+  "solution"
+> & {
+  solution: SolutionWithoutData & {
+    activityReferences: SolutionActivityReference[];
+  };
+};
+
+export type StudentSolutionWithoutData =
+  WithTestsAndSolution<StudentSolution> & {
+    isReference: boolean;
+  };
 export type ReferenceSolutionWithoutData =
   WithTestsAndSolution<ReferenceSolution>;
 
@@ -116,25 +129,52 @@ export class SolutionsService {
     private readonly analysisService: SolutionAnalysisService,
   ) {}
 
-  findByStudentIdOrThrow(
+  private withReferenceFlag(
+    studentSolution: StudentSolutionWithReferences,
+  ): StudentSolutionWithoutData {
+    const { activityReferences, ...solution } = studentSolution.solution;
+    const isReference = activityReferences.some(
+      (reference) =>
+        reference.studentId === studentSolution.studentId &&
+        reference.sessionId === studentSolution.sessionId &&
+        reference.taskId === studentSolution.taskId,
+    );
+
+    return {
+      ...studentSolution,
+      solution,
+      isReference,
+    };
+  }
+
+  async findByStudentIdOrThrow(
     sessionId: number,
     taskId: number,
     id: StudentSolutionId,
     includeSoftDelete = false,
   ): Promise<StudentSolutionWithoutData> {
-    return this.prisma.studentSolution.findUniqueOrThrow({
-      include: {
-        tests: {
-          where: includeSoftDelete ? {} : { deletedAt: null },
+    const studentSolution = await this.prisma.studentSolution.findUniqueOrThrow(
+      {
+        include: {
+          tests: {
+            where: includeSoftDelete ? {} : { deletedAt: null },
+          },
+          solution: {
+            omit: omitData,
+            include: {
+              activityReferences: {
+                where: { sessionId, taskId },
+              },
+            },
+          },
         },
-        solution: {
-          omit: omitData,
-        },
+        where: includeSoftDelete
+          ? { id, sessionId, taskId }
+          : { id, sessionId, taskId, deletedAt: null },
       },
-      where: includeSoftDelete
-        ? { id, sessionId, taskId }
-        : { id, sessionId, taskId, deletedAt: null },
-    });
+    );
+
+    return this.withReferenceFlag(studentSolution);
   }
 
   async findCurrentAnalysesWithActivities(
@@ -394,30 +434,8 @@ export class SolutionsService {
     });
   }
 
-  async updateStudentSolutionIsReference(
-    studentSolutionId: number,
-    isReference: boolean,
-    includeSoftDelete = false,
-  ): Promise<void> {
-    await this.prisma.studentSolution.update({
-      data: {
-        isReference,
-      },
-      where: includeSoftDelete
-        ? {
-            id: studentSolutionId,
-          }
-        : {
-            id: studentSolutionId,
-            deletedAt: null,
-          },
-    });
-    this.logger.log(
-      `Updated student solution (id: ${studentSolutionId}) isReference=${isReference}`,
-    );
-  }
-
-  async updateStudentActivityIsReference(
+  async updateStudentReferenceSolution(
+    classId: number,
     sessionId: SessionId,
     taskId: TaskId,
     studentId: StudentId,
@@ -425,38 +443,59 @@ export class SolutionsService {
     isReference: boolean,
     includeSoftDelete = false,
   ): Promise<void> {
-    const baseWhere = includeSoftDelete
-      ? { sessionId, taskId, studentId }
-      : { sessionId, taskId, studentId, deletedAt: null };
+    const sourceWhere = {
+      studentId,
+      sessionId,
+      taskId,
+      solutionHash,
+      session: { classId },
+      ...(includeSoftDelete ? {} : { deletedAt: null }),
+    };
 
     await this.prisma.$transaction(async (tx) => {
-      const targetActivity = await tx.studentActivity.findFirst({
-        select: { id: true },
+      const targetSolution = await tx.solution.findUnique({
+        select: { hash: true },
         where: {
-          ...baseWhere,
-          solutionHash,
-          solution: {
-            analysis: { isNot: null },
-          },
+          taskId_hash: { taskId, hash: solutionHash },
+          ...(includeSoftDelete ? {} : { deletedAt: null }),
+          analysis: { isNot: null },
+          OR: [
+            { studentSolutions: { some: sourceWhere } },
+            { studentActivities: { some: sourceWhere } },
+          ],
         },
       });
 
-      if (!targetActivity) {
+      if (!targetSolution) {
         throw new NotFoundException(
-          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+          `No analyzed solution found for student ${studentId} in class ${classId} / session ${sessionId} / task ${taskId} with the given solution hash`,
         );
       }
 
-      const { count } = await tx.studentActivity.updateMany({
-        data: { isReference },
-        where: {
-          ...baseWhere,
-          solutionHash,
-        },
-      });
+      const referenceKey = {
+        solutionHash,
+        studentId,
+        sessionId,
+        classId,
+        taskId,
+      };
+
+      if (isReference) {
+        await tx.solutionActivityReference.upsert({
+          create: referenceKey,
+          update: {},
+          where: {
+            solutionHash_studentId_sessionId_classId_taskId: referenceKey,
+          },
+        });
+      } else {
+        await tx.solutionActivityReference.deleteMany({
+          where: referenceKey,
+        });
+      }
 
       this.logger.log(
-        `Updated ${count} student activity row(s) (studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) with the given solution hash isReference=${isReference}`,
+        `${isReference ? "Created" : "Removed"} solution activity reference (studentId: ${studentId}, classId: ${classId}, sessionId: ${sessionId}, taskId: ${taskId})`,
       );
     });
   }
@@ -511,7 +550,7 @@ export class SolutionsService {
     return (latestSubmittedSolution || solutionFromLatestActivity)!.solution;
   }
 
-  findManyStudentSolutions(
+  async findManyStudentSolutions(
     args?: Prisma.StudentSolutionFindManyArgs,
     includeSoftDeleted = false,
   ): Promise<StudentSolutionWithoutData[]> {
@@ -519,18 +558,25 @@ export class SolutionsService {
       ? args?.where
       : { ...args?.where, deletedAt: null };
 
-    return this.prisma.studentSolution.findMany({
+    const studentSolutions = await this.prisma.studentSolution.findMany({
       ...args,
       where,
       include: {
         solution: {
           omit: omitData,
+          include: {
+            activityReferences: true,
+          },
         },
         tests: {
           where: includeSoftDeleted ? {} : { deletedAt: null },
         },
       },
     });
+
+    return studentSolutions.map((studentSolution) =>
+      this.withReferenceFlag(studentSolution),
+    );
   }
 
   findMany(
@@ -616,7 +662,13 @@ export class SolutionsService {
     const studentSolution = await this.prisma.studentSolution.create({
       data: checkedStudentSolution,
       include: {
-        solution: true,
+        solution: {
+          include: {
+            activityReferences: {
+              where: { studentId, sessionId, taskId },
+            },
+          },
+        },
         tests: true,
       },
     });
@@ -632,7 +684,7 @@ export class SolutionsService {
       latestAstVersion,
     );
 
-    return studentSolution;
+    return this.withReferenceFlag(studentSolution);
   }
 
   // check every minute (with seconds = 0) whether there are analyses that were not performed
