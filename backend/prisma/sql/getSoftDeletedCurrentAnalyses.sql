@@ -12,7 +12,7 @@ WITH studentSolutions AS (
     AND studentSolution."deletedAt" IS NOT NULL
     ORDER BY
       studentSolution."studentId",
-      studentSolution."createdAt" DESC
+      studentSolution."happenedAt" DESC
     )
 SELECT
   analysis.*,

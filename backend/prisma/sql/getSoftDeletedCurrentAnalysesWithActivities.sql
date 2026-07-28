@@ -8,7 +8,7 @@ WITH allStudentSolutions AS (
       studentSolution."sessionId",
       studentSolution."taskId",
       studentSolution."solutionHash",
-      studentSolution."createdAt",
+      studentSolution."happenedAt" AS "createdAt",
       studentSolution."id" AS "studentSolutionId",
       studentSolution."isReference"
     FROM "StudentSolution" studentSolution
@@ -24,7 +24,7 @@ WITH allStudentSolutions AS (
       studentActivity."sessionId",
       studentActivity."taskId",
       studentActivity."solutionHash",
-      studentActivity."createdAt",
+      studentActivity."happenedAt" AS "createdAt",
       NULL::int AS "studentSolutionId",
       studentActivity."isReference"
     FROM "StudentActivity" studentActivity

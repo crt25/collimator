@@ -17,4 +17,4 @@ LEFT JOIN "SolutionTest" test
   AND test."deletedAt" IS NOT NULL
 WHERE sessionTask."sessionId" = $1
 GROUP BY studentSolution."taskId", studentSolution."id"
-ORDER BY studentSolution."taskId", studentSolution."createdAt" DESC;
+ORDER BY studentSolution."taskId", studentSolution."happenedAt" DESC;

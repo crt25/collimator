@@ -459,13 +459,13 @@ export class SolutionsService {
       {
         select: {
           solution: { select: { data: true, mimeType: true } },
-          createdAt: true,
+          happenedAt: true,
         },
         where: includeSoftDelete
           ? { studentId, taskId, sessionId }
           : { studentId, taskId, sessionId, deletedAt: null },
         orderBy: {
-          createdAt: "desc",
+          happenedAt: "desc",
         },
       },
     );
@@ -474,13 +474,13 @@ export class SolutionsService {
       await this.prisma.studentActivity.findFirst({
         select: {
           solution: { select: { data: true, mimeType: true } },
-          createdAt: true,
+          happenedAt: true,
         },
         where: includeSoftDelete
           ? { studentId, taskId, sessionId }
           : { studentId, taskId, sessionId, deletedAt: null },
         orderBy: {
-          createdAt: "desc",
+          happenedAt: "desc",
         },
       });
 
@@ -489,9 +489,9 @@ export class SolutionsService {
     }
 
     if (latestSubmittedSolution && solutionFromLatestActivity) {
-      // prefer the most recent solution
-      return latestSubmittedSolution.createdAt >
-        solutionFromLatestActivity.createdAt
+      // prefer the most recent solution by client timestamp
+      return latestSubmittedSolution.happenedAt >
+        solutionFromLatestActivity.happenedAt
         ? latestSubmittedSolution.solution
         : solutionFromLatestActivity.solution;
     }
