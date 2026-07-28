@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { IsBoolean, IsString } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsString } from "class-validator";
 
 export class PatchStudentReferenceSolutionDto {
   @Type(() => Boolean)
@@ -9,12 +9,15 @@ export class PatchStudentReferenceSolutionDto {
   @Expose()
   readonly isReference!: boolean;
 
-  @IsString()
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
   @ApiProperty({
-    example: "dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl",
+    type: [String],
+    example: ["dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl"],
     description:
-      "The base64url-encoded hash of the solution to star or unstar.",
+      "The base64url-encoded hashes of the solutions to star or unstar.",
   })
   @Expose()
-  readonly solutionHash!: string;
+  readonly solutionHashes!: string[];
 }

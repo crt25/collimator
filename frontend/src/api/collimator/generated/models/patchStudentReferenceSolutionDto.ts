@@ -8,6 +8,6 @@
 
 export interface PatchStudentReferenceSolutionDto {
   isReference: boolean;
-  /** The base64url-encoded hash of the solution to star or unstar. */
-  solutionHash: string;
+  /** The base64url-encoded hashes of the solutions to star or unstar. */
+  solutionHashes: string[];
 }

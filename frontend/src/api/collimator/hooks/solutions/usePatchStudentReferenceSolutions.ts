@@ -2,36 +2,36 @@ import { useCallback } from "react";
 import { useSWRConfig } from "swr";
 import {
   getSolutionsControllerFindCurrentAnalysesV0Url,
-  solutionsControllerPatchStudentReferenceSolutionV0,
+  solutionsControllerPatchStudentReferenceSolutionsV0,
 } from "../../generated/endpoints/solutions/solutions";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
 import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
 
-type PatchStudentReferenceSolution = (
+type PatchStudentReferenceSolutions = (
   classId: number,
   sessionId: number,
   taskId: number,
   studentId: number,
-  solutionHash: string,
+  solutionHashes: string[],
   isReference: boolean,
 ) => Promise<void>;
 
-export const usePatchStudentReferenceSolution =
-  (): PatchStudentReferenceSolution => {
+export const usePatchStudentReferenceSolutions =
+  (): PatchStudentReferenceSolutions => {
     const revalidateSolutionList = useRevalidateSolutionList();
     const { mutate, cache } = useSWRConfig();
     const authOptions = useAuthenticationOptions();
 
-    return useCallback<PatchStudentReferenceSolution>(
-      (classId, sessionId, taskId, studentId, solutionHash, isReference) =>
-        solutionsControllerPatchStudentReferenceSolutionV0(
+    return useCallback<PatchStudentReferenceSolutions>(
+      (classId, sessionId, taskId, studentId, solutionHashes, isReference) =>
+        solutionsControllerPatchStudentReferenceSolutionsV0(
           classId,
           sessionId,
           taskId,
           studentId,
-          { isReference, solutionHash },
+          { isReference, solutionHashes },
           undefined,
           authOptions,
         ).then(() => {
@@ -47,12 +47,13 @@ export const usePatchStudentReferenceSolution =
             cache.get(key)?.data;
 
           if (cachedData !== undefined) {
+            const solutionHashSet = new Set(solutionHashes);
             mutate(
               key,
               cachedData.map((analysis) =>
                 analysis instanceof CurrentStudentAnalysis &&
                 analysis.studentId === studentId &&
-                analysis.solutionHash === solutionHash
+                solutionHashSet.has(analysis.solutionHash)
                   ? analysis.withIsReference(isReference)
                   : analysis,
               ),

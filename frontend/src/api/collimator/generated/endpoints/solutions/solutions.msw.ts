@@ -664,7 +664,7 @@ export const getSolutionsControllerDownloadOneV0MockHandler = (
   );
 };
 
-export const getSolutionsControllerPatchStudentReferenceSolutionV0MockHandler =
+export const getSolutionsControllerPatchStudentReferenceSolutionsV0MockHandler =
   (
     overrideResponse?:
       | void
@@ -693,5 +693,5 @@ export const getSolutionsMock = () => [
   getSolutionsControllerFindOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDeleteOneStudentSolutionV0MockHandler(),
   getSolutionsControllerDownloadOneV0MockHandler(),
-  getSolutionsControllerPatchStudentReferenceSolutionV0MockHandler(),
+  getSolutionsControllerPatchStudentReferenceSolutionsV0MockHandler(),
 ];

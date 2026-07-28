@@ -315,7 +315,7 @@ export class SolutionsController {
   @ApiNotFoundResponse()
   @HttpCode(204)
   @ApiBody({ type: PatchStudentReferenceSolutionDto })
-  async patchStudentReferenceSolution(
+  async patchStudentReferenceSolutions(
     @AuthenticatedUser() user: User | null,
     @Param("classId", ParseIntPipe) classId: ClassId,
     @Param("sessionId", ParseIntPipe) sessionId: SessionId,
@@ -337,14 +337,16 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const solutionHash = Buffer.from(dto.solutionHash, "base64url");
+    const solutionHashes = dto.solutionHashes.map((solutionHash) =>
+      Buffer.from(solutionHash, "base64url"),
+    );
 
-    return this.solutionsService.updateStudentReferenceSolution(
+    return this.solutionsService.updateStudentReferenceSolutions(
       classId,
       sessionId,
       taskId,
       studentId,
-      solutionHash,
+      solutionHashes,
       dto.isReference,
       includeSoftDelete,
     );

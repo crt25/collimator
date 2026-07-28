@@ -89,13 +89,20 @@ const CurrentVersionTemplate = ({
 
 const PreviousVersionTemplate = ({
   classId,
+  sessionId,
+  taskId,
   progress,
 }: {
   classId: number;
+  sessionId: number;
+  taskId: number;
   progress: StudentProgress;
 }) => (
   <UnstarPastSolutionsButton
     classId={classId}
+    sessionId={sessionId}
+    taskId={taskId}
+    studentId={progress.id}
     pastStarredAnalyses={progress.pastStarredAnalyses}
   />
 );
@@ -252,6 +259,8 @@ const TaskInstanceProgressList = ({
         cell: (info) => (
           <PreviousVersionTemplate
             classId={classId}
+            sessionId={sessionId}
+            taskId={taskId}
             progress={info.row.original}
           />
         ),

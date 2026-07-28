@@ -3,7 +3,7 @@ import { defineMessages, useIntl } from "react-intl";
 import { Icon } from "@chakra-ui/react";
 import { LuStar } from "react-icons/lu";
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
-import { useStarAnalysis } from "@/api/collimator/hooks/solutions/useStarAnalysis";
+import { usePatchStudentReferenceSolutions } from "@/api/collimator/hooks/solutions/usePatchStudentReferenceSolutions";
 import { Modal } from "@/components/form/Modal";
 import { toaster } from "@/components/Toaster";
 import Button from "../Button";
@@ -43,14 +43,20 @@ const messages = defineMessages({
 
 const UnstarPastSolutionsButton = ({
   classId,
+  sessionId,
+  taskId,
+  studentId,
   pastStarredAnalyses,
 }: {
   classId: number;
+  sessionId: number;
+  taskId: number;
+  studentId: number;
   pastStarredAnalyses: CurrentStudentAnalysis[];
 }) => {
   const intl = useIntl();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const starAnalysis = useStarAnalysis();
+  const patchStudentReferenceSolutions = usePatchStudentReferenceSolutions();
 
   if (pastStarredAnalyses.length === 0) {
     return null;
@@ -58,9 +64,14 @@ const UnstarPastSolutionsButton = ({
 
   const handleConfirm = async () => {
     try {
-      for (const analysis of pastStarredAnalyses) {
-        await starAnalysis(classId, analysis, false);
-      }
+      await patchStudentReferenceSolutions(
+        classId,
+        sessionId,
+        taskId,
+        studentId,
+        pastStarredAnalyses.map((analysis) => analysis.solutionHash),
+        false,
+      );
       toaster.success({
         id: `unstar-past-solutions-success-${pastStarredAnalyses[0].studentId}`,
         title: intl.formatMessage(messages.successToast),

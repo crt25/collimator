@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
-import { usePatchStudentReferenceSolution } from "./usePatchStudentReferenceSolution";
+import { usePatchStudentReferenceSolutions } from "./usePatchStudentReferenceSolutions";
 
 type StarAnalysisType = (
   classId: number,
@@ -9,18 +9,18 @@ type StarAnalysisType = (
 ) => Promise<void>;
 
 export const useStarAnalysis = (): StarAnalysisType => {
-  const patchStudentReferenceSolution = usePatchStudentReferenceSolution();
+  const patchStudentReferenceSolutions = usePatchStudentReferenceSolutions();
 
   return useCallback<StarAnalysisType>(
     (classId, analysis, isReference) =>
-      patchStudentReferenceSolution(
+      patchStudentReferenceSolutions(
         classId,
         analysis.sessionId,
         analysis.taskId,
         analysis.studentId,
-        analysis.solutionHash,
+        [analysis.solutionHash],
         isReference,
       ),
-    [patchStudentReferenceSolution],
+    [patchStudentReferenceSolutions],
   );
 };

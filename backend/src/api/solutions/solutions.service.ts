@@ -434,29 +434,42 @@ export class SolutionsService {
     });
   }
 
-  async updateStudentReferenceSolution(
+  async updateStudentReferenceSolutions(
     classId: number,
     sessionId: SessionId,
     taskId: TaskId,
     studentId: StudentId,
-    solutionHash: Uint8Array,
+    solutionHashes: Uint8Array[],
     isReference: boolean,
     includeSoftDelete = false,
   ): Promise<void> {
+    const uniqueSolutionHashes = [
+      ...new Map(
+        solutionHashes.map((solutionHash) => [
+          Buffer.from(solutionHash).toString("base64url"),
+          solutionHash,
+        ]),
+      ).values(),
+    ];
+
+    if (uniqueSolutionHashes.length === 0) {
+      return;
+    }
+
     const sourceWhere = {
       studentId,
       sessionId,
       taskId,
-      solutionHash,
       session: { classId },
       ...(includeSoftDelete ? {} : { deletedAt: null }),
     };
 
     await this.prisma.$transaction(async (tx) => {
-      const targetSolution = await tx.solution.findUnique({
+      const targetSolutions = await tx.solution.findMany({
         select: { hash: true },
         where: {
-          taskId_hash: { taskId, hash: solutionHash },
+          taskId,
+          hash: { in: uniqueSolutionHashes },
           ...(includeSoftDelete ? {} : { deletedAt: null }),
           analysis: { isNot: null },
           OR: [
@@ -466,36 +479,39 @@ export class SolutionsService {
         },
       });
 
-      if (!targetSolution) {
+      if (targetSolutions.length !== uniqueSolutionHashes.length) {
         throw new NotFoundException(
-          `No analyzed solution found for student ${studentId} in class ${classId} / session ${sessionId} / task ${taskId} with the given solution hash`,
+          `Not every analyzed solution was found for student ${studentId} in class ${classId} / session ${sessionId} / task ${taskId}`,
         );
       }
 
-      const referenceKey = {
+      const referenceKeys = uniqueSolutionHashes.map((solutionHash) => ({
         solutionHash,
         studentId,
         sessionId,
         classId,
         taskId,
-      };
+      }));
 
       if (isReference) {
-        await tx.solutionActivityReference.upsert({
-          create: referenceKey,
-          update: {},
-          where: {
-            solutionHash_studentId_sessionId_classId_taskId: referenceKey,
-          },
+        await tx.solutionActivityReference.createMany({
+          data: referenceKeys,
+          skipDuplicates: true,
         });
       } else {
         await tx.solutionActivityReference.deleteMany({
-          where: referenceKey,
+          where: {
+            studentId,
+            sessionId,
+            classId,
+            taskId,
+            solutionHash: { in: uniqueSolutionHashes },
+          },
         });
       }
 
       this.logger.log(
-        `${isReference ? "Created" : "Removed"} solution activity reference (studentId: ${studentId}, classId: ${classId}, sessionId: ${sessionId}, taskId: ${taskId})`,
+        `${isReference ? "Created" : "Removed"} ${uniqueSolutionHashes.length} solution activity reference(s) (studentId: ${studentId}, classId: ${classId}, sessionId: ${sessionId}, taskId: ${taskId})`,
       );
     });
   }

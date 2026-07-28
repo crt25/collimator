@@ -15,7 +15,7 @@ import type {
   SolutionsControllerDownloadOneV0Params,
   SolutionsControllerFindCurrentAnalysesV0Params,
   SolutionsControllerFindOneStudentSolutionV0Params,
-  SolutionsControllerPatchStudentReferenceSolutionV0Params,
+  SolutionsControllerPatchStudentReferenceSolutionsV0Params,
 } from "../../models";
 
 export const getSolutionsControllerCreateStudentSolutionV0Url = (
@@ -38,6 +38,7 @@ export const solutionsControllerCreateStudentSolutionV0 = async (
     formData.append(`tests`, JSON.stringify(value)),
   );
   formData.append(`file`, createSolutionDto.file);
+  formData.append(`timestamp`, createSolutionDto.timestamp);
 
   return fetchApi<ExistingStudentSolutionDto>(
     getSolutionsControllerCreateStudentSolutionV0Url(
@@ -290,12 +291,12 @@ export const solutionsControllerDownloadOneV0 = async (
 /**
  * @summary Stars or unstars a student's solution
  */
-export const getSolutionsControllerPatchStudentReferenceSolutionV0Url = (
+export const getSolutionsControllerPatchStudentReferenceSolutionsV0Url = (
   classId: number,
   sessionId: number,
   taskId: number,
   studentId: number,
-  params?: SolutionsControllerPatchStudentReferenceSolutionV0Params,
+  params?: SolutionsControllerPatchStudentReferenceSolutionsV0Params,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -312,17 +313,17 @@ export const getSolutionsControllerPatchStudentReferenceSolutionV0Url = (
     : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/reference`;
 };
 
-export const solutionsControllerPatchStudentReferenceSolutionV0 = async (
+export const solutionsControllerPatchStudentReferenceSolutionsV0 = async (
   classId: number,
   sessionId: number,
   taskId: number,
   studentId: number,
   patchStudentReferenceSolutionDto: PatchStudentReferenceSolutionDto,
-  params?: SolutionsControllerPatchStudentReferenceSolutionV0Params,
+  params?: SolutionsControllerPatchStudentReferenceSolutionsV0Params,
   options?: RequestInit,
 ): Promise<void> => {
   return fetchApi<void>(
-    getSolutionsControllerPatchStudentReferenceSolutionV0Url(
+    getSolutionsControllerPatchStudentReferenceSolutionsV0Url(
       classId,
       sessionId,
       taskId,
