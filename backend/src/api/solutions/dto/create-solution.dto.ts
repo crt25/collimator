@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray } from "class-validator";
+import { IsArray, IsDate } from "class-validator";
 import { CreateSolutionTestDto } from "./create-solution-test.dto";
 
 export class CreateSolutionDto {
@@ -19,4 +19,13 @@ export class CreateSolutionDto {
     type: "string",
   })
   readonly file!: Express.Multer.File;
+
+  @Type(() => Date)
+  @IsDate()
+  @ApiProperty({
+    example: "2025-01-01T12:00:00Z",
+    description:
+      "Client timestamp of the solution submission. May differ from the server-side createdAt.",
+  })
+  readonly happenedAt!: Date;
 }
