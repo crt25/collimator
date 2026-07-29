@@ -13,48 +13,45 @@ export const convertSlice = (
   visitor: IPythonAstVisitor,
   ctx: SliceContext,
 ): PythonVisitorReturnValue => {
-  const { nodes: expressions, functionDeclarations } = visitor.getExpressions(
-    ctx.expression_list(),
-  );
+  const colons = ctx.COLON_list();
 
-  if (expressions.length > 0) {
-    let startExpression: ExpressionNode | null = null;
-    let stopExpression: ExpressionNode | null = null;
-    let stepExpression: ExpressionNode | null = null;
-
-    const colonList = ctx.COLON_list();
-    if (ctx.start.text === ":") {
-      // we do not have a start expression
-      stopExpression = expressions[0];
-      stepExpression = expressions.length > 1 ? expressions[1] : null;
-    } else if (colonList.length === 1) {
-      // we do not have a step expression
-      startExpression = expressions[0];
-      stopExpression = expressions.length > 1 ? expressions[1] : null;
-    } else if (colonList.length === 2 && expressions.length === 2) {
-      // we have do not have a stop expression
-      startExpression = expressions[0];
-      stepExpression = expressions[1];
-    } else if (colonList.length === 2 && expressions.length === 3) {
-      // we have all three expressions
-      startExpression = expressions[0];
-      stopExpression = expressions[1];
-      stepExpression = expressions[2];
-    } else {
-      throw new Error(
-        `Unexpected slice format. Found ${colonList.length} colons, ${expressions.length} expressions and the '${ctx.start.text}' starting token.`,
-      );
-    }
-
-    return createSliceExpression(
-      startExpression,
-      stopExpression,
-      stepExpression,
-      functionDeclarations,
-    );
+  if (colons.length === 0) {
+    // the grammar's named_expression alternative: a plain subscript like a[1]
+    return visitor.visit(ctx.named_expression());
   }
 
-  return visitor.visit(ctx.named_expression());
+  // The colon form: which of start/stop/step an expression is follows from
+  // its position relative to the colons, not from how many expressions there
+  // are (a[:2] is a stop, a[::2] is a step). A fully open slice like a[:] has
+  // no expressions at all.
+  let startExpression: ExpressionNode | null = null;
+  let stopExpression: ExpressionNode | null = null;
+  let stepExpression: ExpressionNode | null = null;
+  const functionDeclarations: FunctionDeclarationNode[] = [];
+
+  for (const expressionCtx of ctx.expression_list()) {
+    const colonsBefore = colons.filter(
+      (colon) => colon.symbol.tokenIndex < expressionCtx.start.tokenIndex,
+    ).length;
+
+    const expression = visitor.getExpression(expressionCtx);
+    functionDeclarations.push(...expression.functionDeclarations);
+
+    if (colonsBefore === 0) {
+      startExpression = expression.node;
+    } else if (colonsBefore === 1) {
+      stopExpression = expression.node;
+    } else {
+      stepExpression = expression.node;
+    }
+  }
+
+  return createSliceExpression(
+    startExpression,
+    stopExpression,
+    stepExpression,
+    functionDeclarations,
+  );
 };
 
 const createSliceExpression = (
