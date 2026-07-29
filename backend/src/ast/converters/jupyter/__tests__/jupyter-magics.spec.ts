@@ -247,6 +247,26 @@ describe("Jupyter converter — IPython magics", () => {
       expect(statements).toEqual(expected);
     });
 
+    it("treats %prun's -r as a flag, not a value-taking option", () => {
+      // -r takes a value for %timeit (repeat count) but is a standalone
+      // return-Stats flag for %prun; it must not swallow the statement.
+      const statements = statementsOf("%prun -r compute()\n");
+
+      const expected = statementsOf("compute()\n");
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("consumes a quoted option value containing spaces", () => {
+      const statements = statementsOf(
+        '%prun -T "profile output.txt" compute()\n',
+      );
+
+      const expected = statementsOf("compute()\n");
+
+      expect(statements).toEqual(expected);
+    });
+
     it("drops the line when there is no payload", () => {
       const statements = statementsOf(
         ["a = 1", "%timeit -n 100", "b = a + 1"].join("\n"),
@@ -295,5 +315,36 @@ describe("Jupyter converter — IPython magics", () => {
     );
 
     expect(statements).toEqual(expected);
+  });
+
+  describe("documented limitations", () => {
+    // Deliberate trade-offs for classroom-scale code: handling these would
+    // require a Python tokenizer / per-magic argument parser, whose own bugs
+    // would be worse than the limitation.
+    it("a magic-looking line inside a multi-line string is still stripped", () => {
+      // The stripping is line-local: it cannot know the line sits inside a
+      // string literal. Only the literal's text changes; the code structure
+      // the similarity analysis compares is unaffected.
+      const statements = statementsOf(
+        ['doc = """usage:', "%matplotlib inline", '"""', "x = 1"].join("\n"),
+      );
+
+      const expected = statementsOf(
+        ['doc = """usage:', '"""', "x = 1"].join("\n"),
+      );
+
+      expect(statements).toEqual(expected);
+    });
+
+    it("%%script cells are skipped even for a python interpreter", () => {
+      // `%%script python` is an alias of %%python, but recognizing it would
+      // special-case one argument of the generic %%script family; skipping
+      // the whole family is the conservative default.
+      const statements = statementsOf(
+        ["%%script python", "a = 1", "b = a + 1"].join("\n"),
+      );
+
+      expect(statements).toHaveLength(0);
+    });
   });
 });

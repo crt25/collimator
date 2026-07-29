@@ -49,7 +49,10 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // https://ipython.readthedocs.io/en/stable/interactive/magics.html. For
   // these, only the magic line is removed. Every other cell magic (%%bash,
   // %%html, %%writefile, ...) turns the cell into something that is not
-  // Python, so such cells are skipped wholesale.
+  // Python, so such cells are skipped wholesale. That deliberately includes
+  // `%%script python` (an alias of %%python): special-casing one argument of
+  // the generic %%script family isn't worth it for code we expect to see in
+  // a classroom, and skipping is the conservative default.
   const pythonBodyCellMagics = new Set([
     "capture",
     "debug",
@@ -84,8 +87,10 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // recommends wrapping to the start of a continuation line. Matching only the
   // sigil form keeps such continuations from being mistaken for magics. The
   // check is line-local, so a `%name`/`!cmd` line inside a multi-line string is
-  // still dropped - but that only edits a string literal's text, not the code
-  // structure the similarity analysis compares.
+  // still dropped - a documented trade-off: it only edits a string literal's
+  // text, never the code structure the similarity analysis compares, whereas
+  // tracking string state would need a real tokenizer whose own mistakes would
+  // let magics through as phantom variables - a worse failure mode.
   const isLineMagic = (line: string): boolean => /^\s*%%?[A-Za-z_]/.test(line);
   const isShellEscape = (line: string): boolean => /^\s*!(?!=)/.test(line);
 
@@ -95,21 +100,19 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // stmt to the profiled code). For these, only the magic and its option flags
   // are removed; the trailing Python payload is kept. Not %capture: its
   // argument is the name of a variable to bind, not code to run.
-  const pythonPayloadMagics = new Set(["time", "timeit", "prun", "debug"]);
-
-  // Options of the above magics that consume a separate value token
-  // (e.g. `-n 100`, `-s cumulative`); flags like -q or -o stand alone.
-  const valueTakingOptions = new Set([
-    "-n",
-    "-r",
-    "-p",
-    "-l",
-    "-s",
-    "-T",
-    "-D",
-    "-b",
-    "--breakpoint",
+  // Per magic, the options that consume a separate value token (e.g. `-n 100`,
+  // `-s cumulative`); every other option is a standalone flag. The arity
+  // differs between magics: -r takes a repeat count for %timeit but is a
+  // return-Stats flag for %prun.
+  const pythonPayloadMagics = new Map<string, Set<string>>([
+    ["time", new Set()],
+    ["timeit", new Set(["-n", "-r", "-p"])],
+    ["prun", new Set(["-l", "-s", "-T", "-D"])],
+    ["debug", new Set(["-b", "--breakpoint"])],
   ]);
+
+  // A value token may be shell-quoted to contain spaces (`-T "profile out.txt"`).
+  const optionValue = /^(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|\S+)\s*/;
 
   // For a `%name ...` / `%%name ...` line of a payload magic, returns the
   // Python payload (keeping the line's indentation, so a magic inside an
@@ -117,8 +120,9 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   // is not a payload magic.
   const extractPythonPayload = (magicLine: string): string | null => {
     const match = /^(\s*)%%?([A-Za-z_]\w*)\s*(.*)$/.exec(magicLine);
+    const valueTakingOptions = match && pythonPayloadMagics.get(match[2]);
 
-    if (!match || !pythonPayloadMagics.has(match[2])) {
+    if (!match || !valueTakingOptions) {
       return null;
     }
 
@@ -129,7 +133,7 @@ export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
       rest = rest.slice(option[0].length);
 
       if (valueTakingOptions.has(option[1])) {
-        rest = rest.replace(/^\S+\s*/, "");
+        rest = rest.replace(optionValue, "");
       }
 
       option = /^(-\S+)\s*/.exec(rest);
