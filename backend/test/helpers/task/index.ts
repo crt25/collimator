@@ -109,6 +109,7 @@ export const createStudentSolution = async (
     solutionHash: Buffer;
     studentId: number;
     sessionId: number;
+    happenedAt?: Date;
   },
 ): Promise<StudentSolution> => {
   const prisma = app.get(PrismaService);
@@ -132,6 +133,7 @@ export const createStudentSolution = async (
       solutionHash: options.solutionHash,
       studentId: options.studentId,
       sessionId: options.sessionId,
+      happenedAt: options.happenedAt ?? new Date(),
       deletedAt: null,
     },
   });

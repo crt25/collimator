@@ -12,7 +12,10 @@ WITH studentSolutions AS (
     AND studentSolution."deletedAt" IS NULL
     ORDER BY
       studentSolution."studentId",
-      studentSolution."createdAt" DESC
+      studentSolution."happenedAt" DESC,
+      -- The id is unique, so it is enough to break ties when two client
+      -- timestamps are exactly the same.
+      studentSolution."id" DESC
     )
 SELECT
   analysis.*,

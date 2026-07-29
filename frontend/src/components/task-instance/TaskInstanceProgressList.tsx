@@ -12,6 +12,7 @@ import { useAllSessionTaskSolutions } from "@/api/collimator/hooks/solutions/use
 import { useCurrentSessionTaskSolutions } from "@/api/collimator/hooks/solutions/useCurrentSessionTaskSolutions";
 import { EmptyState } from "@/components/EmptyState";
 import { isClickOnRow } from "@/utilities/table";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
 import {
   ResolvedStudent,
   useSessionStudents,
@@ -120,12 +121,19 @@ const TaskInstanceProgressList = ({
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionTaskSolutions(classId, sessionId, taskId);
+  } = useAllSessionTaskSolutions(
+    classId,
+    sessionId,
+    taskId,
+    undefined,
+    DefaultAutoRefreshingConfig,
+  );
 
   const { data: currentAnalyses } = useCurrentSessionTaskSolutions(
     classId,
     sessionId,
     taskId,
+    DefaultAutoRefreshingConfig,
   );
 
   const activeStudentIds = useMemo(

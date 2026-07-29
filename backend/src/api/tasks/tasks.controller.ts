@@ -332,6 +332,11 @@ export class TasksController {
           errorCode: ErrorCode.TASK_IN_USE_BY_LESSON_OR_CLASS_WITH_STUDENTS,
         });
       }
+      if (error instanceof TaskInOtherUsersLessonError) {
+        throw new ConflictException({
+          errorCode: ErrorCode.TASK_IN_OTHER_USERS_LESSON,
+        });
+      }
       if (error instanceof DuplicateReferenceSolutionError) {
         throw new BadRequestException({
           errorCode: ErrorCode.DUPLICATE_REFERENCE_SOLUTION,

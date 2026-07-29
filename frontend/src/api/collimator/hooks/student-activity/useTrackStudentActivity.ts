@@ -135,13 +135,7 @@ export const useTrackStudentActivity = (): [
         } catch (error) {
           // on error, ensure the activities are tracked again the next time
           // we send a request by appending them
-          activitiesToTrack = [
-            ...activitiesToTrack,
-            ...activities.map((activity) => ({
-              ...activity,
-              ...getActivityTimestamp(),
-            })),
-          ];
+          activitiesToTrack = [...activitiesToTrack, ...activities];
 
           throw error;
         }

@@ -17,4 +17,9 @@ LEFT JOIN "SolutionTest" test
   AND test."deletedAt" IS NOT NULL
 WHERE sessionTask."sessionId" = $1
 GROUP BY studentSolution."taskId", studentSolution."id"
-ORDER BY studentSolution."taskId", studentSolution."createdAt" DESC;
+ORDER BY
+  studentSolution."taskId",
+  studentSolution."happenedAt" DESC,
+  -- The id is unique, so it is enough to break ties when two client
+  -- timestamps are exactly the same.
+  studentSolution."id" DESC;

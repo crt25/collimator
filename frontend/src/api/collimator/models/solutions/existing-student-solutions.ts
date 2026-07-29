@@ -9,6 +9,7 @@ export class ExistingStudentSolution {
   readonly studentId: number;
   readonly taskId: number;
   readonly createdAt: Date;
+  readonly happenedAt: Date;
   readonly solution: ExistingSolution;
   readonly isReference: boolean;
   readonly tests: ExistingSolutionTest[] = [];
@@ -19,6 +20,7 @@ export class ExistingStudentSolution {
     studentId,
     taskId,
     createdAt,
+    happenedAt,
     solution,
     isReference,
     tests,
@@ -28,6 +30,7 @@ export class ExistingStudentSolution {
     this.studentId = studentId;
     this.taskId = taskId;
     this.createdAt = createdAt;
+    this.happenedAt = happenedAt;
     this.solution = solution;
     this.isReference = isReference;
     this.tests = tests;
@@ -37,6 +40,7 @@ export class ExistingStudentSolution {
     return new ExistingStudentSolution({
       ...dto,
       createdAt: new Date(dto.createdAt),
+      happenedAt: new Date(dto.happenedAt),
       solution: ExistingSolution.fromDto(dto.solution),
       tests: dto.tests.map(ExistingSolutionTest.fromDto),
     });
@@ -49,12 +53,19 @@ export class ExistingStudentSolution {
       return null;
     }
 
-    return solutions.reduce(
-      (mostRecentSolution, solution) =>
-        mostRecentSolution.createdAt.getTime() >= solution.createdAt.getTime()
-          ? mostRecentSolution
-          : solution,
-      solutions[0],
-    );
+    return solutions.reduce((mostRecentSolution, solution) => {
+      const happenedAtDifference =
+        mostRecentSolution.happenedAt.getTime() - solution.happenedAt.getTime();
+
+      if (happenedAtDifference !== 0) {
+        return happenedAtDifference > 0 ? mostRecentSolution : solution;
+      }
+
+      // The id is unique, so it is enough to tie break when two client
+      // timestamps are exactly the same
+      return mostRecentSolution.id >= solution.id
+        ? mostRecentSolution
+        : solution;
+    }, solutions[0]);
   }
 }

@@ -31,8 +31,14 @@ const MultiSwrContent = <TData extends readonly unknown[] | []>({
     (error, index) => error !== undefined && !isLoading[index],
   );
 
-  const nonLoadingErrorsWithoutStaleData = nonLoadingErrors.filter(
-    (_error, index) => data[index] === undefined,
+  // Derive this from the original arrays, not from nonLoadingErrors: filtering
+  // there produces a compacted array whose indices no longer line up with data
+  // and isLoading, so an error on a later source (after an earlier one has
+  // resolved) would be matched against the wrong data slot and silently
+  // dropped - leaving the page blank instead of showing the error.
+  const nonLoadingErrorsWithoutStaleData = errors.filter(
+    (error, index) =>
+      error !== undefined && !isLoading[index] && data[index] === undefined,
   );
 
   const renderedChildren = useMemo(() => {

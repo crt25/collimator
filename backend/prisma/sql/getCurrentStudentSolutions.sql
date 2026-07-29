@@ -18,4 +18,9 @@ WHERE sessionTask."sessionId" = $1
 AND sessionTask."deletedAt" IS NULL
 AND studentSolution."studentId" = $2
 GROUP BY studentSolution."taskId", studentSolution."id"
-ORDER BY studentSolution."taskId", studentSolution."createdAt" DESC;
+ORDER BY
+  studentSolution."taskId",
+  studentSolution."happenedAt" DESC,
+  -- The id is unique, so it is enough to break ties when two client
+  -- timestamps are exactly the same.
+  studentSolution."id" DESC;

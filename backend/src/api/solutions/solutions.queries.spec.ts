@@ -93,6 +93,7 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
         solutionHash,
         studentId,
         sessionId,
+        happenedAt: createdAt ?? new Date(),
         ...(createdAt && { createdAt }),
       },
     });
