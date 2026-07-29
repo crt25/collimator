@@ -9,7 +9,7 @@ import {
 } from "class-validator";
 import { Type } from "class-transformer";
 import { StudentActivityType } from "@prisma/client";
-import { IsClientTimestamp } from "src/utilities/validation/client-timestamp";
+import { EnsureLimitedClientClockSkew } from "src/utilities/validation/client-timestamp";
 import { TrackAppStudentActivityDto } from "./track-app-activity.dto";
 
 export class TrackStudentActivityDto {
@@ -49,7 +49,7 @@ export class TrackStudentActivityDto {
 
   @Type(() => Date)
   @IsDate()
-  @IsClientTimestamp()
+  @EnsureLimitedClientClockSkew()
   @ApiProperty({
     example: "2025-01-01T12:00:00Z",
     description: "The time the activity happened at.",

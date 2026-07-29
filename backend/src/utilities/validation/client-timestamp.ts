@@ -2,12 +2,12 @@ import { ValidateBy, ValidationOptions, buildMessage } from "class-validator";
 
 export const maxClientClockSkewMilliseconds = 5 * 60 * 1000;
 
-export const IsClientTimestamp = (
+export const EnsureLimitedClientClockSkew = (
   validationOptions?: ValidationOptions,
 ): PropertyDecorator =>
   ValidateBy(
     {
-      name: "isClientTimestamp",
+      name: "EnsureLimitedClientClockSkew",
       validator: {
         validate: (value: unknown): boolean =>
           value instanceof Date &&
