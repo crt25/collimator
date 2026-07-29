@@ -38,7 +38,6 @@ export const solutionsControllerCreateStudentSolutionV0 = async (
     formData.append(`tests`, JSON.stringify(value)),
   );
   formData.append(`file`, createSolutionDto.file);
-  formData.append(`timestamp`, createSolutionDto.timestamp);
 
   return fetchApi<ExistingStudentSolutionDto>(
     getSolutionsControllerCreateStudentSolutionV0Url(
