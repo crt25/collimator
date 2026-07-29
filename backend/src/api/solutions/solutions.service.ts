@@ -11,7 +11,6 @@ import {
 import { PrismaService } from "src/prisma/prisma.service";
 import {
   deleteStudentSolutions,
-  getCurrentAnalyses,
   getCurrentAnalysesWithActivities,
   getSoftDeletedCurrentAnalysesWithActivities,
 } from "@prisma/client/sql";
@@ -27,6 +26,7 @@ import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
 
 export type StudentId = number;
+type CurrentAnalysisRow = getCurrentAnalysesWithActivities.Result;
 export type SolutionCreateInput = Omit<
   Prisma.SolutionUncheckedCreateInput,
   "data" | "mimeType"
@@ -152,14 +152,14 @@ export class SolutionsService {
   }
 
   private groupAnalyses(
-    analyses: getCurrentAnalyses.Result[],
+    analyses: CurrentAnalysisRow[],
   ): [CurrentStudentAnalysis[], ReferenceAnalysis[]] {
     const filteredAnalyses = analyses.filter(
       (analysis) => analysis.astVersion === latestAstVersion,
     );
 
-    const studentAnalyses: getCurrentAnalyses.Result[] = [];
-    const referenceAnalyses: getCurrentAnalyses.Result[] = [];
+    const studentAnalyses: CurrentAnalysisRow[] = [];
+    const referenceAnalyses: CurrentAnalysisRow[] = [];
 
     for (const analysis of filteredAnalyses) {
       if (analysis.studentId !== null) {
@@ -209,11 +209,11 @@ export class SolutionsService {
 
   private groupByStudentAnalysis(
     byAnalysisId: TupleMap<StudentKey, CurrentStudentAnalysis>,
-    analysis: getCurrentAnalyses.Result,
+    analysis: CurrentAnalysisRow,
   ): TupleMap<StudentKey, CurrentStudentAnalysis> {
     if (!this.isStudentAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing student analysis data. ${JSON.stringify(analysis)}`,
+        `Query response for 'getCurrentAnalysesWithActivities' is missing student analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -263,8 +263,8 @@ export class SolutionsService {
   }
 
   private isStudentAnalysis(
-    analysis: getCurrentAnalyses.Result,
-  ): analysis is getCurrentAnalyses.Result & {
+    analysis: CurrentAnalysisRow,
+  ): analysis is CurrentAnalysisRow & {
     taskId: TaskId;
     studentSolutionId: StudentSolutionId | null;
     isStudentSolution: boolean;
@@ -291,11 +291,11 @@ export class SolutionsService {
 
   private groupByReferenceAnalysis(
     byAnalysisId: TupleMap<ReferenceKey, ReferenceAnalysis>,
-    analysis: getCurrentAnalyses.Result,
+    analysis: CurrentAnalysisRow,
   ): TupleMap<ReferenceKey, ReferenceAnalysis> {
     if (!this.isReferenceAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing reference analysis data. ${JSON.stringify(analysis)}`,
+        `Query response for 'getCurrentAnalysesWithActivities' is missing reference analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -330,8 +330,8 @@ export class SolutionsService {
   }
 
   private isReferenceAnalysis(
-    analysis: getCurrentAnalyses.Result,
-  ): analysis is getCurrentAnalyses.Result & {
+    analysis: CurrentAnalysisRow,
+  ): analysis is CurrentAnalysisRow & {
     referenceSolutionId: ReferenceSolutionId;
     referenceSolutionTitle: string;
     referenceSolutionDescription: string;
