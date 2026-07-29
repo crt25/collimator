@@ -14,14 +14,13 @@ import { SessionsService } from "./sessions.service";
 describe("SessionsService.update — students already joined", () => {
   const sessionId = 1;
   const classId = 1;
-  const updatedSession = { id: sessionId, tasks: [], lesson: null };
+  const updatedSession = { id: sessionId, tasks: [] };
   const compactInclude = {
     tasks: {
       where: { deletedAt: null },
       orderBy: { index: "asc" },
       select: { taskId: true, index: true },
     },
-    lesson: { select: { id: true, title: true } },
   };
 
   const buildService = (opts: {
