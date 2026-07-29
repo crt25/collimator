@@ -32,6 +32,14 @@ export class ExistingStudentSolutionDto
   @Type(() => Date)
   readonly createdAt!: Date;
 
+  @ApiProperty({
+    description:
+      "Client timestamp of the solution submission. May differ from createdAt.",
+  })
+  @Expose()
+  @Type(() => Date)
+  readonly happenedAt!: Date;
+
   @ApiProperty()
   @Expose()
   readonly studentId!: number;

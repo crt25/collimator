@@ -97,10 +97,10 @@ export class SolutionsController {
 
     const studentSolution = await this.solutionsService.createStudentSolution(
       {
-        ...createSolutionDto,
         sessionId,
         taskId,
         studentId: student.id,
+        happenedAt: createSolutionDto.happenedAt,
         tests: {
           create: createSolutionDto.tests,
         },

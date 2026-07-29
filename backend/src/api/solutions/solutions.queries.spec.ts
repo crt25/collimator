@@ -93,6 +93,7 @@ describe("getCurrentAnalysesWithActivities", () => {
         solutionHash,
         studentId,
         sessionId,
+        happenedAt: createdAt ?? new Date(),
         ...(createdAt && { createdAt }),
       },
     });
@@ -171,7 +172,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     const later = new Date("2026-05-26T15:33:00.000Z");
 
     await createSolution(submissionHash);
-     await createAnalysis(submissionHash);
+    await createAnalysis(submissionHash);
     await createStudentSolution(student.id, submissionHash, earlier);
 
     await createSolution(activityHash);

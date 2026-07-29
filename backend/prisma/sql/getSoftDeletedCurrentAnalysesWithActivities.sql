@@ -7,7 +7,13 @@ WITH allStudentSolutions AS (
       studentSolution."sessionId",
       studentSolution."taskId",
       studentSolution."solutionHash",
+      studentSolution."happenedAt",
       studentSolution."createdAt",
+      -- Keep this priority in sync with
+      -- SolutionsService.downloadLatestStudentSolutionOrThrow, which prefers a
+      -- StudentSolution when client and server timestamps are equal
+      1 AS "sourcePriority",
+      studentSolution."id" AS "sourceId",
       studentSolution."id" AS "studentSolutionId",
       (reference."solutionHash" IS NOT NULL) AS "isReference"
     FROM "StudentSolution" studentSolution
@@ -28,7 +34,11 @@ WITH allStudentSolutions AS (
       studentActivity."sessionId",
       studentActivity."taskId",
       studentActivity."solutionHash",
+      studentActivity."happenedAt",
       studentActivity."createdAt",
+      -- See the corresponding StudentSolution sourcePriority above.
+      0 AS "sourcePriority",
+      studentActivity."id" AS "sourceId",
       NULL::int AS "studentSolutionId",
       (reference."solutionHash" IS NOT NULL) AS "isReference"
     FROM "StudentActivity" studentActivity
@@ -51,7 +61,10 @@ WITH allStudentSolutions AS (
     AND analysis."deletedAt" IS NOT NULL
     ORDER BY
       allStudentSolutions."studentId",
-      allStudentSolutions."createdAt" DESC
+      allStudentSolutions."happenedAt" DESC,
+      allStudentSolutions."createdAt" DESC,
+      allStudentSolutions."sourcePriority" DESC,
+      allStudentSolutions."sourceId" DESC
     )
 (
 SELECT

@@ -12,6 +12,8 @@ export interface ExistingStudentSolutionDto {
   /** The solution's unique identifier, a positive integer. */
   id: number;
   createdAt: string;
+  /** Client timestamp of the solution submission. May differ from createdAt. */
+  happenedAt: string;
   studentId: number;
   sessionId: number;
   taskId: number;

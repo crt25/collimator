@@ -12,4 +12,6 @@ export interface CreateSolutionDto {
   tests: CreateSolutionTestDto[];
   /** Solution file */
   file: Blob;
+  /** Client timestamp of the solution submission. May differ from the server-side createdAt. */
+  happenedAt: string;
 }

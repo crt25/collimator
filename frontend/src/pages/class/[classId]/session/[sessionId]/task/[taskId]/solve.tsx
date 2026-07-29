@@ -143,6 +143,7 @@ const SolveTaskPage = () => {
           ...submission.failedTests.map(mapTest(false)),
           ...submission.passedTests.map(mapTest(true)),
         ],
+        happenedAt: new Date().toISOString(),
       });
 
       if (
@@ -292,6 +293,7 @@ const SolveTaskPage = () => {
         await createSolution(session.klass.id, session.id, task.id, {
           file: solutionBlob,
           tests: [],
+          happenedAt: new Date().toISOString(),
         });
         setSaveError(false);
       } catch (error) {
