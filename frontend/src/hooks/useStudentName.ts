@@ -85,9 +85,19 @@ export const useStudentName = ({
   const locale = isLanguage(intl.locale) ? intl.locale : undefined;
 
   const name = useMemo(() => {
-    return !anonymizationState.showActualName
-      ? getStudentNickname(studentId, locale)
-      : decryptedName;
+    if (anonymizationState.showActualName) {
+      return decryptedName;
+    }
+
+    // Use the global isNaN, not Number.isNaN, on purpose: it coerces, so it
+    // also rejects a non-numeric studentId (e.g. undefined before the router
+    // has populated the dynamic route params on a direct load), for which there
+    // is no nickname to derive yet. Number.isNaN would let such a value through.
+    if (isNaN(studentId)) {
+      return null;
+    }
+
+    return getStudentNickname(studentId, locale);
   }, [anonymizationState.showActualName, decryptedName, studentId, locale]);
 
   return {

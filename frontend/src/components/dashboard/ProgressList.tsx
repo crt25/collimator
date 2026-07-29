@@ -8,6 +8,7 @@ import { ExistingStudentSolution } from "@/api/collimator/models/solutions/exist
 import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
 import { ColumnType } from "@/types/tanstack-types";
 import { useAllSessionCurrentAnalyses } from "@/api/collimator/hooks/solutions/useAllSessionCurrentAnalyses";
+import { DefaultAutoRefreshingConfig } from "@/utilities/live-refresh";
 import {
   ResolvedStudent,
   useSessionStudents,
@@ -109,11 +110,12 @@ const ProgressList = ({
     data: solutions,
     error: solutionsError,
     isLoading: isLoadingSolutions,
-  } = useAllSessionSolutions(classId, sessionId);
+  } = useAllSessionSolutions(classId, sessionId, DefaultAutoRefreshingConfig);
 
   const { data: currentAnalyses } = useAllSessionCurrentAnalyses(
     classId,
     sessionId,
+    DefaultAutoRefreshingConfig,
   );
 
   const activeStudentIds = useMemo(

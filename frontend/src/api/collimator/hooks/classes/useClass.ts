@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { NetworkHookConfig } from "@/utilities/live-refresh";
 import {
   classesControllerFindOneV0,
   getClassesControllerFindOneV0Url,
@@ -19,14 +20,18 @@ export const fetchSingleClassAndTransform = (
 
 export const useClass = (
   id?: number | string,
+  config?: NetworkHookConfig,
 ): ApiResponse<GetClassReturnType, Error> => {
   const numericId = getIdOrNaN(id);
   const authOptions = useAuthenticationOptions();
 
-  return useSWR(getClassesControllerFindOneV0Url(numericId, {}), () =>
-    isNaN(numericId)
-      ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
-        new Promise<GetClassReturnType>(() => {})
-      : fetchSingleClassAndTransform(authOptions, numericId),
+  return useSWR(
+    getClassesControllerFindOneV0Url(numericId, {}),
+    () =>
+      isNaN(numericId)
+        ? // return a never-resolving promise to prevent SWR from retrying with the same invalid id
+          new Promise<GetClassReturnType>(() => {})
+        : fetchSingleClassAndTransform(authOptions, numericId),
+    config,
   );
 };
