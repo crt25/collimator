@@ -308,6 +308,43 @@ describe("SolutionsService", () => {
         ],
         skipDuplicates: true,
       });
+
+      expect(
+        prismaMock.solutionActivityReference.deleteMany,
+      ).not.toHaveBeenCalled();
+      expect(prismaMock.solution.findMany).toHaveBeenCalledWith({
+        select: { hash: true },
+        where: {
+          taskId,
+          hash: { in: [firstHash, secondHash] },
+          deletedAt: null,
+          analysis: { isNot: null },
+          OR: [
+            {
+              studentSolutions: {
+                some: {
+                  studentId,
+                  sessionId,
+                  taskId,
+                  session: { classId },
+                  deletedAt: null,
+                },
+              },
+            },
+            {
+              studentActivities: {
+                some: {
+                  studentId,
+                  sessionId,
+                  taskId,
+                  session: { classId },
+                  deletedAt: null,
+                },
+              },
+            },
+          ],
+        },
+      });
     });
 
     it("removes all requested references in one batch", async () => {
@@ -335,6 +372,79 @@ describe("SolutionsService", () => {
           solutionHash: { in: [firstHash, secondHash] },
         },
       });
+      expect(
+        prismaMock.solutionActivityReference.createMany,
+      ).not.toHaveBeenCalled();
+    });
+
+    it("includes soft-deleted solutions and sources when requested", async () => {
+      prismaMock.solution.findMany.mockResolvedValue([
+        buildSolution(firstHash),
+      ]);
+
+      await service.updateStudentReferenceSolutions(
+        classId,
+        sessionId,
+        taskId,
+        studentId,
+        [firstHash],
+        true,
+        true,
+      );
+
+      expect(prismaMock.solution.findMany).toHaveBeenCalledWith({
+        select: { hash: true },
+        where: {
+          taskId,
+          hash: { in: [firstHash] },
+          analysis: { isNot: null },
+          OR: [
+            {
+              studentSolutions: {
+                some: {
+                  studentId,
+                  sessionId,
+                  taskId,
+                  session: { classId },
+                },
+              },
+            },
+            {
+              studentActivities: {
+                some: {
+                  studentId,
+                  sessionId,
+                  taskId,
+                  session: { classId },
+                },
+              },
+            },
+          ],
+        },
+      });
+    });
+
+    it("does nothing for an empty hash list", async () => {
+      await service.updateStudentReferenceSolutions(
+        classId,
+        sessionId,
+        taskId,
+        studentId,
+        [],
+        true,
+      );
+
+      expect(prismaMock.$transaction).not.toHaveBeenCalled();
+
+      expect(prismaMock.solution.findMany).not.toHaveBeenCalled();
+
+      expect(
+        prismaMock.solutionActivityReference.createMany,
+      ).not.toHaveBeenCalled();
+
+      expect(
+        prismaMock.solutionActivityReference.deleteMany,
+      ).not.toHaveBeenCalled();
     });
 
     it("rejects the whole batch when any solution is unavailable", async () => {
@@ -352,8 +462,13 @@ describe("SolutionsService", () => {
           true,
         ),
       ).rejects.toBeInstanceOf(NotFoundException);
+
       expect(
         prismaMock.solutionActivityReference.createMany,
+      ).not.toHaveBeenCalled();
+
+      expect(
+        prismaMock.solutionActivityReference.deleteMany,
       ).not.toHaveBeenCalled();
     });
   });
