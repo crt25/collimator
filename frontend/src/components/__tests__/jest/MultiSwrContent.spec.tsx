@@ -3,6 +3,14 @@ import { screen } from "@testing-library/react";
 import { renderWithProviders } from "@/__tests__/helpers/render-with-providers";
 import MultiSwrContent from "@/components/MultiSwrContent";
 
+// ErrorMessage deliberately hides technical error messages from users. Mock it
+// here because these tests verify which source error MultiSwrContent forwards,
+// not the translated presentation covered by ErrorMessage's own tests.
+jest.mock("@/components/ErrorMessage", () => ({
+  __esModule: true,
+  default: ({ error }: { error: Error }) => <div>{error.message}</div>,
+}));
+
 // MultiSwrContent renders several SWR sources at once. When one of them fails
 // with no cached data it must surface the error - otherwise the page renders
 // nothing at all and the user (a teacher looking at student data) cannot tell
