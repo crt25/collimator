@@ -25,7 +25,6 @@ export class TaskEditModalPageModel {
     return this.page.getByTestId("confirm-button");
   }
 
-
   async import(): Promise<void> {
     await this.importButton.click();
   }
@@ -33,17 +32,29 @@ export class TaskEditModalPageModel {
   async save(): Promise<void> {
     await this.saveButton.click();
     // The save handler runs an async round-trip to the embedded editor and only
-    // then closes the modal (setIsShown(false) after onSave resolves). Wait for
-    // the modal — and the embedded scratch iframe it contains — to detach before
-    // returning. Otherwise the caller's next interaction with the underlying
-    // task form (e.g. clicking its submit button) races the still-mounted iframe,
-    // which sits over the form and intercepts the pointer events until timeout.
+    // then closes the modal (setIsShown(false) after onSave resolves).
     await this.modal.waitFor({ state: "detached", timeout: 60_000 });
   }
 
   async cancel(): Promise<void> {
     await this.waitForModal();
     await this.cancelButton.click();
+
+    // Cancelling does not always close the modal immediately: before the embedded
+    // editor loads, warnBeforeClose closes it directly, once loaded, it asks the
+    // user to confirm quitting without saving.
+    const confirmation = this.page.getByTestId("confirmation-modal");
+
+    await Promise.race([
+      confirmation.waitFor({ state: "visible", timeout: 30_000 }),
+      this.modal.waitFor({ state: "detached", timeout: 30_000 }),
+    ]);
+
+    if (await confirmation.isVisible()) {
+      await this.modalConfirmButton.click();
+    }
+
+    await this.modal.waitFor({ state: "detached", timeout: 30_000 });
   }
 
   async waitForModal(): Promise<void> {
