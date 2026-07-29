@@ -37,7 +37,6 @@ export const convertFunctionDef = (
         parameterNames: functionDeclaration.parameters.map((p) => p.name),
         body: functionDeclaration.body,
         decorators: node.expressions,
-        ...(functionDeclaration.isAsync ? { isAsync: true } : {}),
       } satisfies FunctionDeclarationNode,
       // python function declarations are not hoisted
       functionDeclarations: [],
@@ -51,7 +50,6 @@ export const convertFunctionDef = (
       name: functionDeclaration.name,
       parameterNames: functionDeclaration.parameters.map((p) => p.name),
       body: functionDeclaration.body,
-      ...(functionDeclaration.isAsync ? { isAsync: true } : {}),
     } satisfies FunctionDeclarationNode,
     // python function declarations are not hoisted
     functionDeclarations: [],

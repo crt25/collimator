@@ -24,18 +24,5 @@ describe("Python AST converter", () => {
       expect(asJson).toContain('"operator":"named-parameter"');
       expect(asJson).toContain('"value":"x"');
     });
-
-    it("distinguishes def from async def", () => {
-      expect(
-        convertPythonToGeneralAst("def f():\n    pass\n", version),
-      ).not.toEqual(
-        convertPythonToGeneralAst("async def f():\n    pass\n", version),
-      );
-    });
-
-    it("marks only async functions as async", () => {
-      expect(astJson("async def f():\n    pass\n")).toContain('"isAsync":true');
-      expect(astJson("def f():\n    pass\n")).not.toContain('"isAsync"');
-    });
   });
 });

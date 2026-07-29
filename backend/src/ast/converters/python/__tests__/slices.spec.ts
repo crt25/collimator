@@ -61,5 +61,34 @@ describe("Python AST converter", () => {
         convertPythonToGeneralAst("y = a[::2]\n", version),
       );
     });
+
+    // Only the slice rule's own colons determine the buckets; colons nested
+    // inside the bound expressions (dict literals, inner subscripts, ...) are
+    // part of their own subtrees and must not shift the classification.
+    it("buckets correctly with nested subscripts as bounds", () => {
+      expect(sliceOperatorOf("y = a[b[1]:c[2]]\n")).toBe(
+        "create-slice-start-stop",
+      );
+    });
+
+    it("buckets correctly with arithmetic expressions as bounds", () => {
+      expect(sliceOperatorOf("y = a[x + 1 : y * 2 : z ** 2]\n")).toBe(
+        "create-slice-start-stop-step",
+      );
+    });
+
+    it("is not confused by a dict literal's colon inside a bound", () => {
+      expect(sliceOperatorOf("y = a[{1: 2}[1]:]\n")).toBe("create-slice-start");
+    });
+
+    it("is not confused by a nested slice inside a bound", () => {
+      expect(sliceOperatorOf("y = a[b[1:2]:]\n")).toBe("create-slice-start");
+    });
+
+    it("buckets correctly with call expressions as bounds", () => {
+      expect(sliceOperatorOf("y = a[f(1):g(2)]\n")).toBe(
+        "create-slice-start-stop",
+      );
+    });
   });
 });

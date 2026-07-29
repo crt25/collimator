@@ -12,8 +12,7 @@ export const convertYieldExpr = (
   visitor: IPythonAstVisitor,
   ctx: Yield_exprContext,
 ): PythonVisitorReturnValue => {
-  // a bare `yield` has no value at all; the null check must happen before
-  // getExpression, which cannot handle a null context
+  // null for a bare `yield`, which has no value at all
   const valueContext = ctx.expression() ?? ctx.star_expressions();
 
   if (valueContext == null) {

@@ -41,8 +41,12 @@ export const convertSlice = (
       startExpression = expression.node;
     } else if (colonsBefore === 1) {
       stopExpression = expression.node;
-    } else {
+    } else if (colonsBefore === 2) {
       stepExpression = expression.node;
+    } else {
+      throw new Error(
+        `Unexpected slice format: expression preceded by ${colonsBefore} colons`,
+      );
     }
   }
 
