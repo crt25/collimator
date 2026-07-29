@@ -311,15 +311,6 @@
   "CreateClass.title": {
     "message": "Create Class"
   },
-  "CreateLesson.submit": {
-    "message": "Create Lesson"
-  },
-  "CreateLesson.title": {
-    "message": "Create Lesson"
-  },
-  "CreateLessonForm.name": {
-    "message": "Name"
-  },
   "CreateSession.errorMessage": {
     "message": "There was an error creating the new Lesson. Please try to save again!"
   },
@@ -383,9 +374,6 @@
   "CrtNavigation.homeTab": {
     "message": "Home"
   },
-  "CrtNavigation.lessonsTab": {
-    "message": "Lessons"
-  },
   "CrtNavigation.tasksTab": {
     "message": "Tasks"
   },
@@ -421,15 +409,6 @@
   },
   "DissimilarityAnalysis.tooManyCombinations": {
     "message": "Too many combinations to calculate dissimilar pairs."
-  },
-  "EditLesson.header": {
-    "message": "Edit Lesson"
-  },
-  "EditLesson.submit": {
-    "message": "Save Lesson"
-  },
-  "EditLesson.title": {
-    "message": "Edit Lesson - {name}"
   },
   "EditTask.submit": {
     "message": "Save Task"
@@ -546,27 +525,6 @@
   "LanguageChooser.french": {
     "message": "Français"
   },
-  "LessonDetail.header": {
-    "message": "Lesson"
-  },
-  "LessonDetail.title": {
-    "message": "Lesson - {name}"
-  },
-  "LessonList.columns.actions": {
-    "message": "Actions"
-  },
-  "LessonList.columns.name": {
-    "message": "Name"
-  },
-  "LessonList.columns.tags": {
-    "message": "Tags"
-  },
-  "LessonList.columns.usedBy": {
-    "message": "Used By"
-  },
-  "LessonNavigation.lessonTab": {
-    "message": "Lesson Details"
-  },
   "List.delete": {
     "message": "Delete"
   },
@@ -581,12 +539,6 @@
   },
   "ListClasses.pageDescription": {
     "message": "This page displays the classes you have created. Click on a given class to edit the lessons and see your students' progress."
-  },
-  "ListLessons.header": {
-    "message": "Lesson Manager"
-  },
-  "ListLessons.title": {
-    "message": "Lessons"
   },
   "ListTasks.header": {
     "message": "Task Bank"

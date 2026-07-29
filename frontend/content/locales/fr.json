@@ -551,15 +551,6 @@
   "CreateClass.title": {
     "message": "Créer une classe"
   },
-  "CreateLesson.submit": {
-    "message": "Créer une leçon"
-  },
-  "CreateLesson.title": {
-    "message": "Créer une leçon"
-  },
-  "CreateLessonForm.name": {
-    "message": "Nom"
-  },
   "CreateSession.errorMessage": {
     "message": "Une erreur est survenue lors de la création de la nouvelle leçon. Veuillez essayer de sauvegarder à nouveau !"
   },
@@ -623,9 +614,6 @@
   "CrtNavigation.homeTab": {
     "message": "Accueil"
   },
-  "CrtNavigation.lessonsTab": {
-    "message": "Leçons"
-  },
   "CrtNavigation.tasksTab": {
     "message": "Activités"
   },
@@ -661,15 +649,6 @@
   },
   "DissimilarityAnalysis.tooManyCombinations": {
     "message": "Trop de combinaisons pour calculer les paires dissemblables."
-  },
-  "EditLesson.header": {
-    "message": "Modifier la leçon"
-  },
-  "EditLesson.submit": {
-    "message": "Sauvegarder la leçon"
-  },
-  "EditLesson.title": {
-    "message": "Modifier la leçon - {name}"
   },
   "EditTask.submit": {
     "message": "Sauvegarder l'activité"
@@ -786,27 +765,6 @@
   "LanguageChooser.french": {
     "message": "Français"
   },
-  "LessonDetail.header": {
-    "message": "Leçon"
-  },
-  "LessonDetail.title": {
-    "message": "Leçon - {name}"
-  },
-  "LessonList.columns.actions": {
-    "message": "Actions"
-  },
-  "LessonList.columns.name": {
-    "message": "Nom"
-  },
-  "LessonList.columns.tags": {
-    "message": "Étiquettes"
-  },
-  "LessonList.columns.usedBy": {
-    "message": "Utilisé par"
-  },
-  "LessonNavigation.lessonTab": {
-    "message": "Détails de la leçon"
-  },
   "List.delete": {
     "message": "Effacer"
   },
@@ -821,12 +779,6 @@
   },
   "ListClasses.pageDescription": {
     "message": "Cette page affiche les classes que vous avez créés. Cliquez sur une classe donné pour modifier les leçons et voir les progrès de vos élèves."
-  },
-  "ListLessons.header": {
-    "message": "Gestion des leçons"
-  },
-  "ListLessons.title": {
-    "message": "Leçons"
   },
   "ListTasks.header": {
     "message": "Gestion des activités"
