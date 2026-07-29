@@ -1,6 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsBoolean, IsString } from "class-validator";
+import {
+  ArrayMinSize,
+  IsArray,
+  IsBoolean,
+  IsString,
+  Matches,
+} from "class-validator";
 
 export class PatchStudentReferenceSolutionDto {
   @Type(() => Boolean)
@@ -12,6 +18,10 @@ export class PatchStudentReferenceSolutionDto {
   @IsArray()
   @ArrayMinSize(1)
   @IsString({ each: true })
+  @Matches(/^[A-Za-z0-9_-]+$/, {
+    each: true,
+    message: "each solution hash must be base64url encoded",
+  })
   @ApiProperty({
     type: [String],
     example: ["dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl"],
