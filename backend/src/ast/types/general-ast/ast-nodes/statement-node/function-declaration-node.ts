@@ -13,5 +13,8 @@ export interface FunctionDeclarationNode extends StatementNodeBase {
 
   parameterNames: string[];
   decorators?: ExpressionNode[];
+  // set (to true) only for declarations the language marks asynchronous,
+  // e.g. python's `async def`
+  isAsync?: boolean;
   body: StatementSequenceNode;
 }
