@@ -26,7 +26,8 @@ export const convertFunctionDefRaw = (
   returnType: ExpressionNode | null;
   body: StatementSequenceNode;
 } => {
-  const isAsync = ctx.ASYNC() !== undefined;
+  // ANTLR's accessor returns null - not undefined - when `async` is absent
+  const isAsync = ctx.ASYNC() ? true : false;
   const name = ctx.name().getText();
 
   const typeParams = ctx.type_params() as Type_paramsContext | undefined;
