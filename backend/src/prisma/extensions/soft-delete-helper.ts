@@ -8,7 +8,8 @@ export const SOFT_DELETE_FIELD = "deletedAt" as const;
  * (no deletedAt, onDelete: Cascade in schema).
  *
  * `relationFieldName` is the name of the relation field on the CHILD model that
- * points back to the parent (e.g., `lesson` on `LessonTask`). We use the relation
+ * points back to the parent (i.e., the child's relation field referencing its
+ * parent). We use the relation
  * field rather than scalar foreign-key columns so that cascade `where` clauses
  * can traverse the chain via Prisma relation filters, transparently supporting
  * composite primary keys / composite foreign keys.

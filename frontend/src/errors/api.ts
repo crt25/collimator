@@ -14,6 +14,13 @@ export class ApiError extends Error {
   }
 }
 
+export class NetworkError extends Error {
+  constructor(cause: unknown) {
+    super("The backend could not be reached", { cause });
+    this.name = "NetworkError";
+  }
+}
+
 export class ConflictError extends ApiError {
   constructor(message: string = "Conflict", errorCode?: string) {
     super(409, message, errorCode);

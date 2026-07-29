@@ -6,7 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { SessionStatus } from "./sessionStatus";
-import type { ExistingSessionExtendedDtoLesson } from "./existingSessionExtendedDtoLesson";
 import type { SessionClassDto } from "./sessionClassDto";
 import type { SessionTaskDto } from "./sessionTaskDto";
 
@@ -21,11 +20,6 @@ export interface ExistingSessionExtendedDto {
   deletedAt?: string | null;
   /** The session's status. */
   status: SessionStatus;
-  /**
-   * The corresponding lesson.
-   * @nullable
-   */
-  lesson: ExistingSessionExtendedDtoLesson;
   /** The session's class. */
   class: SessionClassDto;
   /** The session's tasks. */
