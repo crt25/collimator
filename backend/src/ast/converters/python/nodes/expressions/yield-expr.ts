@@ -16,6 +16,18 @@ export const convertYieldExpr = (
     ctx.expression() ?? ctx.star_expressions(),
   );
 
+  if (expression == null) {
+    return {
+      node: {
+        nodeType: AstNodeType.expression,
+        expressionType: ExpressionNodeType.operator,
+        operator: yieldOperator,
+        operands: [],
+      } satisfies OperatorNode,
+      functionDeclarations: [],
+    };
+  }
+
   return {
     node: {
       nodeType: AstNodeType.expression,
