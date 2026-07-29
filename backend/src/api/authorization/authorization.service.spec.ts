@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
-import { PrismaClient, Student } from "@prisma/client";
+import { PrismaClient, Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthorizationService } from "./authorization.service";
 
@@ -14,6 +14,9 @@ describe("AuthorizationService", () => {
   const classId = 1;
   const sessionId = 2;
   const taskId = 3;
+  const teacher = { id: 10, type: UserType.TEACHER } as User;
+  const otherTeacher = { id: 11, type: UserType.TEACHER } as User;
+  const admin = { id: 12, type: UserType.ADMIN } as User;
 
   beforeEach(async () => {
     prismaMock = mockDeep<PrismaClient>();
@@ -187,6 +190,83 @@ describe("AuthorizationService", () => {
               },
             ],
           },
+        },
+      });
+    });
+  });
+
+  describe("canUpdateStudentReferenceSolution", () => {
+    it("allows an admin without querying the database", async () => {
+      await expect(
+        service.canUpdateStudentReferenceSolution(admin, classId, sessionId),
+      ).resolves.toBe(true);
+
+      expect(prismaMock.session.findUnique).not.toHaveBeenCalled();
+    });
+
+    it("allows the teacher who owns the active class and session", async () => {
+      prismaMock.session.findUnique.mockResolvedValue({
+        id: sessionId,
+      } as never);
+
+      await expect(
+        service.canUpdateStudentReferenceSolution(teacher, classId, sessionId),
+      ).resolves.toBe(true);
+
+      expect(prismaMock.session.findUnique).toHaveBeenCalledWith({
+        select: { id: true },
+        where: {
+          id: sessionId,
+          classId,
+          deletedAt: null,
+          class: {
+            teacherId: teacher.id,
+            deletedAt: null,
+          },
+        },
+      });
+    });
+
+    it.each([
+      ["wrong class", teacher, classId + 1],
+      ["wrong teacher", otherTeacher, classId],
+      ["deleted session", teacher, classId],
+      ["deleted class", teacher, classId],
+    ])(
+      "denies an owning mismatch or deletion: %s",
+      async (_case, user, targetClassId) => {
+        prismaMock.session.findUnique.mockResolvedValue(null);
+
+        await expect(
+          service.canUpdateStudentReferenceSolution(
+            user,
+            targetClassId,
+            sessionId,
+          ),
+        ).resolves.toBe(false);
+      },
+    );
+
+    it("includes soft-deleted sessions and classes when requested", async () => {
+      prismaMock.session.findUnique.mockResolvedValue({
+        id: sessionId,
+      } as never);
+
+      await expect(
+        service.canUpdateStudentReferenceSolution(
+          teacher,
+          classId,
+          sessionId,
+          true,
+        ),
+      ).resolves.toBe(true);
+
+      expect(prismaMock.session.findUnique).toHaveBeenCalledWith({
+        select: { id: true },
+        where: {
+          id: sessionId,
+          classId,
+          class: { teacherId: teacher.id },
         },
       });
     });
