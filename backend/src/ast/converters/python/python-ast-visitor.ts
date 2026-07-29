@@ -331,12 +331,14 @@ export class PythonAstVisitor
   }
 
   getStatementSequence = (
-    children: (ParserRuleContext | undefined)[],
+    children: (ParserRuleContext | undefined | null)[],
   ): PythonVisitorReturnValue & {
     node: StatementSequenceNode;
   } => {
     const childValues = children
-      .filter((c) => c !== undefined)
+      // ANTLR's generated accessors return null - not undefined - for an
+      // absent optional child, e.g. the missing else branch of a bare if
+      .filter((c): c is ParserRuleContext => c !== undefined && c !== null)
       .map((child) => this.visit(child));
 
     const nodes = childValues.flatMap((v) => {
@@ -378,7 +380,7 @@ export class PythonAstVisitor
   };
 
   getStatements = (
-    children: (ParserRuleContext | undefined)[],
+    children: (ParserRuleContext | undefined | null)[],
   ): PythonVisitorReturnValue & {
     node: StatementNode;
   } => {
