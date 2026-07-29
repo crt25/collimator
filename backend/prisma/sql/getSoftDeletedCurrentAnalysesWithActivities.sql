@@ -9,7 +9,7 @@ WITH allStudentSolutions AS (
       studentSolution."solutionHash",
       studentSolution."createdAt",
       studentSolution."id" AS "studentSolutionId",
-      (reference."id" IS NOT NULL) AS "isReference"
+      (reference."solutionHash" IS NOT NULL) AS "isReference"
     FROM "StudentSolution" studentSolution
     LEFT JOIN "SolutionActivityReference" reference
       ON reference."studentId" = studentSolution."studentId"
@@ -30,7 +30,7 @@ WITH allStudentSolutions AS (
       studentActivity."solutionHash",
       studentActivity."createdAt",
       NULL::int AS "studentSolutionId",
-      (reference."id" IS NOT NULL) AS "isReference"
+      (reference."solutionHash" IS NOT NULL) AS "isReference"
     FROM "StudentActivity" studentActivity
     LEFT JOIN "SolutionActivityReference" reference
       ON reference."studentId" = studentActivity."studentId"

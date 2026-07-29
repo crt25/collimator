@@ -449,7 +449,6 @@ export class SolutionsService {
         solutionHash,
         studentId,
         sessionId,
-        classId,
         taskId,
       }));
 
@@ -463,7 +462,6 @@ export class SolutionsService {
           where: {
             studentId,
             sessionId,
-            classId,
             taskId,
             solutionHash: { in: uniqueSolutionHashes },
           },

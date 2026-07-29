@@ -303,8 +303,8 @@ describe("SolutionsService", () => {
         prismaMock.solutionActivityReference.createMany,
       ).toHaveBeenCalledWith({
         data: [
-          { classId, sessionId, taskId, studentId, solutionHash: firstHash },
-          { classId, sessionId, taskId, studentId, solutionHash: secondHash },
+          { sessionId, taskId, studentId, solutionHash: firstHash },
+          { sessionId, taskId, studentId, solutionHash: secondHash },
         ],
         skipDuplicates: true,
       });
@@ -329,7 +329,6 @@ describe("SolutionsService", () => {
         prismaMock.solutionActivityReference.deleteMany,
       ).toHaveBeenCalledWith({
         where: {
-          classId,
           sessionId,
           taskId,
           studentId,

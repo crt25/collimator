@@ -73,10 +73,9 @@ model Class {
   teacherId Int
   deletedAt DateTime?
 
-  teacher                    User                        @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  students                   AuthenticatedStudent[]
-  sessions                   Session[]
-  solutionActivityReferences SolutionActivityReference[]
+  teacher  User                   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students AuthenticatedStudent[]
+  sessions Session[]
 }
 
 model Student {
@@ -380,21 +379,18 @@ model StudentActivityApp {
 }
 
 model SolutionActivityReference {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
   solutionHash Bytes
   studentId    Int
   sessionId    Int
-  classId      Int
   taskId       Int
 
   solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
   student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
-  class       Class       @relation(fields: [classId], references: [id], onDelete: Restrict)
   task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
 
-  @@unique([solutionHash, studentId, sessionId, classId, taskId])
+  @@id([studentId, sessionId, taskId, solutionHash])
   @@index([sessionId, taskId])
+  @@index([taskId, solutionHash])
 }
