@@ -230,10 +230,8 @@ describe("AuthorizationService", () => {
     it.each([
       ["wrong class", teacher, classId + 1],
       ["wrong teacher", otherTeacher, classId],
-      ["deleted session", teacher, classId],
-      ["deleted class", teacher, classId],
     ])(
-      "denies an owning mismatch or deletion: %s",
+      "denies an ownership mismatch: %s",
       async (_case, user, targetClassId) => {
         prismaMock.session.findUnique.mockResolvedValue(null);
 
@@ -244,8 +242,29 @@ describe("AuthorizationService", () => {
             sessionId,
           ),
         ).resolves.toBe(false);
+
+        expect(prismaMock.session.findUnique).toHaveBeenCalledWith({
+          select: { id: true },
+          where: {
+            id: sessionId,
+            classId: targetClassId,
+            deletedAt: null,
+            class: {
+              teacherId: user.id,
+              deletedAt: null,
+            },
+          },
+        });
       },
     );
+
+    it("denies when no active session and class match is found", async () => {
+      prismaMock.session.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.canUpdateStudentReferenceSolution(teacher, classId, sessionId),
+      ).resolves.toBe(false);
+    });
 
     it("includes soft-deleted sessions and classes when requested", async () => {
       prismaMock.session.findUnique.mockResolvedValue({
