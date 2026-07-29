@@ -257,6 +257,8 @@ model ReferenceSolution {
 model StudentSolution {
   id           Int       @id @default(autoincrement())
   createdAt    DateTime  @default(now())
+  // measured by the client and may therefore be completely different from createdAt
+  happenedAt   DateTime
   taskId       Int
   solutionHash Bytes
   studentId    Int

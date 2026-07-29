@@ -30,6 +30,7 @@ const solutionsControllerCreate = async (
   const formData = new FormData();
   formData.append("tests", JSON.stringify(createSolutionDto.tests));
   formData.append("file", createSolutionDto.file);
+  formData.append("happenedAt", createSolutionDto.happenedAt);
 
   return fetchApi<Promise<CreateStudentSolutionResponse>>(
     getSolutionsControllerCreateStudentSolutionV0Url(

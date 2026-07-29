@@ -455,48 +455,63 @@ export class SolutionsService {
     studentId: number,
     includeSoftDelete = false,
   ): Promise<SolutionDataOnly> {
-    const latestSubmittedSolution = await this.prisma.studentSolution.findFirst(
-      {
-        select: {
-          solution: { select: { data: true, mimeType: true } },
-          createdAt: true,
-        },
-        where: includeSoftDelete
-          ? { studentId, taskId, sessionId }
-          : { studentId, taskId, sessionId, deletedAt: null },
-        orderBy: {
-          createdAt: "desc",
-        },
+    const latestStudentSolution = await this.prisma.studentSolution.findFirst({
+      select: {
+        solution: { select: { data: true, mimeType: true } },
+        id: true,
+        createdAt: true,
+        happenedAt: true,
       },
-    );
+      where: includeSoftDelete
+        ? { studentId, taskId, sessionId }
+        : { studentId, taskId, sessionId, deletedAt: null },
+      orderBy: [
+        { happenedAt: "desc" },
+        // The id is unique, so it is enough to break ties when two client
+        // timestamps are exactly the same.
+        { id: "desc" },
+      ],
+    });
 
-    const solutionFromLatestActivity =
-      await this.prisma.studentActivity.findFirst({
-        select: {
-          solution: { select: { data: true, mimeType: true } },
-          createdAt: true,
-        },
-        where: includeSoftDelete
-          ? { studentId, taskId, sessionId }
-          : { studentId, taskId, sessionId, deletedAt: null },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+    const latestStudentActivity = await this.prisma.studentActivity.findFirst({
+      select: {
+        solution: { select: { data: true, mimeType: true } },
+        id: true,
+        createdAt: true,
+        happenedAt: true,
+        happenedAtCounter: true,
+      },
+      where: includeSoftDelete
+        ? { studentId, taskId, sessionId }
+        : { studentId, taskId, sessionId, deletedAt: null },
+      orderBy: [
+        { happenedAt: "desc" },
+        { happenedAtCounter: "desc" },
+        { createdAt: "desc" },
+        { id: "desc" },
+      ],
+    });
 
-    if (!latestSubmittedSolution && !solutionFromLatestActivity) {
+    if (!latestStudentSolution && !latestStudentActivity) {
       throw new NotFoundException();
     }
 
-    if (latestSubmittedSolution && solutionFromLatestActivity) {
-      // prefer the most recent solution
-      return latestSubmittedSolution.createdAt >
-        solutionFromLatestActivity.createdAt
-        ? latestSubmittedSolution.solution
-        : solutionFromLatestActivity.solution;
+    if (latestStudentSolution && latestStudentActivity) {
+      // prefer the most recent solution by client timestamp
+      const isStudentSolutionNewerThanActivity =
+        latestStudentSolution.happenedAt.getTime() >
+          latestStudentActivity.happenedAt.getTime() ||
+        (latestStudentSolution.happenedAt.getTime() ===
+          latestStudentActivity.happenedAt.getTime() &&
+          latestStudentSolution.createdAt.getTime() >=
+            latestStudentActivity.createdAt.getTime());
+
+      return isStudentSolutionNewerThanActivity
+        ? latestStudentSolution.solution
+        : latestStudentActivity.solution;
     }
 
-    return (latestSubmittedSolution || solutionFromLatestActivity)!.solution;
+    return (latestStudentSolution || latestStudentActivity)!.solution;
   }
 
   findManyStudentSolutions(
