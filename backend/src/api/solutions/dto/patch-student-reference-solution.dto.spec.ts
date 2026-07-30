@@ -1,5 +1,8 @@
 import { BadRequestException, ValidationPipe } from "@nestjs/common";
-import { PatchStudentReferenceSolutionDto } from "./patch-student-reference-solution.dto";
+import {
+  maxSolutionHashesPerRequest,
+  PatchStudentReferenceSolutionDto,
+} from "./patch-student-reference-solution.dto";
 
 describe("PatchStudentReferenceSolutionDto", () => {
   const validationPipe = new ValidationPipe({
@@ -24,6 +27,21 @@ describe("PatchStudentReferenceSolutionDto", () => {
       isReference: true,
       solutionHashes: ["YWJjZA", "a-b_c"],
     });
+  });
+
+  it("rejects more than the maximum number of hashes", async () => {
+    await expect(
+      validationPipe.transform(
+        {
+          isReference: true,
+          solutionHashes: Array.from(
+            { length: maxSolutionHashesPerRequest + 1 },
+            () => "YWJjZA",
+          ),
+        },
+        metadata,
+      ),
+    ).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it.each(["not valid!", "YWJjZA==", "", "ümlaut"])(

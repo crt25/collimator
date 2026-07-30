@@ -8,6 +8,9 @@
 
 export interface PatchStudentReferenceSolutionDto {
   isReference: boolean;
-  /** The base64url-encoded hashes of the solutions to star or unstar. */
+  /**
+   * The base64url-encoded hashes of the solutions to star or unstar.
+   * @maxItems 100
+   */
   solutionHashes: string[];
 }

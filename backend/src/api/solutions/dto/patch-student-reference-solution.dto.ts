@@ -1,12 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
   IsString,
   Matches,
 } from "class-validator";
+
+export const maxSolutionHashesPerRequest = 100;
 
 export class PatchStudentReferenceSolutionDto {
   @Type(() => Boolean)
@@ -17,6 +20,7 @@ export class PatchStudentReferenceSolutionDto {
 
   @IsArray()
   @ArrayMinSize(1)
+  @ArrayMaxSize(maxSolutionHashesPerRequest)
   @IsString({ each: true })
   @Matches(/^[A-Za-z0-9_-]+$/, {
     each: true,
@@ -24,6 +28,7 @@ export class PatchStudentReferenceSolutionDto {
   })
   @ApiProperty({
     type: [String],
+    maxItems: maxSolutionHashesPerRequest,
     example: ["dGhpcyBpcyBhbiBleGFtcGxlIHZhbHVl"],
     description:
       "The base64url-encoded hashes of the solutions to star or unstar.",
