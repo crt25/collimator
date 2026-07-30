@@ -19,14 +19,12 @@ export const convertFunctionDefRaw = (
   visitor: IPythonAstVisitor,
   ctx: Function_def_rawContext,
 ): {
-  isAsync: boolean;
   name: string;
   genericTypeParameters: GenericTypeParameter[];
   parameters: Parameter[];
   returnType: ExpressionNode | null;
   body: StatementSequenceNode;
 } => {
-  const isAsync = ctx.ASYNC() !== undefined;
   const name = ctx.name().getText();
 
   const typeParams = ctx.type_params() as Type_paramsContext | undefined;
@@ -59,7 +57,6 @@ export const convertFunctionDefRaw = (
         } as StatementSequenceNode);
 
   return {
-    isAsync,
     name,
     genericTypeParameters,
     parameters,
