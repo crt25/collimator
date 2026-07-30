@@ -6,6 +6,7 @@ import {
   openIdConnectMicrosoftClientId,
   openIdConnectMicrosoftServer,
 } from "../constants";
+import { getSafeInternalRedirectPath } from "./safe-redirect";
 
 interface OpenIdConnectTemporaryState {
   codeVerifier: string;
@@ -105,7 +106,7 @@ export const redirectToOpenIdConnectProvider = async (
     codeVerifier,
     nonce,
     isStudent,
-    redirectPath,
+    redirectPath: getSafeInternalRedirectPath(redirectPath),
     registrationToken,
   };
 

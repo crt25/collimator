@@ -20,6 +20,7 @@ import UserSignIn from "@/components/authentication/UserSignIn";
 import PageHeading from "@/components/PageHeading";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import { getSafeInternalRedirectPath } from "@/utilities/authentication/safe-redirect";
 
 const messages = defineMessages({
   title: {
@@ -106,7 +107,7 @@ const OpenIdConnectRedirect = () => {
               name,
             });
 
-            await router.replace(redirectPath);
+            await router.replace(getSafeInternalRedirectPath(redirectPath));
             return;
           }
           // this is the cause of slightly increased risk of the student's identity being tracked
@@ -121,12 +122,18 @@ const OpenIdConnectRedirect = () => {
             registrationToken,
           });
 
-          setUserSignInState({ authResponse, idToken, redirectPath });
+          setUserSignInState({
+            authResponse,
+            idToken,
+            redirectPath: getSafeInternalRedirectPath(redirectPath),
+          });
         },
       )
       .catch((e) => {
         if (e instanceof AuthenticationError) {
-          setErrorRedirectPath(e.redirectPath);
+          setErrorRedirectPath(
+            getSafeInternalRedirectPath(e.redirectPath, "/login"),
+          );
         }
 
         console.error(`${logModule} Authentication failed`, e);

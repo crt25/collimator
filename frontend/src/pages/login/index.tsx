@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { defineMessages, FormattedMessage } from "react-intl";
+import { defineMessages, FormattedMessage, useIntl } from "react-intl";
 import { Center, Container } from "@chakra-ui/react";
 import Header from "@/components/header/Header";
+import { toaster } from "@/components/Toaster";
 import { redirectToOpenIdConnectProvider } from "@/utilities/authentication/openid-connect";
 import PageHeading from "@/components/PageHeading";
 import LoginCard from "@/components/login/LoginCard";
 import MaxScreenHeight from "@/components/layout/MaxScreenHeight";
 import PageFooter from "@/components/PageFooter";
+import { getSafeInternalRedirectPath } from "@/utilities/authentication/safe-redirect";
 
 const messages = defineMessages({
   title: {
@@ -35,6 +37,11 @@ const messages = defineMessages({
     id: "LoginPage.authenticate.microsoft",
     defaultMessage: "Authenticate using Microsoft",
   },
+  authenticationError: {
+    id: "LoginPage.authenticate.error",
+    defaultMessage:
+      "Sign-in could not be started. Please check your connection and try again.",
+  },
 });
 
 const LoginPage = () => {
@@ -44,15 +51,27 @@ const LoginPage = () => {
     registrationToken?: string;
   };
 
-  const onAuthenticateWithMicrosoft = useCallback(() => {
-    redirectToOpenIdConnectProvider(
-      // only redirect to the specified URI if it starts with a `/`
-      // this is to prevent open redirects
-      redirectUri?.startsWith(`/`) ? redirectUri : `/`,
-      registrationToken,
-      false,
-    );
-  }, [redirectUri, registrationToken]);
+  const intl = useIntl();
+
+  const onAuthenticateWithMicrosoft = useCallback(async () => {
+    try {
+      // on success this navigates away, so the promise only rejects when the
+      // redirect could not be started (e.g. OIDC discovery failed)
+      await redirectToOpenIdConnectProvider(
+        getSafeInternalRedirectPath(redirectUri),
+        registrationToken,
+        false,
+      );
+    } catch (error) {
+      // without this the rejection is unhandled and the user sees nothing
+      // happen after clicking the button
+      console.error("[LoginPage] Could not start authentication", error);
+      toaster.error({
+        id: "login-authentication-error",
+        title: intl.formatMessage(messages.authenticationError),
+      });
+    }
+  }, [redirectUri, registrationToken, intl]);
 
   return (
     <MaxScreenHeight>
