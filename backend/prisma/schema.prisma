@@ -84,18 +84,19 @@ model Student {
   anonymousStudent     AnonymousStudent?
   deletedAt            DateTime?
 
-  authenticationTokens AuthenticationToken[]
-  solutions            StudentSolution[]
-  studentActivities    StudentActivity[]
+  authenticationTokens       AuthenticationToken[]
+  solutions                  StudentSolution[]
+  studentActivities          StudentActivity[]
+  solutionActivityReferences SolutionActivityReference[]
 }
 
 model AuthenticatedStudent {
-  studentId Int       @id
-  pseudonym Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
+  studentId         Int       @id
+  pseudonym         Bytes // anonymized (teacher-computed) pseudonym for the student (encrypted identity)
   studentIdentifier Bytes?
-  classId   Int // authenticated students are assigned to a class,
-  keyPairId Int? // if null, the respective key is no longer available
-  deletedAt DateTime?
+  classId           Int // authenticated students are assigned to a class,
+  keyPairId         Int? // if null, the respective key is no longer available
+  deletedAt         DateTime?
 
   student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   class          Class    @relation(fields: [classId], references: [id], onDelete: Restrict)
@@ -138,11 +139,12 @@ model Session {
   isAnonymous Boolean       @default(false)
   deletedAt   DateTime?
 
-  class             Class              @relation(fields: [classId], references: [id], onDelete: Restrict)
-  tasks             SessionTask[]
-  solutions         StudentSolution[]
-  anonymousStudents AnonymousStudent[]
-  studentActivities StudentActivity[]
+  class                      Class                       @relation(fields: [classId], references: [id], onDelete: Restrict)
+  tasks                      SessionTask[]
+  solutions                  StudentSolution[]
+  anonymousStudents          AnonymousStudent[]
+  studentActivities          StudentActivity[]
+  solutionActivityReferences SolutionActivityReference[]
 }
 
 enum TaskType {
@@ -161,12 +163,13 @@ model Task {
   isPublic    Boolean   @default(false)
   deletedAt   DateTime?
 
-  studentSolutions   StudentSolution[]
-  referenceSolutions ReferenceSolution[]
-  sessions           SessionTask[]
-  creator            User?               @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  studentActivities  StudentActivity[]
-  solution           Solution[]
+  studentSolutions           StudentSolution[]
+  referenceSolutions         ReferenceSolution[]
+  sessions                   SessionTask[]
+  creator                    User?                       @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  studentActivities          StudentActivity[]
+  solution                   Solution[]
+  solutionActivityReferences SolutionActivityReference[]
 }
 
 model SessionTask {
@@ -175,10 +178,11 @@ model SessionTask {
   index     Int
   deletedAt DateTime?
 
-  session           Session           @relation(fields: [sessionId], references: [id], onDelete: Restrict)
-  task              Task              @relation(fields: [taskId], references: [id], onDelete: Restrict)
-  solutions         StudentSolution[]
-  studentActivities StudentActivity[]
+  session            Session                     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  task               Task                        @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  solutions          StudentSolution[]
+  studentActivities  StudentActivity[]
+  activityReferences SolutionActivityReference[]
 
   @@id([sessionId, taskId])
 }
@@ -193,10 +197,11 @@ model Solution {
   deletedAt      DateTime?
 
   analysis           SolutionAnalysis?
-  task               Task                @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  task               Task                        @relation(fields: [taskId], references: [id], onDelete: Restrict)
   referenceSolutions ReferenceSolution[]
   studentSolutions   StudentSolution[]
   studentActivities  StudentActivity[]
+  activityReferences SolutionActivityReference[]
 
   @@id([taskId, hash])
 }
@@ -229,7 +234,6 @@ model StudentSolution {
   solutionHash Bytes
   studentId    Int
   sessionId    Int
-  isReference  Boolean   @default(false)
   deletedAt    DateTime?
 
   tests SolutionTest[]
@@ -314,7 +318,6 @@ model StudentActivity {
   happenedAt        DateTime
   happenedAtCounter Int                 @default(0)
   deletedAt         DateTime?
-  isReference       Boolean             @default(false)
 
   studentId    Int
   sessionId    Int
@@ -341,4 +344,22 @@ model StudentActivityApp {
   data Json
 
   studentActivity StudentActivity @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model SolutionActivityReference {
+  createdAt DateTime @default(now())
+  solutionHash Bytes
+  studentId    Int
+  sessionId    Int
+  taskId       Int
+
+  solution    Solution    @relation(fields: [taskId, solutionHash], references: [taskId, hash], onDelete: Restrict)
+  student     Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  sessionTask SessionTask @relation(fields: [sessionId, taskId], references: [sessionId, taskId], onDelete: Restrict)
+
+  @@id([studentId, sessionId, taskId, solutionHash])
+  @@index([sessionId, taskId])
+  @@index([taskId, solutionHash])
 }

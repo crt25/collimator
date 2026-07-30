@@ -64,6 +64,7 @@ type StudentProgress = {
   student: ResolvedStudent;
   taskSolutions: ExistingStudentSolution[];
   currentAnalysis: CurrentStudentAnalysis | null;
+  pastStarredAnalyses: CurrentStudentAnalysis[];
 };
 
 const nameTemplate = (progress: StudentProgress) => (
@@ -101,7 +102,8 @@ const PreviousVersionTemplate = ({
     classId={classId}
     sessionId={sessionId}
     taskId={taskId}
-    taskSolutions={progress.taskSolutions}
+    studentId={progress.id}
+    pastStarredAnalyses={progress.pastStarredAnalyses}
   />
 );
 
@@ -165,13 +167,20 @@ const TaskInstanceProgressList = ({
         (solution) => solution.studentId === student.studentId,
       );
 
-      // A student is either already in the showcase (teacher needs to unstar)
-      // or not yet (teacher needs to star). findAnalysisToDisplay returns the
-      // latest non-starred analysis so the button is starrable.
-      // It falls back to the starred analysis when that's all the student has.
+      // The current version is the student's latest solution, no matter whether it is starred or not
+      // The teacher stars/unstars it from the current-version column
       const currentAnalysis = CurrentStudentAnalysis.findAnalysisToDisplay(
         currentAnalyses ?? [],
         student.studentId,
+      );
+
+      const pastStarredAnalyses = (currentAnalyses ?? []).filter(
+        (a): a is CurrentStudentAnalysis =>
+          // the analysis is for this student, is a starred solution and is not the current version
+          a instanceof CurrentStudentAnalysis &&
+          a.studentId === student.studentId &&
+          a.isReferenceSolution &&
+          a.solutionHash !== currentAnalysis?.solutionHash,
       );
 
       return {
@@ -179,6 +188,7 @@ const TaskInstanceProgressList = ({
         student,
         taskSolutions,
         currentAnalysis,
+        pastStarredAnalyses,
       } satisfies StudentProgress;
     });
   }, [klass, session, solutions, currentAnalyses, students]);

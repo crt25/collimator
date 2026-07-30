@@ -6,6 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SolutionsControllerPatchStudentSolutionIsReferenceV0Params = {
+export type SolutionsControllerPatchStudentReferenceSolutionsV0Params = {
   includeSoftDelete?: boolean;
 };

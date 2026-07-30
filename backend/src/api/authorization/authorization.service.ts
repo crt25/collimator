@@ -1,7 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Prisma, Student, User, UserType } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
-import { StudentSolutionId } from "../solutions/dto/existing-student-solution.dto";
 
 @Injectable()
 export class AuthorizationService {
@@ -542,11 +541,10 @@ export class AuthorizationService {
     return false;
   }
 
-  async canUpdateStudentActivityIsReference(
+  async canUpdateStudentReferenceSolution(
     authenticatedUser: User | null,
+    classId: number,
     sessionId: number,
-    taskId: number,
-    studentId: number,
     includeSoftDelete = false,
   ): Promise<boolean> {
     if (authenticatedUser === null) {
@@ -559,57 +557,19 @@ export class AuthorizationService {
 
     const softDeleteFilter = includeSoftDelete ? {} : { deletedAt: null };
 
-    const activity = await this.prisma.studentActivity.findFirst({
+    const session = await this.prisma.session.findUnique({
       select: { id: true },
       where: {
-        studentId,
-        taskId,
-        sessionId,
+        id: sessionId,
+        classId,
         ...softDeleteFilter,
-        session: {
+        class: {
+          teacherId: authenticatedUser.id,
           ...softDeleteFilter,
-          class: {
-            teacherId: authenticatedUser.id,
-            ...softDeleteFilter,
-          },
         },
       },
     });
 
-    return authenticatedUser.type === UserType.TEACHER && activity !== null;
-  }
-
-  async canUpdateStudentSolutionIsReference(
-    authenticatedUser: User | null,
-    studentSolutionId: StudentSolutionId,
-    includeSoftDelete = false,
-  ): Promise<boolean> {
-    if (authenticatedUser === null) {
-      return false;
-    }
-
-    if (authenticatedUser && authenticatedUser.type === UserType.ADMIN) {
-      return true;
-    }
-
-    // teachers may update the field for solutions submitted by students in their class
-    const softDeleteFilter = includeSoftDelete ? {} : { deletedAt: null };
-
-    const solution = await this.prisma.studentSolution.findUnique({
-      select: { id: true },
-      where: {
-        id: studentSolutionId,
-        ...softDeleteFilter,
-        session: {
-          ...softDeleteFilter,
-          class: {
-            teacherId: authenticatedUser.id,
-            ...softDeleteFilter,
-          },
-        },
-      },
-    });
-
-    return authenticatedUser.type === UserType.TEACHER && solution !== null;
+    return authenticatedUser.type === UserType.TEACHER && session !== null;
   }
 }

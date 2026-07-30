@@ -11,7 +11,6 @@ export class ExistingStudentSolution {
   readonly createdAt: Date;
   readonly happenedAt: Date;
   readonly solution: ExistingSolution;
-  readonly isReference: boolean;
   readonly tests: ExistingSolutionTest[] = [];
 
   protected constructor({
@@ -22,7 +21,6 @@ export class ExistingStudentSolution {
     createdAt,
     happenedAt,
     solution,
-    isReference,
     tests,
   }: ClassProperties<ExistingStudentSolution>) {
     this.id = id;
@@ -32,7 +30,6 @@ export class ExistingStudentSolution {
     this.createdAt = createdAt;
     this.happenedAt = happenedAt;
     this.solution = solution;
-    this.isReference = isReference;
     this.tests = tests;
   }
 

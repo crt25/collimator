@@ -10,14 +10,12 @@ import type {
   CreateSolutionDto,
   CurrentAnalysesDto,
   ExistingStudentSolutionDto,
-  PatchStudentActivityIsReferenceDto,
-  PatchStudentSolutionIsReferenceDto,
+  PatchStudentReferenceSolutionDto,
   SolutionsControllerDownloadLatestStudentSolutionV0Params,
   SolutionsControllerDownloadOneV0Params,
   SolutionsControllerFindCurrentAnalysesV0Params,
   SolutionsControllerFindOneStudentSolutionV0Params,
-  SolutionsControllerPatchStudentActivityIsReferenceV0Params,
-  SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
+  SolutionsControllerPatchStudentReferenceSolutionsV0Params,
 } from "../../models";
 
 export const getSolutionsControllerCreateStudentSolutionV0Url = (
@@ -291,14 +289,14 @@ export const solutionsControllerDownloadOneV0 = async (
 };
 
 /**
- * @summary Updates the isReference field of a student solution
+ * @summary Stars or unstars a student's solution
  */
-export const getSolutionsControllerPatchStudentSolutionIsReferenceV0Url = (
+export const getSolutionsControllerPatchStudentReferenceSolutionsV0Url = (
   classId: number,
   sessionId: number,
   taskId: number,
-  id: number,
-  params?: SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
+  studentId: number,
+  params?: SolutionsControllerPatchStudentReferenceSolutionsV0Params,
 ) => {
   const normalizedParams = new URLSearchParams();
 
@@ -311,72 +309,21 @@ export const getSolutionsControllerPatchStudentSolutionIsReferenceV0Url = (
   const stringifiedParams = normalizedParams.toString();
 
   return stringifiedParams.length > 0
-    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference?${stringifiedParams}`
-    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${id}/isReference`;
+    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/reference?${stringifiedParams}`
+    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/reference`;
 };
 
-export const solutionsControllerPatchStudentSolutionIsReferenceV0 = async (
-  classId: number,
-  sessionId: number,
-  taskId: number,
-  id: number,
-  patchStudentSolutionIsReferenceDto: PatchStudentSolutionIsReferenceDto,
-  params?: SolutionsControllerPatchStudentSolutionIsReferenceV0Params,
-  options?: RequestInit,
-): Promise<void> => {
-  return fetchApi<void>(
-    getSolutionsControllerPatchStudentSolutionIsReferenceV0Url(
-      classId,
-      sessionId,
-      taskId,
-      id,
-      params,
-    ),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchStudentSolutionIsReferenceDto),
-    },
-  );
-};
-
-/**
- * @summary Updates the isReference field of a specific activity-tracked solution for a student
- */
-export const getSolutionsControllerPatchStudentActivityIsReferenceV0Url = (
+export const solutionsControllerPatchStudentReferenceSolutionsV0 = async (
   classId: number,
   sessionId: number,
   taskId: number,
   studentId: number,
-  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
-) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference?${stringifiedParams}`
-    : `/api/v0/classes/${classId}/sessions/${sessionId}/task/${taskId}/solutions/student/${studentId}/activity/isReference`;
-};
-
-export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
-  classId: number,
-  sessionId: number,
-  taskId: number,
-  studentId: number,
-  patchStudentActivityIsReferenceDto: PatchStudentActivityIsReferenceDto,
-  params?: SolutionsControllerPatchStudentActivityIsReferenceV0Params,
+  patchStudentReferenceSolutionDto: PatchStudentReferenceSolutionDto,
+  params?: SolutionsControllerPatchStudentReferenceSolutionsV0Params,
   options?: RequestInit,
 ): Promise<void> => {
   return fetchApi<void>(
-    getSolutionsControllerPatchStudentActivityIsReferenceV0Url(
+    getSolutionsControllerPatchStudentReferenceSolutionsV0Url(
       classId,
       sessionId,
       taskId,
@@ -387,7 +334,7 @@ export const solutionsControllerPatchStudentActivityIsReferenceV0 = async (
       ...options,
       method: "PATCH",
       headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(patchStudentActivityIsReferenceDto),
+      body: JSON.stringify(patchStudentReferenceSolutionDto),
     },
   );
 };

@@ -6,6 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface PatchStudentSolutionIsReferenceDto {
+export interface PatchStudentReferenceSolutionDto {
   isReference: boolean;
+  /**
+   * The base64url-encoded hashes of the solutions to star or unstar.
+   * @maxItems 100
+   */
+  solutionHashes: string[];
 }

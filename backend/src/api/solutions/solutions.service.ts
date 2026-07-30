@@ -11,7 +11,6 @@ import {
 import { PrismaService } from "src/prisma/prisma.service";
 import {
   deleteStudentSolutions,
-  getCurrentAnalyses,
   getCurrentAnalysesWithActivities,
   getSoftDeletedCurrentAnalysesWithActivities,
 } from "@prisma/client/sql";
@@ -27,6 +26,7 @@ import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
 
 export type StudentId = number;
+type CurrentAnalysisRow = getCurrentAnalysesWithActivities.Result;
 export type SolutionCreateInput = Omit<
   Prisma.SolutionUncheckedCreateInput,
   "data" | "mimeType"
@@ -88,6 +88,7 @@ export type CurrentStudentAnalysis = AnalysisWithoutId & {
   isStudentSolution: boolean;
   studentPseudonym: Uint8Array | null;
   studentKeyPairId: number | null;
+  isLatest: boolean;
 };
 
 export type ReferenceAnalysis = AnalysisWithoutId & {
@@ -151,14 +152,14 @@ export class SolutionsService {
   }
 
   private groupAnalyses(
-    analyses: getCurrentAnalyses.Result[],
+    analyses: CurrentAnalysisRow[],
   ): [CurrentStudentAnalysis[], ReferenceAnalysis[]] {
     const filteredAnalyses = analyses.filter(
       (analysis) => analysis.astVersion === latestAstVersion,
     );
 
-    const studentAnalyses: getCurrentAnalyses.Result[] = [];
-    const referenceAnalyses: getCurrentAnalyses.Result[] = [];
+    const studentAnalyses: CurrentAnalysisRow[] = [];
+    const referenceAnalyses: CurrentAnalysisRow[] = [];
 
     for (const analysis of filteredAnalyses) {
       if (analysis.studentId !== null) {
@@ -208,11 +209,11 @@ export class SolutionsService {
 
   private groupByStudentAnalysis(
     byAnalysisId: TupleMap<StudentKey, CurrentStudentAnalysis>,
-    analysis: getCurrentAnalyses.Result,
+    analysis: CurrentAnalysisRow,
   ): TupleMap<StudentKey, CurrentStudentAnalysis> {
     if (!this.isStudentAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing student analysis data. ${JSON.stringify(analysis)}`,
+        `Query response for 'getCurrentAnalysesWithActivities' is missing student analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -232,9 +233,15 @@ export class SolutionsService {
     ];
     const currentAnalysis = byAnalysisId.get(key);
 
-    if (currentAnalysis !== undefined && this.isTest(test)) {
-      currentAnalysis.tests.push(test);
-    } else if (currentAnalysis === undefined) {
+    if (currentAnalysis !== undefined) {
+      if (this.isTest(test)) {
+        currentAnalysis.tests.push(test);
+      }
+
+      if (analysis.isLatest) {
+        currentAnalysis.isLatest = true;
+      }
+    } else {
       byAnalysisId.set(key, {
         taskId: analysis.taskId,
         solutionHash: analysis.solutionHash,
@@ -248,14 +255,16 @@ export class SolutionsService {
         studentSolutionId: analysis.studentSolutionId,
         isStudentSolution: analysis.isStudentSolution ?? false,
         studentKeyPairId: analysis.studentKeyPairId,
+        isLatest: analysis.isLatest ?? false,
       });
     }
+
     return byAnalysisId;
   }
 
   private isStudentAnalysis(
-    analysis: getCurrentAnalyses.Result,
-  ): analysis is getCurrentAnalyses.Result & {
+    analysis: CurrentAnalysisRow,
+  ): analysis is CurrentAnalysisRow & {
     taskId: TaskId;
     studentSolutionId: StudentSolutionId | null;
     isStudentSolution: boolean;
@@ -282,11 +291,11 @@ export class SolutionsService {
 
   private groupByReferenceAnalysis(
     byAnalysisId: TupleMap<ReferenceKey, ReferenceAnalysis>,
-    analysis: getCurrentAnalyses.Result,
+    analysis: CurrentAnalysisRow,
   ): TupleMap<ReferenceKey, ReferenceAnalysis> {
     if (!this.isReferenceAnalysis(analysis)) {
       throw new Error(
-        `Query response for 'getCurrentAnalyses' is missing reference analysis data. ${JSON.stringify(analysis)}`,
+        `Query response for 'getCurrentAnalysesWithActivities' is missing reference analysis data. ${JSON.stringify(analysis)}`,
       );
     }
 
@@ -321,8 +330,8 @@ export class SolutionsService {
   }
 
   private isReferenceAnalysis(
-    analysis: getCurrentAnalyses.Result,
-  ): analysis is getCurrentAnalyses.Result & {
+    analysis: CurrentAnalysisRow,
+  ): analysis is CurrentAnalysisRow & {
     referenceSolutionId: ReferenceSolutionId;
     referenceSolutionTitle: string;
     referenceSolutionDescription: string;
@@ -385,66 +394,82 @@ export class SolutionsService {
     });
   }
 
-  async updateStudentSolutionIsReference(
-    studentSolutionId: number,
-    isReference: boolean,
-    includeSoftDelete = false,
-  ): Promise<void> {
-    await this.prisma.studentSolution.update({
-      data: {
-        isReference,
-      },
-      where: includeSoftDelete
-        ? {
-            id: studentSolutionId,
-          }
-        : {
-            id: studentSolutionId,
-            deletedAt: null,
-          },
-    });
-    this.logger.log(
-      `Updated student solution (id: ${studentSolutionId}) isReference=${isReference}`,
-    );
-  }
-
-  async updateStudentActivityIsReference(
+  async updateStudentReferenceSolutions(
+    classId: number,
     sessionId: SessionId,
     taskId: TaskId,
     studentId: StudentId,
-    solutionHash: Uint8Array,
+    solutionHashes: Uint8Array[],
     isReference: boolean,
     includeSoftDelete = false,
   ): Promise<void> {
-    const baseWhere = includeSoftDelete
-      ? { sessionId, taskId, studentId }
-      : { sessionId, taskId, studentId, deletedAt: null };
+    const uniqueSolutionHashes = [
+      ...new Map(
+        solutionHashes.map((solutionHash) => [
+          Buffer.from(solutionHash).toString("base64url"),
+          solutionHash,
+        ]),
+      ).values(),
+    ];
+
+    if (uniqueSolutionHashes.length === 0) {
+      return;
+    }
+
+    const sourceWhere = {
+      studentId,
+      sessionId,
+      taskId,
+      session: { classId },
+      ...(includeSoftDelete ? {} : { deletedAt: null }),
+    };
 
     await this.prisma.$transaction(async (tx) => {
-      const targetActivity = await tx.studentActivity.findFirst({
-        select: { id: true },
+      const targetSolutions = await tx.solution.findMany({
+        select: { hash: true },
         where: {
-          ...baseWhere,
-          solutionHash,
-          solution: {
-            analysis: { isNot: null },
-          },
+          taskId,
+          hash: { in: uniqueSolutionHashes },
+          ...(includeSoftDelete ? {} : { deletedAt: null }),
+          analysis: { isNot: null },
+          OR: [
+            { studentSolutions: { some: sourceWhere } },
+            { studentActivities: { some: sourceWhere } },
+          ],
         },
       });
 
-      if (!targetActivity) {
+      if (targetSolutions.length !== uniqueSolutionHashes.length) {
         throw new NotFoundException(
-          `No analyzed student activity found for student ${studentId} in session ${sessionId} / task ${taskId} with the given solution hash`,
+          `Not every analyzed solution was found for student ${studentId} in class ${classId} / session ${sessionId} / task ${taskId}`,
         );
       }
 
-      await tx.studentActivity.update({
-        data: { isReference },
-        where: { id: targetActivity.id },
-      });
+      const referenceKeys = uniqueSolutionHashes.map((solutionHash) => ({
+        solutionHash,
+        studentId,
+        sessionId,
+        taskId,
+      }));
+
+      if (isReference) {
+        await tx.solutionActivityReference.createMany({
+          data: referenceKeys,
+          skipDuplicates: true,
+        });
+      } else {
+        await tx.solutionActivityReference.deleteMany({
+          where: {
+            studentId,
+            sessionId,
+            taskId,
+            solutionHash: { in: uniqueSolutionHashes },
+          },
+        });
+      }
 
       this.logger.log(
-        `Updated student activity (id: ${targetActivity.id}, studentId: ${studentId}, sessionId: ${sessionId}, taskId: ${taskId}) isReference=${isReference}`,
+        `${isReference ? "Created" : "Removed"} ${uniqueSolutionHashes.length} solution activity reference(s) (studentId: ${studentId}, classId: ${classId}, sessionId: ${sessionId}, taskId: ${taskId})`,
       );
     });
   }

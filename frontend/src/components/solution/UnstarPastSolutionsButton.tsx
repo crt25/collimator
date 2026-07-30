@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import { Icon } from "@chakra-ui/react";
 import { LuStar } from "react-icons/lu";
-import { ExistingStudentSolution } from "@/api/collimator/models/solutions/existing-student-solutions";
-import { usePatchStudentSolutionIsReference } from "@/api/collimator/hooks/solutions/usePatchStudentSolutionIsReference";
+import { CurrentStudentAnalysis } from "@/api/collimator/models/solutions/current-student-analysis";
+import { usePatchStudentReferenceSolutions } from "@/api/collimator/hooks/solutions/usePatchStudentReferenceSolutions";
 import { Modal } from "@/components/form/Modal";
 import { toaster } from "@/components/Toaster";
 import Button from "../Button";
@@ -45,46 +45,40 @@ const UnstarPastSolutionsButton = ({
   classId,
   sessionId,
   taskId,
-  taskSolutions,
+  studentId,
+  pastStarredAnalyses,
 }: {
   classId: number;
   sessionId: number;
   taskId: number;
-  taskSolutions: ExistingStudentSolution[];
+  studentId: number;
+  pastStarredAnalyses: CurrentStudentAnalysis[];
 }) => {
   const intl = useIntl();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const patchSolution = usePatchStudentSolutionIsReference();
+  const patchStudentReferenceSolutions = usePatchStudentReferenceSolutions();
 
-  const starredPastSolutions = useMemo(() => {
-    const latestSolution =
-      ExistingStudentSolution.findSolutionToDisplay(taskSolutions);
-
-    return taskSolutions.filter(
-      (s) => s.isReference && s.id !== latestSolution?.id,
-    );
-  }, [taskSolutions]);
-
-  if (starredPastSolutions.length === 0) {
+  if (pastStarredAnalyses.length === 0) {
     return null;
   }
 
   const handleConfirm = async () => {
     try {
-      await Promise.all(
-        starredPastSolutions.map((s) =>
-          patchSolution(classId, sessionId, taskId, s.id, {
-            isReference: false,
-          }),
-        ),
+      await patchStudentReferenceSolutions(
+        classId,
+        sessionId,
+        taskId,
+        studentId,
+        pastStarredAnalyses.map((analysis) => analysis.solutionHash),
+        false,
       );
       toaster.success({
-        id: `unstar-past-solutions-success-${taskId}`,
+        id: `unstar-past-solutions-success-${pastStarredAnalyses[0].studentId}`,
         title: intl.formatMessage(messages.successToast),
       });
     } catch {
       toaster.error({
-        id: `unstar-past-solutions-error-${taskId}`,
+        id: `unstar-past-solutions-error-${pastStarredAnalyses[0].studentId}`,
         title: intl.formatMessage(messages.errorToast),
       });
     }

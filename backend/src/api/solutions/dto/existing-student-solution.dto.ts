@@ -40,15 +40,6 @@ export class ExistingStudentSolutionDto
   @Type(() => Date)
   readonly happenedAt!: Date;
 
-  @ApiProperty({
-    example: "true",
-    description: "Whether this solution is marked as a reference solution.",
-    type: "boolean",
-  })
-  @Type(() => Boolean)
-  @Expose()
-  readonly isReference!: boolean;
-
   @ApiProperty()
   @Expose()
   readonly studentId!: number;

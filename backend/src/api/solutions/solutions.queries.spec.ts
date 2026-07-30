@@ -1,14 +1,15 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AstVersion, StudentActivityType } from "@prisma/client";
 import {
-  getCurrentAnalyses,
-  getCurrentAnalysesWithActivities,
-} from "@prisma/client/sql";
+  AstVersion,
+  StudentActivity,
+  StudentActivityType,
+} from "@prisma/client";
+import { getCurrentAnalysesWithActivities } from "@prisma/client/sql";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
 
-describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
+describe("getCurrentAnalysesWithActivities", () => {
   let prisma: PrismaService;
   let module: TestingModule;
   let taskId: number;
@@ -45,7 +46,6 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
     const cls = await prisma.class.create({
       data: { name: `Class ${suffix}`, teacherId: user.id },
     });
-
     const session = await prisma.session.create({
       data: { title: `Session ${suffix}`, description: "", classId: cls.id },
     });
@@ -98,15 +98,14 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
       },
     });
 
-  const createStudentActivity = (
+  const createStudentActivity = async (
     studentId: number,
     solutionHash: Buffer,
     happenedAt: Date,
     createdAt?: Date,
     isReference = false,
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  ) =>
-    prisma.studentActivity.create({
+  ): Promise<StudentActivity> => {
+    const activity = await prisma.studentActivity.create({
       data: {
         type: StudentActivityType.TASK_RUN_SOLUTION,
         happenedAt,
@@ -114,241 +113,251 @@ describe("getCurrentAnalyses and getCurrentAnalysesWithActivities", () => {
         sessionId,
         taskId,
         solutionHash,
-        isReference,
         ...(createdAt && { createdAt }),
       },
     });
 
-  describe("getCurrentAnalyses", () => {
-    it("returns a student whose StudentSolution has been analysed", async () => {
-      const student = await createStudent();
-      const hash = Buffer.from("hash");
-
-      await createSolution(hash);
-      await createAnalysis(hash);
-      await createStudentSolution(student.id, hash);
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-
-      const match = rows.find((r) => r.studentId === student.id);
-      expect(match).toBeDefined();
-      expect(match!.studentSolutionId).not.toBeNull();
-    });
-
-    it("does not return a student whose submitted solution has not yet been analysed", async () => {
-      const student = await createStudent();
-      const hash = Buffer.from("hash-c");
-
-      await createSolution(hash);
-      await createStudentSolution(student.id, hash);
-
-      const storedSolution = await prisma.studentSolution.findFirst({
-        where: { studentId: student.id, taskId, sessionId },
-      });
-      expect(storedSolution).not.toBeNull();
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-
-      expect(rows.find((r) => r.studentId === student.id)).toBeUndefined();
-    });
-
-    it("returns the most recent analysed StudentSolution when a student has submitted multiple solutions", async () => {
-      const student = await createStudent();
-      const olderHash = Buffer.from("hash-older");
-      const newerHash = Buffer.from("hash-newer");
-      const earlier = new Date("2026-05-26T13:33:00.000Z");
-      const later = new Date("2026-05-26T15:33:00.000Z");
-
-      await createSolution(olderHash);
-      await createAnalysis(olderHash);
-      await createStudentSolution(student.id, olderHash, earlier);
-
-      await createSolution(newerHash);
-      await createAnalysis(newerHash);
-      await createStudentSolution(student.id, newerHash, later);
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-
-      const studentRows = rows.filter((r) => r.studentId === student.id);
-      expect(studentRows).toHaveLength(1);
-      expect(Buffer.from(studentRows[0].solutionHash!).equals(newerHash)).toBe(
-        true,
-      );
-    });
-
-    it("returns task reference solutions", async () => {
-      const hash = Buffer.from("hash-ref");
-
-      await createSolution(hash);
-      await createAnalysis(hash);
-      await prisma.referenceSolution.create({
+    if (isReference) {
+      await prisma.solutionActivityReference.create({
         data: {
-          title: "Ref",
-          description: "Reference",
-          isInitial: false,
+          solutionHash,
+          studentId,
+          sessionId,
           taskId,
-          solutionHash: hash,
         },
       });
+    }
 
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
+    return activity;
+  };
 
-      expect(rows.some((r) => r.referenceSolutionId !== null)).toBe(true);
-    });
+  it("returns a student whose only analysed solution came from StudentActivity", async () => {
+    const student = await createStudent();
+    const hash = Buffer.from("hash");
+
+    await createSolution(hash);
+    await createAnalysis(hash);
+    await createStudentActivity(student.id, hash, new Date());
+
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
+
+    expect(
+      rows
+        .filter((row) => row.studentId === student.id)
+        .map((row) => ({
+          hash: Buffer.from(row.solutionHash!).toString(),
+          studentSolutionId: row.studentSolutionId,
+          isStudentSolution: row.isStudentSolution,
+          isLatest: row.isLatest,
+          isReference: row.isReference,
+        })),
+    ).toEqual([
+      {
+        hash: "hash",
+        studentSolutionId: null,
+        isStudentSolution: false,
+        isLatest: true,
+        isReference: false,
+      },
+    ]);
   });
 
-  describe("getCurrentAnalysesWithActivities", () => {
-    it("returns a student whose only analysed solution came from StudentActivity", async () => {
-      const student = await createStudent();
-      const hash = Buffer.from("hash");
+  it("shows the activity solution when it is more recent than the StudentSolution and both are analysed", async () => {
+    const student = await createStudent();
+    const submissionHash = Buffer.from("hash-sub");
+    const activityHash = Buffer.from("hash-act");
+    const earlier = new Date("2026-05-26T13:33:00.000Z");
+    const later = new Date("2026-05-26T15:33:00.000Z");
 
-      await createSolution(hash);
-      await createAnalysis(hash);
-      await createStudentActivity(student.id, hash, new Date());
+    await createSolution(submissionHash);
+    await createAnalysis(submissionHash);
+    await createStudentSolution(student.id, submissionHash, earlier);
 
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
-      );
+    await createSolution(activityHash);
+    await createAnalysis(activityHash);
+    await createStudentActivity(student.id, activityHash, later, later);
 
-      const match = rows.find((r) => r.studentId === student.id);
-      expect(match).toBeDefined();
-      expect(match!.studentSolutionId).toBeNull();
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
+
+    const studentRows = rows.filter((r) => r.studentId === student.id);
+    expect(studentRows).toHaveLength(1);
+    expect(studentRows[0].studentSolutionId).toBeNull();
+  });
+
+  it("falls back to the StudentSolution when the newer activity solution has not been analysed", async () => {
+    const student = await createStudent();
+    const submissionHash = Buffer.from("hash-sub2");
+    const activityHash = Buffer.from("hash-act2");
+    const earlier = new Date("2026-05-26T13:33:00.000Z");
+    const later = new Date("2026-05-26T15:33:00.000Z");
+
+    await createSolution(submissionHash);
+    await createAnalysis(submissionHash);
+    const submission = await createStudentSolution(
+      student.id,
+      submissionHash,
+      earlier,
+    );
+
+    await createSolution(activityHash);
+    await createStudentActivity(student.id, activityHash, later, later);
+
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
+
+    expect(
+      rows
+        .filter((row) => row.studentId === student.id)
+        .map((row) => ({
+          hash: Buffer.from(row.solutionHash!).toString(),
+          studentSolutionId: row.studentSolutionId,
+          isStudentSolution: row.isStudentSolution,
+          isLatest: row.isLatest,
+        })),
+    ).toEqual([
+      {
+        hash: "hash-sub2",
+        studentSolutionId: submission.id,
+        isStudentSolution: true,
+        isLatest: true,
+      },
+    ]);
+  });
+
+  it("does not return a student when neither their submission nor their activity has been analysed", async () => {
+    const student = await createStudent();
+    const hash = Buffer.from("hash-analysis");
+
+    await createSolution(hash);
+    await createStudentActivity(student.id, hash, new Date());
+
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
+
+    expect(rows.find((r) => r.studentId === student.id)).toBeUndefined();
+  });
+
+  it("returns task reference solutions", async () => {
+    const hash = Buffer.from("hash-ref2");
+
+    await createSolution(hash);
+    await createAnalysis(hash);
+    await prisma.referenceSolution.create({
+      data: {
+        title: "Ref",
+        description: "Reference",
+        isInitial: false,
+        taskId,
+        solutionHash: hash,
+      },
     });
 
-    it("shows the activity solution when it is more recent than the StudentSolution and both are analysed", async () => {
-      const student = await createStudent();
-      const submissionHash = Buffer.from("hash-sub");
-      const activityHash = Buffer.from("hash-act");
-      const earlier = new Date("2026-05-26T13:33:00.000Z");
-      const later = new Date("2026-05-26T15:33:00.000Z");
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
 
-      await createSolution(submissionHash);
-      await createAnalysis(submissionHash);
-      await createStudentSolution(student.id, submissionHash, earlier);
+    expect(
+      rows
+        .filter((row) => row.referenceSolutionId !== null)
+        .map((row) => ({
+          hash: Buffer.from(row.solutionHash!).toString(),
+          isReference: row.isReference,
+          isLatest: row.isLatest,
+          studentId: row.studentId,
+          title: row.referenceSolutionTitle,
+        })),
+    ).toEqual([
+      {
+        hash: "hash-ref2",
+        isReference: true,
+        isLatest: false,
+        studentId: null,
+        title: "Ref",
+      },
+    ]);
+  });
 
-      await createSolution(activityHash);
-      await createAnalysis(activityHash);
-      await createStudentActivity(student.id, activityHash, later, later);
+  it("returns a starred activity as a showcase row with isReference=true and no studentSolutionId", async () => {
+    const student = await createStudent();
+    const hash = Buffer.from("hash-starred-act");
 
-      const submissionRows = await prisma.$queryRawTyped(
-        getCurrentAnalyses(sessionId, taskId),
-      );
-      const submissionMatch = submissionRows.find(
-        (r) => r.studentId === student.id,
-      );
-      expect(submissionMatch).toBeDefined();
-      expect(submissionMatch!.studentSolutionId).not.toBeNull();
+    await createSolution(hash);
+    await createAnalysis(hash);
+    await createStudentActivity(student.id, hash, new Date(), undefined, true);
 
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
-      );
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
 
-      const studentRows = rows.filter((r) => r.studentId === student.id);
-      expect(studentRows).toHaveLength(1);
-      expect(studentRows[0].studentSolutionId).toBeNull();
-    });
+    expect(
+      rows
+        .filter((row) => row.studentId === student.id)
+        .map((row) => ({
+          hash: Buffer.from(row.solutionHash!).toString(),
+          studentSolutionId: row.studentSolutionId,
+          isReference: row.isReference,
+          isLatest: row.isLatest,
+        })),
+    ).toEqual([
+      {
+        hash: "hash-starred-act",
+        studentSolutionId: null,
+        isReference: true,
+        isLatest: true,
+      },
+    ]);
+  });
 
-    it("falls back to the StudentSolution when the newer activity solution has not been analysed", async () => {
-      const student = await createStudent();
-      const submissionHash = Buffer.from("hash-sub2");
-      const activityHash = Buffer.from("hash-act2");
-      const earlier = new Date("2026-05-26T13:33:00.000Z");
-      const later = new Date("2026-05-26T15:33:00.000Z");
+  it("returns the latest solution once and a different past starred solution", async () => {
+    const student = await createStudent();
+    const pastHash = Buffer.from("hash-past-starred");
+    const latestHash = Buffer.from("hash-latest");
+    const earlier = new Date("2026-05-26T13:33:00.000Z");
+    const later = new Date("2026-05-26T15:33:00.000Z");
 
-      await createSolution(submissionHash);
-      await createAnalysis(submissionHash);
-      await createStudentSolution(student.id, submissionHash, earlier);
+    await createSolution(pastHash);
+    await createAnalysis(pastHash);
+    await createStudentActivity(student.id, pastHash, earlier, earlier, true);
 
-      await createSolution(activityHash);
-      await createStudentActivity(student.id, activityHash, later, later);
+    await createSolution(latestHash);
+    await createAnalysis(latestHash);
+    await createStudentActivity(student.id, latestHash, later, later);
 
-      const storedActivity = await prisma.studentActivity.findFirst({
-        where: { studentId: student.id, solutionHash: activityHash, taskId },
-      });
-      expect(storedActivity).not.toBeNull();
+    const rows = await prisma.$queryRawTyped(
+      getCurrentAnalysesWithActivities(sessionId, taskId),
+    );
 
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
-      );
-
-      const studentRows = rows.filter((r) => r.studentId === student.id);
-      expect(studentRows).toHaveLength(1);
-      expect(studentRows[0].studentSolutionId).not.toBeNull();
-    });
-
-    it("does not return a student when neither their submission nor their activity has been analysed", async () => {
-      const student = await createStudent();
-      const hash = Buffer.from("hash-analysis");
-
-      await createSolution(hash);
-      await createStudentActivity(student.id, hash, new Date());
-
-      const storedActivity = await prisma.studentActivity.findFirst({
-        where: { studentId: student.id, solutionHash: hash, taskId },
-      });
-      expect(storedActivity).not.toBeNull();
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
-      );
-
-      expect(rows.find((r) => r.studentId === student.id)).toBeUndefined();
-    });
-
-    it("returns task reference solutions", async () => {
-      const hash = Buffer.from("hash-ref2");
-
-      await createSolution(hash);
-      await createAnalysis(hash);
-      await prisma.referenceSolution.create({
-        data: {
-          title: "Ref",
-          description: "Reference",
-          isInitial: false,
-          taskId,
-          solutionHash: hash,
-        },
-      });
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
+    const studentRows = rows
+      .filter((row) => row.studentId === student.id)
+      .map((row) => ({
+        solutionHash: Buffer.from(row.solutionHash!).toString(),
+        isLatest: row.isLatest,
+        isReference: row.isReference,
+        studentSolutionId: row.studentSolutionId,
+      }))
+      .sort((left, right) =>
+        left.solutionHash.localeCompare(right.solutionHash),
       );
 
-      expect(rows.some((r) => r.referenceSolutionId !== null)).toBe(true);
-    });
-
-    it("returns a starred activity as a showcase row with isReference=true and no studentSolutionId", async () => {
-      const student = await createStudent();
-      const hash = Buffer.from("hash-starred-act");
-
-      await createSolution(hash);
-      await createAnalysis(hash);
-      await createStudentActivity(
-        student.id,
-        hash,
-        new Date(),
-        undefined,
-        true,
-      );
-
-      const rows = await prisma.$queryRawTyped(
-        getCurrentAnalysesWithActivities(sessionId, taskId),
-      );
-
-      const match = rows.find(
-        (r) => r.studentId === student.id && r.isReference,
-      );
-      expect(match).toBeDefined();
-      expect(match!.studentSolutionId).toBeNull();
-      expect(match!.isReference).toBe(true);
-    });
+    expect(studentRows).toEqual([
+      {
+        solutionHash: "hash-latest",
+        isLatest: true,
+        isReference: false,
+        studentSolutionId: null,
+      },
+      {
+        solutionHash: "hash-past-starred",
+        isLatest: false,
+        isReference: true,
+        studentSolutionId: null,
+      },
+    ]);
   });
 });

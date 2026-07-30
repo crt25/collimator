@@ -14,8 +14,6 @@ export interface ExistingStudentSolutionDto {
   createdAt: string;
   /** Client timestamp of the solution submission. May differ from createdAt. */
   happenedAt: string;
-  /** Whether this solution is marked as a reference solution. */
-  isReference: boolean;
   studentId: number;
   sessionId: number;
   taskId: number;

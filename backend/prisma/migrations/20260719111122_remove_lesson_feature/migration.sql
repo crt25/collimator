@@ -21,4 +21,3 @@ DROP TABLE "LessonTask";
 
 -- DropEnum
 DROP TYPE "LessonVisibility";
-

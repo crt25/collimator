@@ -51,6 +51,16 @@ export class CurrentStudentAnalysisDto
   readonly isStudentSolution!: boolean;
 
   @ApiProperty({
+    example: true,
+    description:
+      "True for the analysis representing the student's current solution, regardless of whether it is starred. Used to distinguish the current version from previously starred versions.",
+    nullable: false,
+    type: "boolean",
+  })
+  @Expose()
+  readonly isLatest!: boolean;
+
+  @ApiProperty({
     example: "John Doe",
     description: "The pseudonym of the student",
     type: "string",

@@ -7,5 +7,5 @@ export * from "./existing-reference-solution.dto";
 export * from "./existing-solution-test.dto";
 export * from "./existing-solution.dto";
 export * from "./existing-student-solution.dto";
-export * from "./patch-student-solution-is-reference.dto";
+export * from "./patch-student-reference-solution.dto";
 export * from "./reference-analysis.dto";

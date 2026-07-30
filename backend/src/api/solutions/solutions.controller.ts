@@ -55,8 +55,7 @@ import {
 import { CurrentStudentAnalysisDto } from "./dto/current-student-analysis.dto";
 import { ReferenceAnalysisDto } from "./dto/reference-analysis.dto";
 import { CurrentAnalysesDto } from "./dto/current-analyses.dto";
-import { PatchStudentSolutionIsReferenceDto } from "./dto/patch-student-solution-is-reference.dto";
-import { PatchStudentActivityIsReferenceDto } from "./dto/patch-student-activity-is-reference.dto";
+import { PatchStudentReferenceSolutionDto } from "./dto/patch-student-reference-solution.dto";
 
 @Controller("classes/:classId/sessions/:sessionId/task/:taskId/solutions")
 @ApiTags("solutions")
@@ -302,9 +301,9 @@ export class SolutionsController {
     });
   }
 
-  @Patch("student/:id/isReference")
+  @Patch("student/:studentId/reference")
   @ApiOperation({
-    summary: "Updates the isReference field of a student solution",
+    summary: "Stars or unstars a student's solution",
   })
   @ApiOkResponse()
   @ApiQuery({
@@ -315,66 +314,22 @@ export class SolutionsController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   @HttpCode(204)
-  @ApiBody({ type: PatchStudentSolutionIsReferenceDto })
-  async patchStudentSolutionIsReference(
+  @ApiBody({ type: PatchStudentReferenceSolutionDto })
+  async patchStudentReferenceSolutions(
     @AuthenticatedUser() user: User | null,
-    @Param("classId", ParseIntPipe) _classId: number,
-    @Param("sessionId", ParseIntPipe) _sessionId: number,
-    @Param("taskId", ParseIntPipe) _taskId: number,
-    @Param("id", ParseIntPipe) id: StudentSolutionId,
-    @Body() dto: PatchStudentSolutionIsReferenceDto,
-    @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
-    includeSoftDelete?: boolean,
-  ): Promise<void> {
-    const isAuthorized =
-      await this.authorizationService.canUpdateStudentSolutionIsReference(
-        user,
-        id,
-        includeSoftDelete,
-      );
-
-    if (!isAuthorized) {
-      throw new ForbiddenException();
-    }
-
-    return this.solutionsService.updateStudentSolutionIsReference(
-      id,
-      dto.isReference,
-      includeSoftDelete,
-    );
-  }
-
-  @Patch("student/:studentId/activity/isReference")
-  @ApiOperation({
-    summary:
-      "Updates the isReference field of a specific activity-tracked solution for a student",
-  })
-  @ApiOkResponse()
-  @ApiQuery({
-    name: "includeSoftDelete",
-    required: false,
-    type: Boolean,
-  })
-  @ApiForbiddenResponse()
-  @ApiNotFoundResponse()
-  @HttpCode(204)
-  @ApiBody({ type: PatchStudentActivityIsReferenceDto })
-  async patchStudentActivityIsReference(
-    @AuthenticatedUser() user: User | null,
-    @Param("classId", ParseIntPipe) _classId: number,
+    @Param("classId", ParseIntPipe) classId: ClassId,
     @Param("sessionId", ParseIntPipe) sessionId: SessionId,
     @Param("taskId", ParseIntPipe) taskId: TaskId,
     @Param("studentId", ParseIntPipe) studentId: number,
-    @Body() dto: PatchStudentActivityIsReferenceDto,
+    @Body() dto: PatchStudentReferenceSolutionDto,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<void> {
     const isAuthorized =
-      await this.authorizationService.canUpdateStudentActivityIsReference(
+      await this.authorizationService.canUpdateStudentReferenceSolution(
         user,
+        classId,
         sessionId,
-        taskId,
-        studentId,
         includeSoftDelete,
       );
 
@@ -382,13 +337,16 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const solutionHash = Buffer.from(dto.solutionHash, "base64url");
+    const solutionHashes = dto.solutionHashes.map((solutionHash) =>
+      Buffer.from(solutionHash, "base64url"),
+    );
 
-    return this.solutionsService.updateStudentActivityIsReference(
+    return this.solutionsService.updateStudentReferenceSolutions(
+      classId,
       sessionId,
       taskId,
       studentId,
-      solutionHash,
+      solutionHashes,
       dto.isReference,
       includeSoftDelete,
     );
