@@ -44,10 +44,6 @@ on:
         required: true
         type: string
 
-      terraform_state_bucket:
-        required: true
-        type: string
-
       ecs_cluster:
         required: true
         type: string
@@ -126,7 +122,6 @@ jobs:
       FRONTEND_BUCKET_ID: ${{ inputs.frontend_bucket_id }}
       SCRATCH_APP_BUCKET_ID: ${{ inputs.scratch_app_bucket_id }}
       JUPYTER_APP_BUCKET_ID: ${{ inputs.jupyter_app_bucket_id }}
-      TERRAFORM_STATE_BUCKET: ${{ inputs.terraform_state_bucket }}
 
       ECS_CLUSTER: ${{ inputs.ecs_cluster }}
       ECS_SERVICE: ${{ inputs.ecs_service }}
@@ -187,10 +182,6 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
 
-      - name: Initialize Terraform
-        run: tofu init -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
-        working-directory: ./terraform/deployment
-
       # the database must be fully migrated before running prisma:generate
       # we build the backend so that we can upload the source maps to sentry
       - name: Prepare test database
@@ -215,8 +206,11 @@ jobs:
       # Actual deployment
 
       - name: Deploy to S3 buckets
-        run: tofu apply -auto-approve -var="frontend_bucket_id=${{ env.FRONTEND_BUCKET_ID }}" -var="scratchapp_bucket_id=${{ env.SCRATCH_APP_BUCKET_ID }}" -var="jupyterapp_bucket_id=${{ env.JUPYTER_APP_BUCKET_ID }}" -var="region=${{ env.AWS_REGION }}" -var="tfstate_bucket_name=${{ env.TERRAFORM_STATE_BUCKET }}"
-        working-directory: ./terraform/deployment
+        shell: bash
+        run: |
+          aws s3 sync ./frontend/dist/ "s3://${FRONTEND_BUCKET_ID}/" --delete
+          aws s3 sync ./apps/scratch/build/ "s3://${SCRATCH_APP_BUCKET_ID}/" --delete
+          aws s3 sync ./apps/jupyter/dist/app/ "s3://${JUPYTER_APP_BUCKET_ID}/" --delete
 
       - name: Authenticate to ECR
         run: aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY_URI }}

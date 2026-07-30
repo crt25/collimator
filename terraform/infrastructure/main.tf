@@ -111,12 +111,3 @@ module "cdn" {
 
   tags = var.tags
 }
-
-module "cd_backend" {
-  source = "./modules/cd-backend"
-
-  name   = "${var.name}-${var.environment}-cd-tf-state"
-  region = var.region
-
-  tags = var.tags
-}

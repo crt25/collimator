@@ -42,8 +42,6 @@ jobs:
       scratch_app_bucket_id: collimator-prod-app-scratch
       jupyter_app_bucket_id: collimator-prod-app-jupyter
 
-      terraform_state_bucket: collimator-prod-cd-tf-state
-
       ecs_cluster: collimator-prod-backend
       ecs_service: collimator-prod-backend
 

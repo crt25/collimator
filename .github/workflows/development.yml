@@ -42,7 +42,6 @@ jobs:
       frontend_bucket_id: collimator-dev-static-frontend
       scratch_app_bucket_id: collimator-dev-app-scratch
       jupyter_app_bucket_id: collimator-dev-app-jupyter
-      terraform_state_bucket: collimator-dev-cd-tf-state
 
       ecs_cluster: collimator-dev-backend
       ecs_service: collimator-dev-backend

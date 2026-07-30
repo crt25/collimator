@@ -29,7 +29,3 @@ output "backend_repository_url" {
 output "backend_arn" {
   value = module.backend.backend_arn
 }
-
-output "cd_backend_bucket" {
-  value = module.cd_backend.bucket
-}

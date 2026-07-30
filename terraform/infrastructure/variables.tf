@@ -33,11 +33,6 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 
-variable "tfstate_bucket_name" {
-  type    = string
-  default = "collimator-dev-tf-state"
-}
-
 variable "tags" {
   type = map(string)
   default = {
