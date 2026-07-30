@@ -347,6 +347,7 @@ model StudentActivityApp {
 }
 
 model SolutionActivityReference {
+  createdAt DateTime @default(now())
   solutionHash Bytes
   studentId    Int
   sessionId    Int
