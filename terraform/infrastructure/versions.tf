@@ -8,9 +8,12 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = var.tfstate_bucket_name
-    key    = "infrastructure/infrastructure"
-    region = var.region
+  cloud {
+    hostname = "classmosaic.scalr.io"
+    organization = "classmosaic-dev"
+
+    workspaces {
+      name = "classmosaic-dev"
+    }
   }
 }
