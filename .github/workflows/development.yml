@@ -27,15 +27,15 @@ jobs:
     with:
       environment: development
 
-      aws_region: ${{ vars.AWS_REGION }}
+      aws_region: ${{ vars.DEV_AWS_REGION }}
 
-      ecr_registry_uri: ${{ vars.ECR_REGISTRY_URI }}
+      ecr_registry_uri: ${{ vars.DEV_ECR_REGISTRY_URI }}
 
       role_to_assume: ${{ vars.DEV_ROLE_TO_ASSUME }}
 
-      deploy_url: ${{ vars.DEPLOY_URL }}
+      deploy_url: ${{ vars.DEV_DEPLOY_URL }}
 
-      entra_id_client_id: ${{ vars.ENTRA_ID_CLIENT_ID }}
+      entra_id_client_id: ${{ vars.DEV_ENTRA_ID_CLIENT_ID }}
 
       backend_image_name: collimator-dev-backend
 
@@ -48,11 +48,11 @@ jobs:
       ecs_service: collimator-dev-backend
 
       sentry_environment: development
-      frontend_sentry_dsn: ${{ vars.FRONTEND_SENTRY_DSN }}
-      scratch_app_sentry_dsn: ${{ vars.APP_SCRATCH_SENTRY_DSN }}
+      frontend_sentry_dsn: ${{ vars.DEV_FRONTEND_SENTRY_DSN }}
+      scratch_app_sentry_dsn: ${{ vars.DEV_APP_SCRATCH_SENTRY_DSN }}
       
     secrets:
-      FRONTEND_SENTRY_AUTH_TOKEN: ${{ secrets.FRONTEND_SENTRY_AUTH_TOKEN }}
-      APP_SCRATCH_SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
-      APP_JUPYTER_SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
-      BACKEND_SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
+      FRONTEND_SENTRY_AUTH_TOKEN: ${{ secrets.DEV_FRONTEND_SENTRY_AUTH_TOKEN }}
+      APP_SCRATCH_SENTRY_AUTH_TOKEN: ${{ secrets.DEV_APP_SCRATCH_SENTRY_AUTH_TOKEN }}
+      APP_JUPYTER_SENTRY_AUTH_TOKEN: ${{ secrets.DEV_APP_JUPYTER_SENTRY_AUTH_TOKEN }}
+      BACKEND_SENTRY_AUTH_TOKEN: ${{ secrets.DEV_BACKEND_SENTRY_AUTH_TOKEN }}
