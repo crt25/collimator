@@ -15,6 +15,11 @@ import { PythonVersion } from "./python-version";
 import PythonLexer from "./generated/PythonLexer";
 import PythonParser from "./generated/PythonParser";
 import { PythonAstVisitor } from "./python-ast-visitor";
+import { CollectingErrorListener } from "./python-error-listener";
+import {
+  PythonSyntaxError,
+  PythonSyntaxErrorDetail,
+} from "./python-syntax-error";
 
 const versionRegex = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?$/;
 
@@ -65,14 +70,29 @@ export const convertPythonV3ToStatement = (
     };
   }
 
+  // Collect syntax errors instead of ANTLR's default console logging: an
+  // error-recovered parse tree leaves grammar-mandatory children null (which
+  // crashes the visitor) or silently yields a garbage AST, so invalid Python
+  // must be rejected with a controlled error before visiting.
+  const syntaxErrors: PythonSyntaxErrorDetail[] = [];
+
   const chars = new CharStream(input);
   const lexer = new PythonLexer(chars);
+  lexer.removeErrorListeners();
+  lexer.addErrorListener(new CollectingErrorListener(syntaxErrors));
+
   const tokens = new CommonTokenStream(lexer);
   const parser = new PythonParser(tokens);
+  parser.removeErrorListeners();
+  parser.addErrorListener(new CollectingErrorListener(syntaxErrors));
   parser.buildParseTrees = true;
 
   // Use the file input entrypoint
   const tree = parser.file_input();
+
+  if (syntaxErrors.length > 0) {
+    throw new PythonSyntaxError(syntaxErrors);
+  }
 
   const { node, functionDeclarations } = new PythonAstVisitor().visit(tree);
 
