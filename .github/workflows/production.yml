@@ -1,7 +1,9 @@
 name: Production
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - production
 
 concurrency:
   group: production-deployment
@@ -14,7 +16,7 @@ permissions:
 
 jobs:
   tests:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/production'
     uses: ./.github/workflows/tests.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
