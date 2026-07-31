@@ -22,6 +22,11 @@ tasks:
     cmds:
       - git submodule update --init --recursive
 
+  submodules:terraform:
+    desc: Initialize the optional infrastructure submodule
+    cmds:
+      - git -c submodule.terraform.update=checkout submodule update --init terraform
+
   deps:setup:
     desc: Install all dependencies
     deps:

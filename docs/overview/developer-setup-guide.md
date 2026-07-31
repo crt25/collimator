@@ -4,7 +4,7 @@
 
 This guide provides instructions for setting up the ClassMosaic project for local development. The project is a monorepo and uses Git submodules as well.
 
-The repository is structured into several key directories, including `backend`, `frontend`, `apps` for the applications, `e2e` for end-to-end tests, and `terraform` for infrastructure as code.
+The repository is structured into several key directories, including `backend`, `frontend`, `apps` for the applications, and `e2e` for end-to-end tests. Infrastructure as code is maintained in the separate [collimator-infrastructure](https://github.com/crt25/collimator-infrastructure) repository and is available here through the optional `terraform` submodule.
 
 ### Prerequisites
 
@@ -24,6 +24,12 @@ Download the source code and initialize submodules:
 git clone https://github.com/crt25/collimator.git
 cd collimator
 git submodule update --init --recursive --progress
+```
+
+The infrastructure submodule is skipped during the general submodule setup because it is not needed for application development. Initialize it explicitly when working on infrastructure:
+
+```sh
+task submodules:terraform
 ```
 
 ### Installing the development tools
@@ -162,7 +168,7 @@ This process creates two Docker containers:
 
 ## Infrastructure and deployment
 
-The project uses Terraform to manage its cloud infrastructure on AWS. The configuration is located in the `terraform/infrastructure` directory. It defines modules for networking, database, backend (Fargate), frontend (S3/CloudFront), and apps (S3/CloudFront).
+The project uses OpenTofu to manage its cloud infrastructure on AWS. The configuration is maintained in the [collimator-infrastructure](https://github.com/crt25/collimator-infrastructure) repository. It defines modules for networking, database, backend (Fargate), frontend (S3/CloudFront), and apps (S3/CloudFront).
 
 This setup is intended for deployment and is not required for local development, but it provides context on how the application is hosted in a production-like environment. Files into `.github/workflows` provide another way to understand the project architecture.
 
