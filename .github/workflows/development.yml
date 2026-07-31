@@ -19,6 +19,7 @@ jobs:
   tests:
     uses: ./.github/workflows/tests.yml
     secrets:
+      SUBMODULES_TOKEN: ${{ secrets.DEV_SUBMODULES_TOKEN }}
       SONAR_TOKEN: ${{ secrets.DEV_SONAR_TOKEN }}
 
   deploy:
@@ -51,4 +52,5 @@ jobs:
       scratch_app_sentry_dsn: ${{ vars.DEV_APP_SCRATCH_SENTRY_DSN }}
       
     secrets:
+      SUBMODULES_TOKEN: ${{ secrets.DEV_SUBMODULES_TOKEN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.DEV_SENTRY_AUTH_TOKEN }}

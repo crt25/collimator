@@ -19,6 +19,7 @@ jobs:
     if: github.ref == 'refs/heads/production'
     uses: ./.github/workflows/tests.yml
     secrets:
+      SUBMODULES_TOKEN: ${{ secrets.PROD_SUBMODULES_TOKEN }}
       SONAR_TOKEN: ${{ secrets.PROD_SONAR_TOKEN }}
 
   deploy:
@@ -50,4 +51,5 @@ jobs:
       scratch_app_sentry_dsn: ${{ vars.PROD_APP_SCRATCH_SENTRY_DSN }}
       
     secrets:
+      SUBMODULES_TOKEN: ${{ secrets.PROD_SUBMODULES_TOKEN }}
       SENTRY_AUTH_TOKEN: ${{ secrets.PROD_SENTRY_AUTH_TOKEN }}

@@ -5,6 +5,8 @@ on:
   merge_group:
   workflow_call:
     secrets:
+      SUBMODULES_TOKEN:
+        required: true
       SONAR_TOKEN:
         required: true
 
@@ -46,8 +48,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v6
         with: &checkout_options
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          token: ${{ secrets.SUBMODULES_TOKEN }}
+          persist-credentials: false
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
@@ -206,8 +208,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          token: ${{ secrets.SUBMODULES_TOKEN }}
+          persist-credentials: false
           submodules: "true"
           lfs: "true"
           fetch-depth: 0

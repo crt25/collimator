@@ -20,6 +20,8 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.DEV_SUBMODULES_TOKEN }}
+          persist-credentials: false
           submodules: recursive
 
       - name: Setup CI environment
@@ -28,14 +30,14 @@ jobs:
       - name: Check third-party licence inventory
         id: check
         continue-on-error: true
-        uses: Anansi-Solutions/SBOMlet@main
+        uses: Anansi-Solutions/SBOMlet@ff7c08e11b73b121bb8a6cfd13bde2b98fbde16b
         with:
           mode: check
           policy: .sbomlet.policy.toml
 
       - name: Regenerate licenses
         if: steps.check.outcome == 'failure'
-        uses: Anansi-Solutions/SBOMlet@main
+        uses: Anansi-Solutions/SBOMlet@ff7c08e11b73b121bb8a6cfd13bde2b98fbde16b
         with:
           mode: generate
           policy: .sbomlet.policy.toml
