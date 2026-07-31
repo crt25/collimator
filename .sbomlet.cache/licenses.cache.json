@@ -1,0 +1,3047 @@
+{
+  "entries": {
+    "pkg:npm/%40babel/compat-data@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/core@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/generator@7.27.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-annotate-as-pure@7.27.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-create-class-features-plugin@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-create-regexp-features-plugin@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-define-polyfill-provider@0.6.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-member-expression-to-functions@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-module-transforms@7.27.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-optimise-call-expression@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-remap-async-to-generator@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-replace-supers@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-skip-transparent-expression-wrappers@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-validator-identifier@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helper-wrap-function@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/helpers@7.27.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/parser@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-bugfix-firefox-class-in-computed-class-key@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-bugfix-safari-class-field-initializer-scope@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-bugfix-v8-static-class-fields-redefine-readonly@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-syntax-import-assertions@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-syntax-import-attributes@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-arrow-functions@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-async-generator-functions@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-async-to-generator@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-block-scoped-functions@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-block-scoping@7.27.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-class-properties@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-class-static-block@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-classes@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-computed-properties@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-destructuring@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-dotall-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-duplicate-keys@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-duplicate-named-capturing-groups-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-dynamic-import@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-exponentiation-operator@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-export-namespace-from@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-for-of@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-function-name@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-json-strings@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-literals@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-logical-assignment-operators@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-member-expression-literals@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-modules-amd@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-modules-commonjs@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-modules-systemjs@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-modules-umd@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-named-capturing-groups-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-new-target@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-nullish-coalescing-operator@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-numeric-separator@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-object-rest-spread@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-object-super@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-optional-catch-binding@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-optional-chaining@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-parameters@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-private-methods@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-private-property-in-object@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-property-literals@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-regenerator@7.27.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-regexp-modifiers@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-reserved-words@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-shorthand-properties@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-spread@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-sticky-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-template-literals@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-typeof-symbol@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-unicode-escapes@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-unicode-property-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-unicode-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-transform-unicode-sets-regex@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/preset-env@7.27.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/traverse@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/types@7.27.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/autocomplete@6.18.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/commands@6.8.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-cpp@6.0.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-css@6.3.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-html@6.4.9": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-java@6.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-javascript@6.2.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-json@6.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-markdown@6.3.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-php@6.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-python@6.2.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-rust@6.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-sql@6.9.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-wast@6.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lang-xml@6.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/language@6.11.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/legacy-modes@6.5.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/lint@6.8.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/search@6.5.11": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/state@6.5.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40codemirror/view@6.38.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40csstools/css-parser-algorithms@2.7.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40csstools/css-tokenizer@2.4.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40csstools/media-query-list-parser@2.1.13": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40csstools/selector-specificity@3.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT-0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40discoveryjs/json-ext@0.5.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40eslint-community/eslint-utils@4.7.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/cli@6.14.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/ecma402-abstract@2.3.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/icu-messageformat-parser@2.11.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/icu-skeleton-parser@1.8.16": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/intl-localematcher@0.6.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40formatjs/intl@3.1.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40fortawesome/fontawesome-free@5.15.4": {
+      "fetchedFrom": "npm",
+      "license": "(CC-BY-4.0 AND OFL-1.1 AND MIT)",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jridgewell/gen-mapping@0.3.11": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jridgewell/source-map@0.3.9": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jridgewell/sourcemap-codec@1.5.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jridgewell/trace-mapping@0.3.28": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyter/react-components@0.16.7": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyter/web-components@0.16.7": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyter/ydoc@3.1.0": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/application@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/apputils-extension@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/apputils@4.5.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/attachments@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/builder@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/cells@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/codeeditor@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/codemirror@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/coreutils@6.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/docmanager@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/docregistry@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/documentsearch@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/filebrowser@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/lsp@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/mainmenu@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/nbformat@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/notebook@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/observables@5.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/outputarea@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/property-inspector@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/rendermime-interfaces@3.12.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/rendermime@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/running-extension@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/running@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/services@7.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/settingregistry@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/statedb@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/statusbar@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/testing@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/testutils@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/toc@6.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/translation@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/ui-components@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40jupyterlab/workspaces@4.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/common@1.2.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/cpp@1.1.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/css@1.2.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/generator@1.8.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/highlight@1.2.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/html@1.3.10": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/java@1.1.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/javascript@1.5.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/json@1.0.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/lr@1.4.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/markdown@1.4.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/php@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/python@1.1.18": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/rust@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lezer/xml@1.0.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/algorithm@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/application@2.4.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/collections@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/commands@2.3.2": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/coreutils@2.2.1": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/disposable@2.1.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/domutils@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/dragdrop@2.1.6": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/keyboard@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/messaging@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/polling@2.1.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/properties@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/signaling@2.1.4": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/virtualdom@2.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40lumino/widgets@2.7.1": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40marijn/find-cluster-break@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40microsoft/fast-colors@5.3.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40microsoft/fast-element@1.14.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40microsoft/fast-foundation@2.50.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40microsoft/fast-web-utilities@5.4.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40pkgr/core@0.2.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40rjsf/core@5.24.12": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40rjsf/utils@5.24.12": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/create-react-class@15.6.9": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/minimist@1.2.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/node@24.0.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/normalize-package-data@2.4.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/prop-types@15.7.15": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/react-addons-linked-state-mixin@0.14.27": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/react@18.3.23": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/react@19.1.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/react@19.2.14": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/source-list-map@0.1.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40types/webpack-sources@0.1.12": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/eslint-plugin@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/parser@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/project-service@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/scope-manager@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/tsconfig-utils@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/type-utils@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/types@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/typescript-estree@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/utils@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40typescript-eslint/visitor-keys@8.39.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40webpack-cli/configtest@2.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40webpack-cli/info@2.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40webpack-cli/serve@2.0.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/arrify@1.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/astral-regex@2.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/babel-plugin-polyfill-corejs2@0.4.14": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/babel-plugin-polyfill-regenerator@0.6.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/balanced-match@2.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/brace-expansion@1.1.12": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/brace-expansion@2.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/browserslist@4.25.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/camelcase-keys@7.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/caniuse-lite@1.0.30001726": {
+      "fetchedFrom": "npm",
+      "license": "CC-BY-4.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/clone-deep@4.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/color-convert@0.5.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/colord@2.9.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/colorette@2.0.20": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/colors@0.6.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/commander@10.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/commander@2.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/commander@9.5.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/compute-gcd@1.2.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/compute-lcm@1.1.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/core-js-compat@3.43.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/crelt@1.0.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/css-functions-list@3.2.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/css-loader@6.11.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/css-mediaquery@0.1.2": {
+      "fetchedFrom": "npm",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/css-tree@2.3.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/csstype@3.0.10": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/data-urls@2.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/debug@4.4.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/decamelize-keys@1.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/decamelize@5.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/dedent@1.6.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/dom-serializer@2.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/domhandler@5.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/domutils@3.2.2": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/duplicate-package-checker-webpack-plugin@3.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/electron-to-chromium@1.5.178": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/enhanced-resolve@5.18.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/envinfo@7.14.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/es-abstract@1.24.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/exenv-es6@1.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/fastest-levenshtein@1.0.16": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/fdir@6.4.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/file-entry-cache@7.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/flat-cache@3.2.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/flat@5.0.2": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/form-data@4.0.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/free-style@3.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/glob@7.1.7": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/global-modules@2.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/global-prefix@3.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/globjoin@0.1.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/hard-rejection@2.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/harmony-reflect@1.6.2": {
+      "fetchedFrom": "npm",
+      "license": "(Apache-2.0 OR MPL-1.1)",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/hosted-git-info@4.1.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/html-tags@3.3.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/htmlparser2@8.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/http-cache-semantics@4.2.0": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/hull.js@0.2.10": {
+      "fetchedFrom": "npm",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/identity-obj-proxy@3.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/import-lazy@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/indent-string@5.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/interpret@3.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/intl-messageformat@10.7.18": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/is-plain-object@2.0.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/isobject@3.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/isomorphic.js@0.2.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/jest-junit@15.0.0": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/json-parse-even-better-errors@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/json-schema-compare@0.2.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/json-schema-merge-allof@0.8.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/jsonify@0.0.1": {
+      "fetchedFrom": "npm",
+      "license": "Public Domain",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/kind-of@6.0.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/known-css-properties@0.29.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lib0@0.2.109": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/license-webpack-plugin@2.3.21": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lodash-es@4.17.21": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lodash.escape@4.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lodash.mergewith@4.6.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lodash.truncate@4.4.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/lru-cache@6.0.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/map-obj@1.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/map-obj@4.3.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/markdown-to-jsx@7.7.10": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/mathml-tag-names@2.1.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/mdn-data@2.0.30": {
+      "fetchedFrom": "npm",
+      "license": "CC0-1.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/memorystream@0.3.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/meow@10.1.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/microee@0.0.6": {
+      "fetchedFrom": "npm",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/mini-css-extract-plugin@2.9.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/mini-svg-data-uri@1.4.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/minimist-options@4.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/node-clone@0.1.1": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
+    "pkg:npm/normalize-package-data@3.0.3": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/npm-normalize-package-bin@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/npm-run-all2@7.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/parse-srcset@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/path-browserify@1.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/pidtree@0.6.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/postcss-resolve-nested-selector@0.1.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/postcss-safe-parser@6.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/postcss-selector-parser@6.1.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/postcss-selector-parser@7.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/prettier@3.6.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/quick-lru@5.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/react-intl@7.1.14": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/react-toastify@9.1.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/read-package-json-fast@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/read-pkg-up@8.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/read-pkg@6.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/rechoir@0.8.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/redent@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/sanitize-html@2.12.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/schema-utils@4.3.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/scratch-render-fonts@1.0.220": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
+    "pkg:npm/semver@7.7.2": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/shallow-clone@3.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/shell-quote@1.8.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/simulate-event@1.4.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/slice-ansi@4.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/socks@2.8.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/source-list-map@2.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/source-map-loader@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/source-map-loader@1.1.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/source-map@0.1.43": {
+      "fetchedFrom": "npm",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/spdx-license-ids@3.0.21": {
+      "fetchedFrom": "npm",
+      "license": "CC0-1.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/string-width-cjs@4.2.3": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/strip-ansi-cjs@6.0.1": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/style-loader@3.3.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/style-mod@4.1.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/style-search@0.1.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/stylelint-config-recommended@13.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/stylelint-config-standard@34.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/stylelint-csstree-validator@3.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/stylelint-prettier@4.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/stylelint@15.11.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/supports-hyperlinks@3.2.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/svg-tags@1.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/synckit@0.11.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/tabbable@5.3.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/table@6.9.0": {
+      "fetchedFrom": "npm",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/tapable@2.2.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/terser@5.43.1": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/tinyglobby@0.2.14": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/tr46@2.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/trim-newlines@4.1.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/ts-jest@29.4.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/type-fest@1.4.0": {
+      "fetchedFrom": "npm",
+      "license": "(MIT OR CC0-1.0)",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/type-fest@4.41.0": {
+      "fetchedFrom": "npm",
+      "license": "(MIT OR CC0-1.0)",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/typescript@5.0.4": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/typestyle@2.4.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/undici-types@7.8.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/union@0.5.0": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
+    "pkg:npm/validate.io-array@1.0.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/validate.io-function@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/validate.io-integer-array@1.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/validate.io-integer@1.0.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/validate.io-number@1.0.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-licenses-array"
+    },
+    "pkg:npm/vscode-jsonrpc@6.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/vscode-jsonrpc@8.2.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/vscode-jsonrpc@8.2.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/vscode-languageserver-protocol@3.17.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/vscode-languageserver-types@3.17.5": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/vscode-ws-jsonrpc@1.0.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/w3c-keyname@2.2.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/webidl-conversions@6.1.0": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/webpack-cli@5.1.4": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/webpack-merge@5.10.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/webpack-sources@1.4.3": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/webpack@5.99.9": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/whatwg-mimetype@2.3.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/whatwg-url@8.7.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/wildcard@2.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/worker-loader@3.0.8": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/wrap-ansi-cjs@7.0.0": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "top-license"
+    },
+    "pkg:npm/xml@1.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/y-protocols@1.0.6": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/yargs-parser@20.2.9": {
+      "fetchedFrom": "npm",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/yjs@13.6.27": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:pypi/annotated-types@0.7.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/anyio@4.12.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/appnope@0.1.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/argon2-cffi-bindings@25.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/argon2-cffi@25.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/arrow@1.4.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache Software License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/asttokens@3.0.1": {
+      "fetchedFrom": "pypi",
+      "license": "Apache 2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/async-lru@2.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/attrs@25.4.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/babel@2.18.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/beautifulsoup4@4.14.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/bleach@6.3.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache Software License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/certifi@2026.1.4": {
+      "fetchedFrom": "pypi",
+      "license": "MPL-2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/cffi@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/charset-normalizer@3.4.4": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/colorama@0.4.6": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/comm@0.2.3": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/copier@9.11.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/debugpy@1.8.20": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/decorator@5.2.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/defusedxml@0.7.1": {
+      "fetchedFrom": "pypi",
+      "license": "PSFL",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/doit@0.37.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/dunamai@1.25.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/executing@2.2.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/fastjsonschema@2.21.2": {
+      "fetchedFrom": "pypi",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/fqdn@1.4.0": {
+      "fetchedFrom": "pypi",
+      "license": "MPL 2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/fqdn@1.5.1": {
+      "fetchedFrom": "pypi",
+      "license": "MPL 2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/funcy@2.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/h11@0.16.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/httpcore@1.0.9": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/httpx@0.28.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/idna@3.11": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/ipykernel@7.2.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/ipython-pygments-lexers@1.1.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/ipython@9.10.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/isoduration@20.11.0": {
+      "fetchedFrom": "pypi",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jedi@0.19.2": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/jinja2-ansible-filters@1.3.2": {
+      "fetchedFrom": "pypi",
+      "license": "GPL3",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/jinja2-time@0.2.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/jinja2@3.1.6": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/json5@0.13.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache Software License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jsonpointer@3.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "Modified BSD License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/jsonschema-specifications@2025.9.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/jsonschema@4.26.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/jupyter-client@8.8.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyter-core@5.9.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/jupyter-events@0.12.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyter-lsp@2.3.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/jupyter-server-terminals@0.5.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyter-server@2.17.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlab-language-pack-fr-fr@4.5.post1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlab-pygments@0.3.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlab-server@2.28.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlab@4.5.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlite-core@0.7.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/jupyterlite-pyodide-kernel@0.7.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/lark@1.3.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/libarchive-c@5.3": {
+      "fetchedFrom": "pypi",
+      "license": "CC0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/markupsafe@3.0.3": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/matplotlib-inline@0.2.1": {
+      "fetchedFrom": "pypi",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
+    "pkg:pypi/mistune@3.2.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/nbclient@0.10.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/nbconvert@7.17.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/nbformat@5.10.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/nest-asyncio@1.6.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/notebook-shim@0.2.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/packaging@26.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0 OR BSD-2-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/pandocfilters@1.5.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/parso@0.8.6": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pathspec@1.0.4": {
+      "fetchedFrom": "pypi",
+      "license": "MPL-2.0",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/pexpect@4.9.0": {
+      "fetchedFrom": "pypi",
+      "license": "ISC license",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pkginfo@1.12.1.2": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/platformdirs@4.7.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/plumbum@1.10.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/prometheus-client@0.24.1": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0 AND BSD-2-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/prompt-toolkit@3.0.52": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/psutil@7.2.2": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/ptyprocess@0.7.0": {
+      "fetchedFrom": "pypi",
+      "license": "ISC",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/pure-eval@0.2.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pycparser@3.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/pydantic-core@2.41.5": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/pydantic@2.12.5": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/pygments@2.19.2": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/python-dateutil@2.9.0.post0": {
+      "fetchedFrom": "pypi",
+      "license": "Dual License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/python-json-logger@4.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-2-Clause License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pywin32@311": {
+      "fetchedFrom": "pypi",
+      "license": "PSF",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pywinpty@3.0.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/pyyaml@6.0.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/pyzmq@27.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/questionary@2.1.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/referencing@0.37.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/requests@2.32.5": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/rfc3339-validator@0.1.4": {
+      "fetchedFrom": "pypi",
+      "license": "MIT license",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/rfc3986-validator@0.1.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT license",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/rfc3987-syntax@1.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/rpds-py@0.30.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/send2trash@2.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/setuptools@82.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/six@1.17.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/soupsieve@2.8.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/stack-data@0.6.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/terminado@0.18.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/tinycss2@1.4.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/tornado@6.5.4": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/traitlets@5.14.3": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/typing-extensions@4.15.0": {
+      "fetchedFrom": "pypi",
+      "license": "PSF-2.0",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/typing-inspection@0.4.2": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/tzdata@2025.3": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/uri-template@1.3.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/urllib3@2.6.3": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/wcwidth@0.6.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/webcolors@25.10.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/webencodings@0.5.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/websocket-client@1.9.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "license-field"
+    }
+  },
+  "version": 1
+}
