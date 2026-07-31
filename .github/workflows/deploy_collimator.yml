@@ -12,7 +12,7 @@ on:
         required: true
         type: string
 
-      ecr_registry_uri:
+      backend_ecr_registry_uri:
         required: true
         type: string
         
@@ -44,11 +44,11 @@ on:
         required: true
         type: string
 
-      ecs_cluster:
+      backend_cluster_name:
         required: true
         type: string
 
-      ecs_service:
+      backend_service_name:
         required: true
         type: string
 
@@ -65,16 +65,7 @@ on:
         type: string
 
     secrets:
-      FRONTEND_SENTRY_AUTH_TOKEN:
-        required: true
-
-      APP_SCRATCH_SENTRY_AUTH_TOKEN:
-        required: true
-
-      APP_JUPYTER_SENTRY_AUTH_TOKEN:
-        required: true
-
-      BACKEND_SENTRY_AUTH_TOKEN:
+      SENTRY_AUTH_TOKEN:
         required: true
 
 jobs:
@@ -110,7 +101,7 @@ jobs:
 
       AWS_REGION: ${{ inputs.aws_region }}
 
-      ECR_REGISTRY_URI: ${{ inputs.ecr_registry_uri }}
+      BACKEND_ECR_REGISTRY_URI: ${{ inputs.backend_ecr_registry_uri }}
       
       ROLE_TO_ASSUME: ${{ inputs.role_to_assume }}
 
@@ -123,8 +114,8 @@ jobs:
       SCRATCH_APP_BUCKET_ID: ${{ inputs.scratch_app_bucket_id }}
       JUPYTER_APP_BUCKET_ID: ${{ inputs.jupyter_app_bucket_id }}
 
-      ECS_CLUSTER: ${{ inputs.ecs_cluster }}
-      ECS_SERVICE: ${{ inputs.ecs_service }}
+      BACKEND_CLUSTER_NAME: ${{ inputs.backend_cluster_name }}
+      BACKEND_SERVICE_NAME: ${{ inputs.backend_service_name }}
       
       # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
       SENTRY_RELEASE: ${{ github.sha }}
@@ -162,7 +153,7 @@ jobs:
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
           NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ env.ENTRA_ID_CLIENT_ID }}
           NEXT_PUBLIC_SENTRY_DSN: ${{ env.FRONTEND_SENTRY_DSN }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.FRONTEND_SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Build scratch app
         run: task apps:scratch:build
@@ -172,7 +163,7 @@ jobs:
       - name: Upload scratch app source maps
         run: task apps:scratch:sourcemap:upload
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.APP_SCRATCH_SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Build jupyter app
         run: task apps:jupyter:build
@@ -180,7 +171,7 @@ jobs:
       - name: Upload jupyter app source maps
         run: task apps:jupyter:sourcemap:upload
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.APP_JUPYTER_SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       # the database must be fully migrated before running prisma:generate
       # we build the backend so that we can upload the source maps to sentry
@@ -193,14 +184,14 @@ jobs:
       - name: Upload backend source maps
         run: task backend:sourcemap:upload
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.BACKEND_SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Build backend Docker image
         run: docker build -t ${{ env.BACKEND_IMAGE_NAME }} .
         working-directory: ./backend
 
       - name: Tag Docker image
-        run: docker tag ${{ env.BACKEND_IMAGE_NAME }}:latest ${{ env.ECR_REGISTRY_URI }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        run: docker tag "${BACKEND_IMAGE_NAME}:latest" "${BACKEND_ECR_REGISTRY_URI}:latest"
         working-directory: ./backend
 
       # Actual deployment
@@ -213,13 +204,14 @@ jobs:
           aws s3 sync ./apps/jupyter/dist/app/ "s3://${JUPYTER_APP_BUCKET_ID}/" --delete
 
       - name: Authenticate to ECR
-        run: aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY_URI }}
+        shell: bash
+        run: aws ecr get-login-password --region "${AWS_REGION}" | docker login --username AWS --password-stdin "${BACKEND_ECR_REGISTRY_URI%%/*}"
 
       - name: Upload Docker image
-        run: docker push ${{ env.ECR_REGISTRY_URI }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+        run: docker push "${BACKEND_ECR_REGISTRY_URI}:latest"
         working-directory: ./backend
 
       # not trivial with terraform, so we do it via the AWS CLI
       - name: Deploy new Docker image
-        run: aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} --service ${{ env.ECS_SERVICE }} --force-new-deployment
+        run: aws ecs update-service --cluster "${BACKEND_CLUSTER_NAME}" --service "${BACKEND_SERVICE_NAME}" --force-new-deployment
         working-directory: ./backend

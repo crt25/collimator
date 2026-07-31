@@ -19,7 +19,7 @@ jobs:
     if: github.ref == 'refs/heads/production'
     uses: ./.github/workflows/tests.yml
     secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.PROD_SONAR_TOKEN }}
 
   deploy:
     needs: tests
@@ -29,7 +29,7 @@ jobs:
 
       aws_region: ${{ vars.PROD_AWS_REGION }}
 
-      ecr_registry_uri: ${{ vars.PROD_ECR_REGISTRY_URI }}
+      backend_ecr_registry_uri: ${{ vars.PROD_BACKEND_ECR_REGISTRY_URI }}
 
       role_to_assume: ${{ vars.PROD_ROLE_TO_ASSUME }}
 
@@ -37,20 +37,17 @@ jobs:
 
       entra_id_client_id: ${{ vars.PROD_ENTRA_ID_CLIENT_ID }}
 
-      backend_image_name: collimator-prod-backend
-      frontend_bucket_id: collimator-prod-static-frontend
-      scratch_app_bucket_id: collimator-prod-app-scratch
-      jupyter_app_bucket_id: collimator-prod-app-jupyter
+      backend_image_name: ${{ vars.PROD_BACKEND_IMAGE_NAME }}
+      frontend_bucket_id: ${{ vars.PROD_FRONTEND_BUCKET_ID }}
+      scratch_app_bucket_id: ${{ vars.PROD_SCRATCH_APP_BUCKET_ID }}
+      jupyter_app_bucket_id: ${{ vars.PROD_JUPYTER_APP_BUCKET_ID }}
 
-      ecs_cluster: collimator-prod-backend
-      ecs_service: collimator-prod-backend
+      backend_cluster_name: ${{ vars.PROD_BACKEND_CLUSTER_NAME }}
+      backend_service_name: ${{ vars.PROD_BACKEND_SERVICE_NAME }}
 
       sentry_environment: production
       frontend_sentry_dsn: ${{ vars.PROD_FRONTEND_SENTRY_DSN }}
       scratch_app_sentry_dsn: ${{ vars.PROD_APP_SCRATCH_SENTRY_DSN }}
       
     secrets:
-      FRONTEND_SENTRY_AUTH_TOKEN: ${{ secrets.PROD_FRONTEND_SENTRY_AUTH_TOKEN }}
-      APP_SCRATCH_SENTRY_AUTH_TOKEN: ${{ secrets.PROD_APP_SCRATCH_SENTRY_AUTH_TOKEN }}
-      APP_JUPYTER_SENTRY_AUTH_TOKEN: ${{ secrets.PROD_APP_JUPYTER_SENTRY_AUTH_TOKEN }}
-      BACKEND_SENTRY_AUTH_TOKEN: ${{ secrets.PROD_BACKEND_SENTRY_AUTH_TOKEN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.PROD_SENTRY_AUTH_TOKEN }}
