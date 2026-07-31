@@ -1,0 +1,20 @@
+[document]
+title = "Collimator — Third-Party Licenses"
+
+# apps/scratch is distributed under AGPL-3.0, so in-family copyleft
+# dependencies within that workspace impose no additional obligation.
+[[workspace.copyleft_suppressed]]
+path = "apps/scratch"
+license = "AGPL-3.0-only"
+description = "apps/scratch and its scratch-editor submodule are distributed under AGPL-3.0-only; the bundled scratch-* AGPL dependencies are in-family copyleft and impose no additional obligations within this workspace."
+
+# Production occurrences always gate. Keep incomplete metadata and
+# development/build-time dependencies visible without blocking initially.
+[unknown]
+handling = "warn"
+
+[dev_dependencies]
+handling = "warn"
+
+[os_dependencies]
+handling = "warn"

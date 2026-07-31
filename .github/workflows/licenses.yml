@@ -1,0 +1,88 @@
+name: Licenses refresh
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  licenses:
+    # Never gate refresh PRs themselves, or a failed refresh would recurse.
+    if: startsWith(github.head_ref, 'licenses-refresh/') == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          submodules: recursive
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2
+
+      - name: Check third-party licence inventory
+        id: check
+        continue-on-error: true
+        uses: Anansi-Solutions/SBOMlet@main
+        with:
+          mode: check
+          policy: .sbomlet.policy.toml
+
+      - name: Regenerate licenses
+        if: steps.check.outcome == 'failure'
+        uses: Anansi-Solutions/SBOMlet@main
+        with:
+          mode: generate
+          policy: .sbomlet.policy.toml
+
+      - name: Check for changes
+        id: git-check
+        if: steps.check.outcome == 'failure'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "modified=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "modified=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a PR with the refreshed inventory
+        id: cpr
+        if: steps.git-check.outputs.modified == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore: refresh third-party licence inventory"
+          title: "license refresh: ${{ github.event.pull_request.title }}"
+          body: |
+            The committed third-party licence inventory is out of date for #${{ github.event.number }}.
+
+            This PR regenerates the licence inventory. Merge it into that branch to make the licence
+            check pass.
+          branch: licenses-refresh/${{ github.head_ref }}
+          base: ${{ github.head_ref }}
+          labels: |
+            licenses
+            automated pr
+          delete-branch: true
+
+      - name: Comment with the refresh PR link
+        if: steps.cpr.outputs.pull-request-url
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🟠 The third-party licence inventory is out of date. Merge ${{ steps.cpr.outputs.pull-request-url }} into this branch to refresh it.`,
+            })
+
+      - name: Fail if the gate did not pass
+        if: steps.check.outcome == 'failure'
+        run: |
+          echo "::error::Licence gate failed. If a refresh PR was opened, merge it; otherwise a dependency's licence needs a policy decision in .sbomlet.policy.toml."
+          exit 1
