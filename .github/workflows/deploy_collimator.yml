@@ -65,9 +65,6 @@ on:
         type: string
 
     secrets:
-      SUBMODULES_TOKEN:
-        required: true
-
       SENTRY_AUTH_TOKEN:
         required: true
 
@@ -130,7 +127,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.SUBMODULES_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: false
           submodules: "true"
           lfs: "true"

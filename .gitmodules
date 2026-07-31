@@ -16,3 +16,4 @@
 [submodule "terraform"]
 	path = terraform
 	url = https://github.com/crt25/collimator-infrastructure.git
+	update = none
