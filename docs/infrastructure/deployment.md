@@ -1,12 +1,12 @@
 # Deployment
 
-ClassMosaic uses GitHub workflows and Terraform for deployment and tests.
+ClassMosaic uses GitHub workflows and OpenTofu for deployment and tests. Infrastructure as code is maintained in the [collimator-infrastructure](https://github.com/crt25/collimator-infrastructure) repository.
 
 ## Overview
 
 The workflow builds applications and prepares the deployment by creating a Docker image.
 
-The root Terraform configuration orchestrates the deployment of modules in AWS. These include a VPC, Fargate services for the backend, S3 buckets for static frontends, an RDS database, and a CloudFront distribution to route traffic and serve content efficiently.
+The root OpenTofu configuration in `collimator-infrastructure` orchestrates the deployment of modules in AWS. These include a VPC, Fargate services for the backend, S3 buckets for static frontends, an RDS database, and a CloudFront distribution to route traffic and serve content efficiently.
 
 ## Configuration and secrets management
 

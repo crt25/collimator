@@ -1,0 +1,54 @@
+name: Development
+
+on:
+  push:
+    branches:
+      - main
+
+# only allow one workflow running at a given point that deploys the development environment
+concurrency:
+  group: development-deployment
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: read
+  id-token: write
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.DEV_SONAR_TOKEN }}
+
+  deploy:
+    needs: tests
+    uses: ./.github/workflows/deploy_collimator.yml
+    with:
+      environment: development
+
+      aws_region: ${{ vars.DEV_AWS_REGION }}
+
+      backend_ecr_registry_uri: ${{ vars.DEV_BACKEND_ECR_REGISTRY_URI }}
+
+      role_to_assume: ${{ vars.DEV_ROLE_TO_ASSUME }}
+
+      deploy_url: ${{ vars.DEV_DEPLOY_URL }}
+
+      entra_id_client_id: ${{ vars.DEV_ENTRA_ID_CLIENT_ID }}
+
+      backend_image_name: ${{ vars.DEV_BACKEND_IMAGE_NAME }}
+
+      frontend_bucket_id: ${{ vars.DEV_FRONTEND_BUCKET_ID }}
+      scratch_app_bucket_id: ${{ vars.DEV_SCRATCH_APP_BUCKET_ID }}
+      jupyter_app_bucket_id: ${{ vars.DEV_JUPYTER_APP_BUCKET_ID }}
+
+      backend_cluster_name: ${{ vars.DEV_BACKEND_CLUSTER_NAME }}
+      backend_service_name: ${{ vars.DEV_BACKEND_SERVICE_NAME }}
+
+      sentry_environment: development
+      frontend_sentry_dsn: ${{ vars.DEV_FRONTEND_SENTRY_DSN }}
+      scratch_app_sentry_dsn: ${{ vars.DEV_APP_SCRATCH_SENTRY_DSN }}
+      
+    secrets:
+      SENTRY_AUTH_TOKEN: ${{ secrets.DEV_SENTRY_AUTH_TOKEN }}

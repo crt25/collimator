@@ -128,15 +128,15 @@ Testing is highly application-specific and is not covered in this documentation.
 
 ## Deployment
 
-ClassMosaic uses GitHub workflows and Terraform for deployment.
+ClassMosaic uses GitHub workflows and OpenTofu for deployment. Infrastructure as code is maintained in the [collimator-infrastructure](https://github.com/crt25/collimator-infrastructure) repository.
 
-To deploy a new app, update the workflow `.github/workflows/deployment.yml` and Terraform files to:
+To deploy a new app, update the relevant workflow in `.github/workflows/` and the OpenTofu configuration in `collimator-infrastructure` to:
 
 - Register the new app.
 - Install required dependencies.
 - Fulfill infrastructure or runtime requirements.
 
-Please review the following folders: `terraform/deployment/`, `terraform/infrastructure/` and `terraform/infrastructure/cloudfront`. When possible, follow a similar approach.
+Review the existing application and static-website modules in `collimator-infrastructure` and follow the same approach where possible. Run `task submodules:terraform` from this repository if you want to initialize the infrastructure repository as the local `terraform` submodule.
 
 ## Documentation
 

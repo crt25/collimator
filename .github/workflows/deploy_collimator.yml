@@ -1,0 +1,218 @@
+name: Deploy Collimator
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: GitHub deployment environment.
+        required: true
+        type: string
+
+      aws_region:
+        required: true
+        type: string
+
+      backend_ecr_registry_uri:
+        required: true
+        type: string
+        
+      role_to_assume:
+        required: true
+        type: string
+
+      deploy_url:
+        required: true
+        type: string
+
+      entra_id_client_id:
+        required: true
+        type: string
+
+      backend_image_name:
+        required: true
+        type: string
+
+      frontend_bucket_id:
+        required: true
+        type: string
+
+      scratch_app_bucket_id:
+        required: true
+        type: string
+
+      jupyter_app_bucket_id:
+        required: true
+        type: string
+
+      backend_cluster_name:
+        required: true
+        type: string
+
+      backend_service_name:
+        required: true
+        type: string
+
+      sentry_environment:
+        required: true
+        type: string
+
+      frontend_sentry_dsn:
+        required: true
+        type: string
+
+      scratch_app_sentry_dsn:
+        required: true
+        type: string
+
+    secrets:
+      SENTRY_AUTH_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:18
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5433 on the host to Postgres
+          - 5433:5432
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+
+      AWS_REGION: ${{ inputs.aws_region }}
+
+      BACKEND_ECR_REGISTRY_URI: ${{ inputs.backend_ecr_registry_uri }}
+      
+      ROLE_TO_ASSUME: ${{ inputs.role_to_assume }}
+
+      DEPLOY_URL: ${{ inputs.deploy_url }}
+
+      ENTRA_ID_CLIENT_ID: ${{ inputs.entra_id_client_id }}
+      BACKEND_IMAGE_NAME: ${{ inputs.backend_image_name }}
+
+      FRONTEND_BUCKET_ID: ${{ inputs.frontend_bucket_id }}
+      SCRATCH_APP_BUCKET_ID: ${{ inputs.scratch_app_bucket_id }}
+      JUPYTER_APP_BUCKET_ID: ${{ inputs.jupyter_app_bucket_id }}
+
+      BACKEND_CLUSTER_NAME: ${{ inputs.backend_cluster_name }}
+      BACKEND_SERVICE_NAME: ${{ inputs.backend_service_name }}
+      
+      # https://docs.sentry.io/platforms/javascript/configuration/options/#common-options
+      SENTRY_RELEASE: ${{ github.sha }}
+      SENTRY_ENVIRONMENT: ${{ inputs.sentry_environment }}
+      FRONTEND_SENTRY_DSN: ${{ inputs.frontend_sentry_dsn }}
+      APP_SCRATCH_SENTRY_DSN: ${{ inputs.scratch_app_sentry_dsn }}
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+          submodules: "true"
+          lfs: "true"
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Setup dependencies
+        run: task setup
+
+      - name: Build frontend
+        run: task frontend:build
+        env:
+          NEXT_PUBLIC_BACKEND_HOSTNAME: ${{ env.DEPLOY_URL }}
+          NEXT_PUBLIC_SCRATCH_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/scratch
+          NEXT_PUBLIC_JUPYTER_APP_HOSTNAME: ${{ env.DEPLOY_URL }}/jupyter/lab/index.html
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_SERVER: https://login.microsoftonline.com/common/v2.0/
+          NEXT_PUBLIC_OPEN_ID_CONNECT_MICROSOFT_CLIENT_ID: ${{ env.ENTRA_ID_CLIENT_ID }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ env.FRONTEND_SENTRY_DSN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Build scratch app
+        run: task apps:scratch:build
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ env.APP_SCRATCH_SENTRY_DSN }}
+
+      - name: Upload scratch app source maps
+        run: task apps:scratch:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Build jupyter app
+        run: task apps:jupyter:build
+
+      - name: Upload jupyter app source maps
+        run: task apps:jupyter:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      # the database must be fully migrated before running prisma:generate
+      # we build the backend so that we can upload the source maps to sentry
+      - name: Prepare test database
+        run: task db:migrate:deploy
+
+      - name: Build backend
+        run: task backend:build
+
+      - name: Upload backend source maps
+        run: task backend:sourcemap:upload
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Build backend Docker image
+        run: docker build -t ${{ env.BACKEND_IMAGE_NAME }} .
+        working-directory: ./backend
+
+      - name: Tag Docker image
+        run: docker tag "${BACKEND_IMAGE_NAME}:latest" "${BACKEND_ECR_REGISTRY_URI}:latest"
+        working-directory: ./backend
+
+      # Actual deployment
+
+      - name: Deploy to S3 buckets
+        shell: bash
+        run: |
+          aws s3 sync ./frontend/dist/ "s3://${FRONTEND_BUCKET_ID}/" --delete
+          aws s3 sync ./apps/scratch/build/ "s3://${SCRATCH_APP_BUCKET_ID}/" --delete
+          aws s3 sync ./apps/jupyter/dist/app/ "s3://${JUPYTER_APP_BUCKET_ID}/" --delete
+
+      - name: Authenticate to ECR
+        shell: bash
+        run: aws ecr get-login-password --region "${AWS_REGION}" | docker login --username AWS --password-stdin "${BACKEND_ECR_REGISTRY_URI%%/*}"
+
+      - name: Upload Docker image
+        run: docker push "${BACKEND_ECR_REGISTRY_URI}:latest"
+        working-directory: ./backend
+
+      # not trivial with terraform, so we do it via the AWS CLI
+      - name: Deploy new Docker image
+        run: aws ecs update-service --cluster "${BACKEND_CLUSTER_NAME}" --service "${BACKEND_SERVICE_NAME}" --force-new-deployment
+        working-directory: ./backend

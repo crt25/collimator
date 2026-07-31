@@ -13,3 +13,7 @@
 	path = apps/scratch/src/scratch-editor
 	url = git@github.com:crt25/scratch-editor.git
 	shallow = true
+[submodule "terraform"]
+	path = terraform
+	url = https://github.com/crt25/collimator-infrastructure.git
+	update = none

@@ -2,11 +2,11 @@ name: Tests
 
 on:
   pull_request:
-  workflow_call:
   merge_group:
-  push:
-    branches:
-      - main
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
 
 permissions:
   contents: read
@@ -44,10 +44,10 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with: &checkout_options
           token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          persist-credentials: false
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
@@ -111,7 +111,7 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with: *checkout_options
 
       - name: Setup CI environment
@@ -158,7 +158,7 @@ jobs:
           sudo docker builder prune -a
 
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with: *checkout_options
 
       - name: Setup CI environment
@@ -204,10 +204,10 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          persist-credentials: true
+          persist-credentials: false
           submodules: "true"
           lfs: "true"
           fetch-depth: 0
