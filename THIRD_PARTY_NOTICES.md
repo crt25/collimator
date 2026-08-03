@@ -79,6 +79,21 @@ License: MIT
 
 - Copyright (c) 2015 James Messinger
 
+### @apm-js-collab/code-transformer@0.18.1
+
+License: Apache-2.0
+
+- Copyright 2025-present Datadog, Inc.
+- Copyright 2025-Present Datadog, Inc.
+
+NOTICE:
+
+```
+Orchestrion-JS
+Copyright 2025-Present Datadog, Inc.
+This product includes software developed at Datadog (<https://www.datadoghq.com/>).
+```
+
 ### @apm-js-collab/code-transformer@0.8.2
 
 License: Apache-2.0
@@ -93,6 +108,12 @@ Orchestrion-JS
 Copyright 2025-Present Datadog, Inc.
 This product includes software developed at Datadog (<https://www.datadoghq.com/>).
 ```
+
+### @apm-js-collab/tracing-hooks@0.13.0
+
+License: Apache-2.0
+
+- Copyright 2025-present Datadog, Inc.
 
 ### @apm-js-collab/tracing-hooks@0.3.1
 
@@ -2687,43 +2708,43 @@ License: MIT
 
 - Copyright (c) 2017-2025
 
-### @nestjs/common@11.1.11
+### @nestjs/common@11.1.28
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/config@4.0.2
-
-License: MIT
-
-- Copyright (c) 2020-2022 Kamil Mysliwiec
-
-### @nestjs/core@11.1.11
-
-License: MIT
-
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
-
-### @nestjs/mapped-types@2.1.0
+### @nestjs/config@4.0.4
 
 License: MIT
 
 - Copyright (c) 2020-2022 Kamil Mysliwiec
 
-### @nestjs/platform-express@11.1.11
+### @nestjs/core@11.1.28
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/platform-socket.io@11.1.11
+### @nestjs/mapped-types@2.1.1
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2020-2022 Kamil Mysliwiec
 
-### @nestjs/schedule@6.1.0
+### @nestjs/platform-express@11.1.28
+
+License: MIT
+
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+
+### @nestjs/platform-socket.io@11.1.28
+
+License: MIT
+
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+
+### @nestjs/schedule@6.1.3
 
 License: MIT
 
@@ -2741,7 +2762,7 @@ License: MIT
 
 - Copyright (c) 2018-2022 nestjs
 
-### @nestjs/swagger@11.2.4
+### @nestjs/swagger@11.4.6
 
 License: MIT
 
@@ -2753,11 +2774,11 @@ License: MIT
 
 - Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/websockets@11.1.11
+### @nestjs/websockets@11.1.28
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
 ### @nodelib/fs.scandir@2.1.5
 
@@ -2795,12 +2816,6 @@ License: ISC
 
 Author: GitHub Inc.
 
-### @nuxt/opencollective@0.4.1
-
-License: MIT
-
-- Copyright (c) 2018 Nuxt Community
-
 ### @open-draft/logger@0.3.0
 
 License: MIT
@@ -2819,13 +2834,19 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
+### @opentelemetry/api@1.9.1
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
 ### @opentelemetry/api-logs@0.208.0
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/api-logs@0.209.0
+### @opentelemetry/api-logs@0.220.0
 
 License: Apache-2.0
 
@@ -2837,7 +2858,7 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/context-async-hooks@2.3.0
+### @opentelemetry/core@2.10.0
 
 License: Apache-2.0
 
@@ -2849,19 +2870,13 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/core@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/instrumentation@0.208.0
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/instrumentation@0.209.0
+### @opentelemetry/instrumentation@0.220.0
 
 License: Apache-2.0
 
@@ -2975,12 +2990,6 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/instrumentation-nestjs-core@0.55.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/instrumentation-pg@0.61.0
 
 License: Apache-2.0
@@ -3011,31 +3020,31 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
+### @opentelemetry/resources@2.10.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
 ### @opentelemetry/resources@2.2.0
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/resources@2.3.0
+### @opentelemetry/sdk-trace@2.10.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
+### @opentelemetry/sdk-trace-base@2.10.0
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
 ### @opentelemetry/sdk-trace-base@2.2.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
-### @opentelemetry/sdk-trace-base@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
-### @opentelemetry/semantic-conventions@1.28.0
 
 License: Apache-2.0
 
@@ -3187,7 +3196,7 @@ License: MIT
 
 - Copyright (c) 2019 Federico Zivolo
 
-### @prisma/client@6.19.1
+### @prisma/client@7.9.1
 
 License: Apache-2.0
 
@@ -3415,12 +3424,6 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
-### @sentry-internal/node-cpu-profiler@2.2.0
-
-License: MIT
-
-- Copyright (c) 2022 Functional Software, Inc. dba Sentry
-
 ### @sentry-internal/replay@10.31.0
 
 License: MIT
@@ -3499,11 +3502,17 @@ License: FSL-1.1-MIT
 
 - Copyright 2008-2025 Functional Software, Inc. dba Sentry
 
-### @sentry/cli@3.0.3
+### @sentry/cli@3.6.2
 
 License: FSL-1.1-MIT
 
 - Copyright 2008-2025 Functional Software, Inc. dba Sentry
+
+### @sentry/conventions@0.16.0
+
+License: MIT
+
+- Copyright (c) 2023-2025 Functional Software, Inc. dba Sentry
 
 ### @sentry/core@10.31.0
 
@@ -3517,13 +3526,19 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
+### @sentry/core@10.69.0
+
+License: MIT
+
+- Copyright (c) 2019 Functional Software, Inc. dba Sentry
+
 ### @sentry/core@9.11.0
 
 License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
-### @sentry/nestjs@10.32.1
+### @sentry/nestjs@10.69.0
 
 License: MIT
 
@@ -3553,6 +3568,12 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
+### @sentry/node@10.69.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
 ### @sentry/node-core@10.31.0
 
 License: MIT
@@ -3564,6 +3585,18 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2025 Functional Software, Inc. dba Sentry
+
+### @sentry/node-core@10.69.0
+
+License: MIT
+
+- Copyright (c) 2025 Functional Software, Inc. dba Sentry
+
+### @sentry/node-cpu-profiler@2.4.2
+
+License: MIT
+
+- Copyright (c) 2022 Functional Software, Inc. dba Sentry
 
 ### @sentry/opentelemetry@10.31.0
 
@@ -3577,7 +3610,13 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
-### @sentry/profiling-node@10.32.1
+### @sentry/opentelemetry@10.69.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
+### @sentry/profiling-node@10.69.0
 
 License: MIT
 
@@ -4092,6 +4131,12 @@ License: MIT
 - Copyright (c) Microsoft Corporation.
 
 ### @types/estree@1.0.8
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/estree@1.0.9
 
 License: MIT
 
@@ -5707,6 +5752,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### ansi-regex@6.2.2
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### ansi-styles@2.2.1
 
 License: MIT
@@ -6724,7 +6775,7 @@ License: MIT
 
 - Copyright (c) 2015-2020 TypeStack
 
-### class-validator@0.14.3
+### class-validator@0.15.1
 
 License: MIT
 
@@ -7004,14 +7055,6 @@ License: MIT
 
 - Copyright (c) 2013 intesso
 
-### consola@3.4.0
-
-License: MIT
-
-- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
-- Copyright (c) Nate Moore
-- Copyright © Jorge Bucaran &lt;https://jorgebucaran.com&gt;
-
 ### content-disposition@0.5.4
 
 License: MIT
@@ -7124,6 +7167,12 @@ License: MIT
 
 - Copyright (c) 2013 Troy Goode &lt;troygoode@gmail.com&gt;
 
+### cors@2.8.6
+
+License: MIT
+
+- Copyright (c) 2013 Troy Goode &lt;troygoode@gmail.com&gt;
+
 ### corser@2.0.1
 
 License: MIT
@@ -7178,7 +7227,7 @@ License: MIT
 
 - Copyright (c) 2020
 
-### cron@4.3.5
+### cron@4.4.0
 
 License: MIT
 
@@ -7827,6 +7876,12 @@ License: BSD-2-Clause
 
 - Copyright (c) 2015, Scott Motte
 
+### dotenv@17.4.1
+
+License: BSD-2-Clause
+
+- Copyright (c) 2015, Scott Motte
+
 ### dotenv-cli@11.0.0
 
 License: MIT
@@ -7840,12 +7895,6 @@ License: MIT
 Author: entropitor
 
 ### dotenv-expand@10.0.0
-
-License: BSD-2-Clause
-
-- Copyright (c) 2016, Scott Motte
-
-### dotenv-expand@12.0.1
 
 License: BSD-2-Clause
 
@@ -8165,6 +8214,12 @@ License: MIT
 
 - Copyright (C) 2018-2022 Guy Bedford
 
+### es-module-lexer@2.3.1
+
+License: MIT
+
+- Copyright (C) 2018-2022 Guy Bedford
+
 ### es-object-atoms@1.0.0
 
 License: MIT
@@ -8456,6 +8511,12 @@ License: BSD-2-Clause
 Author: Ariya Hidayat
 
 ### esquery@1.6.0
+
+License: BSD-3-Clause
+
+- Copyright (c) 2013, Joel Feenstra
+
+### esquery@1.7.0
 
 License: BSD-3-Clause
 
@@ -8777,7 +8838,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
-### file-type@21.2.0
+### file-type@21.3.4
 
 License: MIT
 
@@ -9145,6 +9206,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### get-east-asian-width@1.6.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### get-intrinsic@1.2.4
 
 License: MIT
@@ -9355,7 +9422,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### globals@17.0.0
+### globals@17.8.0
 
 License: MIT
 
@@ -9888,7 +9955,7 @@ https://github.com/DataDog/import-in-the-middle repository:
     limitations under the License.
 ```
 
-### import-in-the-middle@2.0.1
+### import-in-the-middle@3.3.3
 
 License: Apache-2.0
 
@@ -10984,7 +11051,7 @@ License: MIT
 
 - Copyright (c) 2018 Filip Skokan
 
-### jose@6.1.3
+### jose@6.2.5
 
 License: MIT
 
@@ -11033,6 +11100,12 @@ License: MIT
 - Copyright (C) 2011-2015 by Vitaly Puzrin
 
 ### js-yaml@4.1.1
+
+License: MIT
+
+- Copyright (C) 2011-2015 by Vitaly Puzrin
+
+### js-yaml@5.2.1
 
 License: MIT
 
@@ -11364,6 +11437,12 @@ License: MIT
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### lodash@4.17.21
+
+License: MIT
+
+Author: John-David Dalton
+
+### lodash@4.18.1
 
 License: MIT
 
@@ -11744,6 +11823,12 @@ License: MIT
 
 - Copyright (c) 2014-2020 Teambition
 
+### meriyah@6.1.4
+
+License: ISC
+
+- Copyright (c) 2019 and later, KFlash and others.
+
 ### methods@1.1.2
 
 License: MIT
@@ -12058,7 +12143,7 @@ License: MIT
 
 - Copyright (c) 2018–present Artem Zakharchenko
 
-### multer@2.0.2
+### multer@2.2.0
 
 License: MIT
 
@@ -12860,7 +12945,7 @@ License: MIT
 
 - Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 
-### path-to-regexp@8.3.0
+### path-to-regexp@8.4.2
 
 License: MIT
 
@@ -13035,11 +13120,11 @@ License: MIT
 
 - Copyright (c) 2016-2018 Ari Porad
 
-### piscina@5.1.4
+### piscina@5.3.0
 
 License: MIT
 
-- Copyright (c) 2020 James M Snell and the Piscina contributors
+- Copyright (c) 2026 James M Snell and the Piscina contributors
 
 ### pixelmatch@7.1.0
 
@@ -14727,6 +14812,12 @@ License: MIT
 - Copyright &copy; 2012-2015 Eli Skeggs
 - Copyright &copy; 2011 Kevin Kwok
 
+### semifies@1.0.0
+
+License: Apache-2.0
+
+Author: Holepunch Inc
+
 ### semver@5.7.2
 
 License: ISC
@@ -15337,6 +15428,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### string-width@8.2.2
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### string.prototype.includes@2.0.1
 
 License: MIT
@@ -15404,6 +15501,12 @@ License: MIT
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### strip-ansi@7.1.2
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
+### strip-ansi@7.2.0
 
 License: MIT
 
@@ -15541,7 +15644,7 @@ License: MIT
 
 - Copyright (c) 2022 Inspect JS
 
-### swagger-ui-dist@5.31.0
+### swagger-ui-dist@5.32.8
 
 License: Apache-2.0
 
@@ -16594,6 +16697,12 @@ License: MIT
 
 - Copyright (c) 2018 Chris O'Hara &lt;cohara87@gmail.com&gt;
 
+### validator@13.15.35
+
+License: MIT
+
+- Copyright (c) 2018 Chris O'Hara &lt;cohara87@gmail.com&gt;
+
 ### vary@1.1.2
 
 License: MIT
@@ -17120,7 +17229,7 @@ License: MIT
 
 - Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
 
-### yargs@18.0.0
+### yargs@18.1.0
 
 License: MIT
 
