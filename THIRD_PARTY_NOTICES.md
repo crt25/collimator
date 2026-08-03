@@ -1814,7 +1814,7 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/cli@6.6.3
+### @formatjs/cli@6.16.15
 
 License: MIT
 
@@ -2356,6 +2356,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/diff-sequences@30.4.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/environment@29.7.0
 
 License: MIT
@@ -2398,6 +2404,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/expect-utils@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/fake-timers@29.7.0
 
 License: MIT
@@ -2434,6 +2446,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/pattern@30.4.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/reporters@29.7.0
 
 License: MIT
@@ -2453,6 +2471,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/schemas@30.0.5
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/schemas@30.4.1
 
 License: MIT
 
@@ -2519,6 +2543,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/types@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/types@30.4.1
 
 License: MIT
 
@@ -3665,6 +3695,12 @@ License: MIT
 
 - Copyright (c) 2017-2026 Haydn Paterson
 
+### @sinclair/typebox@0.34.52
+
+License: MIT
+
+- Copyright (c) 2017-2026 Haydn Paterson
+
 ### @sindresorhus/is@0.14.0
 
 License: MIT
@@ -3941,7 +3977,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/archiver@6.0.3
+### @types/archiver@8.0.0
 
 License: MIT
 
@@ -4343,6 +4379,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/node@26.1.2
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/node-hid@1.3.4
 
 License: MIT
@@ -4403,7 +4445,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/prop-types@15.7.14
+### @types/prop-types@15.7.15
 
 License: MIT
 
@@ -4481,7 +4523,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/react-virtualized@9.22.2
+### @types/react-virtualized@9.22.3
 
 License: MIT
 
@@ -5773,17 +5815,11 @@ License: MIT
 
 - Copyright (c) Kevin Mårtensson &lt;kevinmartensson@gmail.com&gt;
 
-### archiver@7.0.1
+### archiver@8.0.0
 
 License: MIT
 
 - Copyright (c) 2012-2014 Chris Talkington, contributors.
-
-### archiver-utils@5.0.2
-
-License: MIT
-
-- Copyright (c) 2015 Chris Talkington.
 
 ### archy@1.0.0
 
@@ -6700,6 +6736,12 @@ License: MIT
 
 - Copyright (c) 2016 Thomas Watson Steen
 
+### ci-info@4.4.0
+
+License: MIT
+
+- Copyright (c) 2016 Thomas Watson Steen
+
 ### cjs-module-lexer@1.4.1
 
 License: MIT
@@ -6947,7 +6989,7 @@ License: MIT
 
 - Copyright (c) 2014 Component contributors &lt;dev@component.io&gt;
 
-### compress-commons@6.0.2
+### compress-commons@7.0.1
 
 License: MIT
 
@@ -7160,7 +7202,7 @@ License: Apache-2.0
 
 - Copyright (C) 2014-present   SheetJS LLC
 
-### crc32-stream@6.0.0
+### crc32-stream@7.0.1
 
 License: MIT
 
@@ -7189,12 +7231,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2017-2025 Kent C. Dodds
-
-### cross-env@7.0.3
-
-License: MIT
-
-- Copyright (c) 2017 Kent C. Dodds
 
 ### cross-fetch@4.1.0
 
@@ -8539,6 +8575,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### expect@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### expect-type@1.3.0
 
 License: Apache-2.0
@@ -9284,6 +9326,12 @@ License: ISC
 - Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
 
 ### glob@11.1.0
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
+### glob@13.0.6
 
 License: BlueOak-1.0.0
 
@@ -10390,6 +10438,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### is-stream@4.0.1
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### is-string@1.0.7
 
 License: MIT
@@ -10570,6 +10624,12 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
 
+### istanbul-lib-processinfo@3.0.1
+
+License: ISC
+
+- Copyright (c) Isaac Z. Schlueter and Contributors
+
 ### istanbul-lib-report@3.0.1
 
 License: BSD-3-Clause
@@ -10708,6 +10768,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-diff@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-docblock@29.7.0
 
 License: MIT
@@ -10810,6 +10876,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-matcher-utils@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-message-util@29.7.0
 
 License: MIT
@@ -10822,6 +10894,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-message-util@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-mock@29.7.0
 
 License: MIT
@@ -10829,6 +10907,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-mock@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-mock@30.4.1
 
 License: MIT
 
@@ -10847,6 +10931,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-regex-util@30.0.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-regex-util@30.4.0
 
 License: MIT
 
@@ -10919,6 +11009,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-util@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-util@30.4.1
 
 License: MIT
 
@@ -11541,6 +11637,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### lru-cache@11.5.2
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### lru-cache@5.1.1
 
 License: ISC
@@ -11853,6 +11955,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### minimatch@10.2.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### minimatch@3.1.2
 
 License: ISC
@@ -11918,6 +12026,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+### minipass@7.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### minipass-collect@2.0.1
 
@@ -12327,6 +12441,12 @@ License: MIT
 - Copyright (c) 2007-2025 Diego Perini (http://www.iport.it/)
 
 ### nyc@17.1.0
+
+License: ISC
+
+- Copyright (c) 2015, Contributors
+
+### nyc@18.0.0
 
 License: ISC
 
@@ -12837,6 +12957,12 @@ License: BlueOak-1.0.0
 Author: Isaac Z. Schlueter
 
 ### path-scurry@2.0.1
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
+### path-scurry@2.0.2
 
 License: BlueOak-1.0.0
 
@@ -13511,6 +13637,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### pretty-format@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### primereact@10.9.4
 
 License: MIT
@@ -13857,6 +13989,12 @@ License: MIT
 
 - Copyright (c) Facebook, Inc. and its affiliates.
 
+### react-is@19.2.8
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### react-lifecycles-compat@3.0.4
 
 License: MIT
@@ -13948,7 +14086,7 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter
 
-### readdir-glob@1.1.3
+### readdir-glob@3.0.0
 
 License: Apache-2.0
 
@@ -14237,6 +14375,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+
+### rimraf@6.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### rollup@4.53.5
 
@@ -15172,6 +15316,12 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
 
+### spawn-wrap@3.0.0
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### spdx-expression-parse@3.0.1
 
 License: MIT
@@ -15664,6 +15814,12 @@ License: ISC
 - Copyright (c) 2016, Contributors
 
 ### test-exclude@7.0.1
+
+License: ISC
+
+- Copyright (c) 2016, Contributors
+
+### test-exclude@8.0.0
 
 License: ISC
 
@@ -16294,6 +16450,12 @@ License: MIT
 - Copyright (c) Matteo Collina and Undici contributors
 
 ### undici-types@7.16.0
+
+License: MIT
+
+- Copyright (c) Matteo Collina and Undici contributors
+
+### undici-types@8.3.0
 
 License: MIT
 
@@ -17174,7 +17336,7 @@ License: MIT
 
 - Copyright (c) 2014 Jason Quense
 
-### zip-stream@6.0.1
+### zip-stream@7.0.5
 
 License: MIT
 
