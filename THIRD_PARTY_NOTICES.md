@@ -79,6 +79,21 @@ License: MIT
 
 - Copyright (c) 2015 James Messinger
 
+### @apm-js-collab/code-transformer@0.18.1
+
+License: Apache-2.0
+
+- Copyright 2025-present Datadog, Inc.
+- Copyright 2025-Present Datadog, Inc.
+
+NOTICE:
+
+```
+Orchestrion-JS
+Copyright 2025-Present Datadog, Inc.
+This product includes software developed at Datadog (<https://www.datadoghq.com/>).
+```
+
 ### @apm-js-collab/code-transformer@0.8.2
 
 License: Apache-2.0
@@ -94,13 +109,19 @@ Copyright 2025-Present Datadog, Inc.
 This product includes software developed at Datadog (<https://www.datadoghq.com/>).
 ```
 
+### @apm-js-collab/tracing-hooks@0.13.0
+
+License: Apache-2.0
+
+- Copyright 2025-present Datadog, Inc.
+
 ### @apm-js-collab/tracing-hooks@0.3.1
 
 License: Apache-2.0
 
 - Copyright 2025-present Datadog, Inc.
 
-### @ark-ui/react@5.27.1
+### @ark-ui/react@5.37.2
 
 License: MIT
 
@@ -1244,7 +1265,7 @@ License: MIT
 
 - Copyright © 2025 Borewit
 
-### @chakra-ui/react@3.29.0
+### @chakra-ui/react@3.36.1
 
 License: MIT
 
@@ -1678,6 +1699,12 @@ License: MIT
 
 - Copyright (c) Emotion team and other contributors
 
+### @emotion/styled@11.14.1
+
+License: MIT
+
+- Copyright (c) Emotion team and other contributors
+
 ### @emotion/unitless@0.10.0
 
 License: MIT
@@ -1790,7 +1817,19 @@ License: MIT
 
 - Copyright (c) 2021-present Floating UI contributors
 
+### @floating-ui/core@1.8.0
+
+License: MIT
+
+- Copyright (c) 2021-present Floating UI contributors
+
 ### @floating-ui/dom@1.7.4
+
+License: MIT
+
+- Copyright (c) 2021-present Floating UI contributors
+
+### @floating-ui/dom@1.8.0
 
 License: MIT
 
@@ -1803,6 +1842,12 @@ License: MIT
 - Copyright (c) 2021-present Floating UI contributors
 
 ### @floating-ui/utils@0.2.10
+
+License: MIT
+
+- Copyright (c) 2021-present Floating UI contributors
+
+### @floating-ui/utils@0.2.12
 
 License: MIT
 
@@ -1826,12 +1871,6 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/ecma402-abstract@2.3.4
-
-License: MIT
-
-- Copyright (c) 2023 FormatJS
-
 ### @formatjs/ecma402-abstract@3.0.8
 
 License: MIT
@@ -1844,19 +1883,13 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/fast-memoize@2.2.7
-
-License: MIT
-
-- Copyright (c) 2023 FormatJS
-
 ### @formatjs/fast-memoize@3.0.3
 
 License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/icu-messageformat-parser@2.11.2
+### @formatjs/fast-memoize@3.1.7
 
 License: MIT
 
@@ -1874,7 +1907,7 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/icu-skeleton-parser@1.8.14
+### @formatjs/icu-messageformat-parser@3.5.16
 
 License: MIT
 
@@ -1892,13 +1925,19 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
+### @formatjs/icu-skeleton-parser@2.1.11
+
+License: MIT
+
+- Copyright (c) 2023 FormatJS
+
 ### @formatjs/intl@2.10.15
 
 License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/intl@3.1.6
+### @formatjs/intl@4.1.18
 
 License: MIT
 
@@ -1922,12 +1961,6 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @formatjs/intl-localematcher@0.6.1
-
-License: MIT
-
-- Copyright (c) 2023 FormatJS
-
 ### @formatjs/intl-localematcher@0.7.5
 
 License: MIT
@@ -1940,35 +1973,35 @@ License: MIT
 
 - Copyright (c) 2023 FormatJS
 
-### @fortawesome/fontawesome-common-types@6.7.2
+### @fortawesome/fontawesome-common-types@7.3.1
 
 License: MIT
 
-- Copyright (c) 2024 Fonticons, Inc. (https://fontawesome.com)
-- Copyright 2024 Fonticons, Inc.
+- Copyright (c) 2026 Fonticons, Inc. (https://fontawesome.com)
+- Copyright 2026 Fonticons, Inc.
 
-### @fortawesome/fontawesome-svg-core@6.7.2
+### @fortawesome/fontawesome-svg-core@7.3.1
 
 License: MIT
 
-- Copyright (c) 2024 Fonticons, Inc. (https://fontawesome.com)
-- Copyright 2024 Fonticons, Inc.
+- Copyright (c) 2026 Fonticons, Inc. (https://fontawesome.com)
+- Copyright 2026 Fonticons, Inc.
 
-### @fortawesome/free-regular-svg-icons@6.7.2
-
-License: (CC-BY-4.0 AND MIT)
-
-- Copyright (c) 2024 Fonticons, Inc. (https://fontawesome.com)
-- Copyright 2024 Fonticons, Inc.
-
-### @fortawesome/free-solid-svg-icons@6.7.2
+### @fortawesome/free-regular-svg-icons@7.3.1
 
 License: (CC-BY-4.0 AND MIT)
 
-- Copyright (c) 2024 Fonticons, Inc. (https://fontawesome.com)
-- Copyright 2024 Fonticons, Inc.
+- Copyright (c) 2026 Fonticons, Inc. (https://fontawesome.com)
+- Copyright 2026 Fonticons, Inc.
 
-### @fortawesome/react-fontawesome@0.2.2
+### @fortawesome/free-solid-svg-icons@7.3.1
+
+License: (CC-BY-4.0 AND MIT)
+
+- Copyright (c) 2026 Fonticons, Inc. (https://fontawesome.com)
+- Copyright 2026 Fonticons, Inc.
+
+### @fortawesome/react-fontawesome@3.5.0
 
 License: MIT
 
@@ -1980,7 +2013,7 @@ License: MIT
 
 - Copyright (c) 2024 Gerrit Birkeland
 
-### @hookform/resolvers@4.1.3
+### @hookform/resolvers@5.5.7
 
 License: MIT
 
@@ -2290,13 +2323,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @internationalized/date@3.10.0
+### @internationalized/date@3.12.2
 
 License: Apache-2.0
 
 - Copyright 2019 Adobe
 
-### @internationalized/number@3.6.5
+### @internationalized/number@3.6.6
 
 License: Apache-2.0
 
@@ -2759,6 +2792,18 @@ License: MIT
 
 - Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
+### @noble/ed25519@2.3.0
+
+License: MIT
+
+- Copyright (c) 2019 Paul Miller (https://paulmillr.com)
+
+### @noble/hashes@2.2.0
+
+License: MIT
+
+- Copyright (c) 2022 Paul Miller (https://paulmillr.com)
+
 ### @nodelib/fs.scandir@2.1.5
 
 License: MIT
@@ -2819,6 +2864,12 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
+### @opentelemetry/api@1.9.1
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
 ### @opentelemetry/api-logs@0.208.0
 
 License: Apache-2.0
@@ -2831,6 +2882,12 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
+### @opentelemetry/api-logs@0.220.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
 ### @opentelemetry/context-async-hooks@2.2.0
 
 License: Apache-2.0
@@ -2838,6 +2895,12 @@ License: Apache-2.0
 Author: OpenTelemetry Authors
 
 ### @opentelemetry/context-async-hooks@2.3.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
+### @opentelemetry/core@2.10.0
 
 License: Apache-2.0
 
@@ -2862,6 +2925,12 @@ License: Apache-2.0
 Author: OpenTelemetry Authors
 
 ### @opentelemetry/instrumentation@0.209.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
+### @opentelemetry/instrumentation@0.220.0
 
 License: Apache-2.0
 
@@ -3011,6 +3080,12 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
+### @opentelemetry/resources@2.10.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
 ### @opentelemetry/resources@2.2.0
 
 License: Apache-2.0
@@ -3018,6 +3093,18 @@ License: Apache-2.0
 Author: OpenTelemetry Authors
 
 ### @opentelemetry/resources@2.3.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
+### @opentelemetry/sdk-trace@2.10.0
+
+License: Apache-2.0
+
+Author: OpenTelemetry Authors
+
+### @opentelemetry/sdk-trace-base@2.10.0
 
 License: Apache-2.0
 
@@ -3186,6 +3273,510 @@ available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/b
 License: MIT
 
 - Copyright (c) 2019 Federico Zivolo
+
+### @primereact/core@11.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: https://primeui.dev/licenses/community
+- Commercial License: https://primeui.dev/licenses/commercial
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primereact/headless@11.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: https://primeui.dev/licenses/community
+- Commercial License: https://primeui.dev/licenses/commercial
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primereact/hooks@11.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: https://primeui.dev/licenses/community
+- Commercial License: https://primeui.dev/licenses/commercial
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primereact/types@11.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: https://primeui.dev/licenses/community
+- Commercial License: https://primeui.dev/licenses/commercial
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primeui/license-manager@1.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: <https://primeui.dev/licenses/community>
+- Commercial License: <https://primeui.dev/licenses/commercial>
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primeuix/locale@0.1.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: <https://primeui.dev/licenses/community>
+- Commercial License: <https://primeui.dev/licenses/commercial>
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primeuix/motion@1.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: <https://primeui.dev/licenses/community>
+- Commercial License: <https://primeui.dev/licenses/commercial>
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primeuix/styled@1.0.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: <https://primeui.dev/licenses/community>
+- Commercial License: <https://primeui.dev/licenses/commercial>
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
+
+### @primeuix/utils@0.8.0
+
+License: unknown
+
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: <https://primeui.dev/licenses/community>
+- Commercial License: <https://primeui.dev/licenses/commercial>
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
 
 ### @prisma/client@6.19.1
 
@@ -3385,12 +3976,6 @@ License: MIT
 
 - Copyright (c) 2020 Functional Software, Inc. dba Sentry
 
-### @sentry-internal/browser-utils@10.32.1
-
-License: MIT
-
-- Copyright (c) 2020 Functional Software, Inc. dba Sentry
-
 ### @sentry-internal/browser-utils@9.11.0
 
 License: MIT
@@ -3398,12 +3983,6 @@ License: MIT
 - Copyright (c) 2020 Functional Software, Inc. dba Sentry
 
 ### @sentry-internal/feedback@10.31.0
-
-License: MIT
-
-- Copyright (c) 2023 Functional Software, Inc. dba Sentry
-
-### @sentry-internal/feedback@10.32.1
 
 License: MIT
 
@@ -3427,12 +4006,6 @@ License: MIT
 
 - Copyright (c) 2022 Functional Software, Inc. dba Sentry
 
-### @sentry-internal/replay@10.32.1
-
-License: MIT
-
-- Copyright (c) 2022 Functional Software, Inc. dba Sentry
-
 ### @sentry-internal/replay@9.11.0
 
 License: MIT
@@ -3440,12 +4013,6 @@ License: MIT
 - Copyright (c) 2022 Functional Software, Inc. dba Sentry
 
 ### @sentry-internal/replay-canvas@10.31.0
-
-License: MIT
-
-- Copyright (c) 2024 Functional Software, Inc. dba Sentry
-
-### @sentry-internal/replay-canvas@10.32.1
 
 License: MIT
 
@@ -3463,13 +4030,19 @@ License: MIT
 
 - Copyright (c) 2024, Sentry
 
+### @sentry/babel-plugin-component-annotate@5.3.0
+
+License: MIT
+
+- Copyright (c) 2024, Sentry
+
 ### @sentry/browser@10.31.0
 
 License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
-### @sentry/browser@10.32.1
+### @sentry/browser@10.69.0
 
 License: MIT
 
@@ -3481,11 +4054,29 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
+### @sentry/browser-utils@10.69.0
+
+License: MIT
+
+- Copyright (c) 2020 Functional Software, Inc. dba Sentry
+
 ### @sentry/bundler-plugin-core@4.6.1
 
 License: MIT
 
 - Copyright (c) 2022, Sentry
+
+### @sentry/bundler-plugin-core@5.3.0
+
+License: MIT
+
+- Copyright (c) 2022, Sentry
+
+### @sentry/bundler-plugins@10.69.0
+
+License: MIT
+
+- Copyright (c) 2022-2026, Sentry
 
 ### @sentry/cli@2.43.0
 
@@ -3499,11 +4090,23 @@ License: FSL-1.1-MIT
 
 - Copyright 2008-2025 Functional Software, Inc. dba Sentry
 
+### @sentry/cli@2.58.6
+
+License: FSL-1.1-MIT
+
+- Copyright 2008-2025 Functional Software, Inc. dba Sentry
+
 ### @sentry/cli@3.0.3
 
 License: FSL-1.1-MIT
 
 - Copyright 2008-2025 Functional Software, Inc. dba Sentry
+
+### @sentry/conventions@0.16.0
+
+License: MIT
+
+- Copyright (c) 2023-2025 Functional Software, Inc. dba Sentry
 
 ### @sentry/core@10.31.0
 
@@ -3517,11 +4120,23 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
+### @sentry/core@10.69.0
+
+License: MIT
+
+- Copyright (c) 2019 Functional Software, Inc. dba Sentry
+
 ### @sentry/core@9.11.0
 
 License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
+
+### @sentry/feedback@10.69.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
 ### @sentry/nestjs@10.32.1
 
@@ -3535,7 +4150,7 @@ License: MIT
 
 - Copyright (c) 2021 Functional Software, Inc. dba Sentry
 
-### @sentry/nextjs@10.32.1
+### @sentry/nextjs@10.69.0
 
 License: MIT
 
@@ -3553,6 +4168,12 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
+### @sentry/node@10.69.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
 ### @sentry/node-core@10.31.0
 
 License: MIT
@@ -3560,6 +4181,12 @@ License: MIT
 - Copyright (c) 2025 Functional Software, Inc. dba Sentry
 
 ### @sentry/node-core@10.32.1
+
+License: MIT
+
+- Copyright (c) 2025 Functional Software, Inc. dba Sentry
+
+### @sentry/node-core@10.69.0
 
 License: MIT
 
@@ -3577,6 +4204,12 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
+### @sentry/opentelemetry@10.69.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
 ### @sentry/profiling-node@10.32.1
 
 License: MIT
@@ -3589,7 +4222,7 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
-### @sentry/react@10.32.1
+### @sentry/react@10.69.0
 
 License: MIT
 
@@ -3601,19 +4234,37 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
+### @sentry/replay@10.69.0
+
+License: MIT
+
+- Copyright (c) 2022 Functional Software, Inc. dba Sentry
+
+### @sentry/replay-canvas@10.69.0
+
+License: MIT
+
+- Copyright (c) 2024 Functional Software, Inc. dba Sentry
+
 ### @sentry/vercel-edge@10.31.0
 
 License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
-### @sentry/vercel-edge@10.32.1
+### @sentry/vercel-edge@10.69.0
 
 License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
 ### @sentry/webpack-plugin@4.6.1
+
+License: MIT
+
+- Copyright (c) 2022, Sentry
+
+### @sentry/webpack-plugin@5.4.0
 
 License: MIT
 
@@ -4013,7 +4664,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/bootstrap@5.2.10
+### @types/bootstrap@5.2.11
 
 License: MIT
 
@@ -4097,6 +4748,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/estree@1.0.9
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/express@5.0.0
 
 License: MIT
@@ -4128,12 +4785,6 @@ License: MIT
 - Copyright (c) Microsoft Corporation.
 
 ### @types/hast@3.0.4
-
-License: MIT
-
-- Copyright (c) Microsoft Corporation.
-
-### @types/hoist-non-react-statics@3.3.6
 
 License: MIT
 
@@ -4433,7 +5084,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/react@19.2.7
+### @types/react@19.2.18
 
 License: MIT
 
@@ -4445,7 +5096,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/react-dom@19.2.3
+### @types/react-dom@19.2.4
 
 License: MIT
 
@@ -4470,12 +5121,6 @@ License: MIT
 - Copyright (c) Microsoft Corporation.
 
 ### @types/react-tabs@2.3.4
-
-License: MIT
-
-- Copyright (c) Microsoft Corporation.
-
-### @types/react-transition-group@4.4.12
 
 License: MIT
 
@@ -5069,427 +5714,451 @@ License: Apache-2.0
 
 Author: Daniel Wirtz
 
-### @zag-js/accordion@1.27.0
+### @zag-js/accordion@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/anatomy@1.27.0
+### @zag-js/anatomy@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/angle-slider@1.27.0
+### @zag-js/angle-slider@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/aria-hidden@1.27.0
+### @zag-js/aria-hidden@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/async-list@1.27.0
+### @zag-js/async-list@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/auto-resize@1.27.0
+### @zag-js/auto-resize@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/avatar@1.27.0
+### @zag-js/avatar@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/bottom-sheet@1.27.0
+### @zag-js/carousel@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/carousel@1.27.0
+### @zag-js/cascade-select@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/checkbox@1.27.0
+### @zag-js/checkbox@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/clipboard@1.27.0
+### @zag-js/clipboard@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/collapsible@1.27.0
+### @zag-js/collapsible@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/collection@1.27.0
+### @zag-js/collection@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/color-picker@1.27.0
+### @zag-js/color-picker@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/color-utils@1.27.0
+### @zag-js/color-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/combobox@1.27.0
+### @zag-js/combobox@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/core@1.27.0
+### @zag-js/core@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/date-picker@1.27.0
+### @zag-js/date-input@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/date-utils@1.27.0
+### @zag-js/date-picker@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/dialog@1.27.0
+### @zag-js/date-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/dismissable@1.27.0
+### @zag-js/dialog@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/dom-query@1.27.0
+### @zag-js/dismissable@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/editable@1.27.0
+### @zag-js/dom-query@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/file-upload@1.27.0
+### @zag-js/drawer@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/file-utils@1.27.0
+### @zag-js/editable@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/floating-panel@1.27.0
+### @zag-js/file-upload@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/focus-trap@1.27.0
+### @zag-js/file-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/focus-visible@1.27.0
+### @zag-js/floating-panel@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/highlight-word@1.27.0
+### @zag-js/focus-trap@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/hover-card@1.27.0
+### @zag-js/focus-visible@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/i18n-utils@1.27.0
+### @zag-js/highlight-word@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/interact-outside@1.27.0
+### @zag-js/hover-card@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/json-tree-utils@1.27.0
+### @zag-js/i18n-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/listbox@1.27.0
+### @zag-js/image-cropper@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/live-region@1.27.0
+### @zag-js/interact-outside@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/marquee@1.27.0
+### @zag-js/json-tree-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/menu@1.27.0
+### @zag-js/listbox@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/number-input@1.27.0
+### @zag-js/live-region@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/pagination@1.27.0
+### @zag-js/marquee@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/password-input@1.27.0
+### @zag-js/menu@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/pin-input@1.27.0
+### @zag-js/navigation-menu@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/popover@1.27.0
+### @zag-js/number-input@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/popper@1.27.0
+### @zag-js/pagination@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/presence@1.27.0
+### @zag-js/password-input@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/progress@1.27.0
+### @zag-js/pin-input@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/qr-code@1.27.0
+### @zag-js/popover@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/radio-group@1.27.0
+### @zag-js/popper@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/rating-group@1.27.0
+### @zag-js/presence@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/react@1.27.0
+### @zag-js/progress@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/rect-utils@1.27.0
+### @zag-js/qr-code@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/remove-scroll@1.27.0
+### @zag-js/radio-group@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/scroll-area@1.27.0
+### @zag-js/rating-group@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/scroll-snap@1.27.0
+### @zag-js/react@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/select@1.27.0
+### @zag-js/rect-utils@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/signature-pad@1.27.0
+### @zag-js/remove-scroll@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/slider@1.27.0
+### @zag-js/scroll-area@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/splitter@1.27.0
+### @zag-js/scroll-snap@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/steps@1.27.0
+### @zag-js/select@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/store@1.27.0
+### @zag-js/signature-pad@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/switch@1.27.0
+### @zag-js/slider@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/tabs@1.27.0
+### @zag-js/splitter@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/tags-input@1.27.0
+### @zag-js/steps@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/timer@1.27.0
+### @zag-js/store@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/toast@1.27.0
+### @zag-js/switch@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/toggle@1.27.0
+### @zag-js/tabs@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/toggle-group@1.27.0
+### @zag-js/tags-input@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/tooltip@1.27.0
+### @zag-js/timer@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/tour@1.27.0
+### @zag-js/toast@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/tree-view@1.27.0
+### @zag-js/toggle@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/types@1.27.0
+### @zag-js/toggle-group@1.41.2
 
 License: MIT
 
 - Copyright (c) 2021 Chakra UI
 
-### @zag-js/utils@1.27.0
+### @zag-js/tooltip@1.41.2
+
+License: MIT
+
+- Copyright (c) 2021 Chakra UI
+
+### @zag-js/tour@1.41.2
+
+License: MIT
+
+- Copyright (c) 2021 Chakra UI
+
+### @zag-js/tree-view@1.41.2
+
+License: MIT
+
+- Copyright (c) 2021 Chakra UI
+
+### @zag-js/types@1.41.2
+
+License: MIT
+
+- Copyright (c) 2021 Chakra UI
+
+### @zag-js/utils@1.41.2
 
 License: MIT
 
@@ -6327,11 +6996,11 @@ License: MIT
 - Copyright (c) 2014 Jonathan Ong &lt;me@jongleberry.com&gt;
 - Copyright (c) 2014-2015 Douglas Christopher Wilson &lt;doug@somethingdoug.com&gt;
 
-### bootstrap@5.3.3
+### bootstrap@5.3.8
 
 License: MIT
 
-- Copyright (c) 2011-2024 The Bootstrap Authors
+- Copyright (c) 2011-2025 The Bootstrap Authors
 
 ### bowser@2.11.0
 
@@ -6634,7 +7303,7 @@ License: MIT
 
 - Copyright (C) 2018 Dmitry Shirokov
 
-### chart.js@4.4.8
+### chart.js@4.5.1
 
 License: MIT
 
@@ -7827,6 +8496,12 @@ License: BSD-2-Clause
 
 - Copyright (c) 2015, Scott Motte
 
+### dotenv@17.4.2
+
+License: BSD-2-Clause
+
+- Copyright (c) 2015, Scott Motte
+
 ### dotenv-cli@11.0.0
 
 License: MIT
@@ -8165,6 +8840,12 @@ License: MIT
 
 - Copyright (C) 2018-2022 Guy Bedford
 
+### es-module-lexer@2.3.1
+
+License: MIT
+
+- Copyright (C) 2018-2022 Guy Bedford
+
 ### es-object-atoms@1.0.0
 
 License: MIT
@@ -8456,6 +9137,12 @@ License: BSD-2-Clause
 Author: Ariya Hidayat
 
 ### esquery@1.6.0
+
+License: BSD-3-Clause
+
+- Copyright (c) 2013, Joel Feenstra
+
+### esquery@1.7.0
 
 License: BSD-3-Clause
 
@@ -9289,6 +9976,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### glob@13.0.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### glob@7.1.2
 
 License: ISC
@@ -9937,6 +10630,55 @@ https://github.com/DataDog/import-in-the-middle repository:
     limitations under the License.
 ```
 
+### import-in-the-middle@3.3.3
+
+License: Apache-2.0
+
+- require,module-details-from-path,MIT,Copyright 2016 Thomas Watson Steen
+- dev,c8,ISC,"Copyright (c) 2017, Contributors"
+- dev,imhotap,MIT,Copyright (c) 2019 Bryan English.
+- Copyright 2024 Node.js contributors. All rights reserved.
+- Copyright 2021 Datadog, Inc.
+
+NOTICE:
+
+```
+import-in-the-middle is licensed for use as follows:
+
+Copyright 2024 Node.js contributors. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+This license applies to parts of import-in-the-middle originating from the
+https://github.com/DataDog/import-in-the-middle repository:
+
+    This product includes software developed at Datadog (https://www.datadoghq.com/).
+
+    Copyright 2021 Datadog, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+```
+
 ### import-lazy@2.1.0
 
 License: MIT
@@ -10011,13 +10753,13 @@ License: MIT
 
 - Copyright (c) 2014-2018 Tyler Kellen &lt;tyler@sleekcode.net&gt;, Blaine Bublitz &lt;blaine.bublitz@gmail.com&gt;, and Eric Schoffstall &lt;yo@contra.io&gt;
 
-### intl-messageformat@10.7.16
+### intl-messageformat@10.7.7
 
 License: BSD-3-Clause
 
 - Copyright (c) 2023, Oath Inc.
 
-### intl-messageformat@10.7.7
+### intl-messageformat@11.2.13
 
 License: BSD-3-Clause
 
@@ -10978,13 +11720,13 @@ License: MIT
 
 - Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
-### jose@6.0.10
+### jose@6.1.3
 
 License: MIT
 
 - Copyright (c) 2018 Filip Skokan
 
-### jose@6.1.3
+### jose@6.2.8
 
 License: MIT
 
@@ -11744,6 +12486,12 @@ License: MIT
 
 - Copyright (c) 2014-2020 Teambition
 
+### meriyah@6.1.4
+
+License: ISC
+
+- Copyright (c) 2019 and later, KFlash and others.
+
 ### methods@1.1.2
 
 License: MIT
@@ -11853,6 +12601,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### minimatch@10.2.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### minimatch@3.1.2
 
 License: ISC
@@ -11918,6 +12672,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+### minipass@7.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### minipass-collect@2.0.1
 
@@ -12123,6 +12883,12 @@ License: MIT
 - Copyright (c) 2014 Matt Lavin &lt;matt.lavin@gmail.com&gt;
 
 ### next@16.0.10
+
+License: MIT
+
+- Copyright (c) 2025 Vercel, Inc.
+
+### next@16.2.12
 
 License: MIT
 
@@ -12368,7 +13134,7 @@ License: Apache-2.0
 
 Author: Mikeal Rogers
 
-### oauth4webapi@3.3.2
+### oauth4webapi@3.8.6
 
 License: MIT
 
@@ -12541,7 +13307,7 @@ License: (WTFPL OR MIT)
 - Copyright © 2012–2020 Domenic Denicola &lt;d@domenic.me&gt;
 - Copyright (C) 2004 Sam Hocevar &lt;sam@hocevar.net&gt;
 
-### openid-client@6.3.4
+### openid-client@6.8.4
 
 License: MIT
 
@@ -12842,6 +13608,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### path-scurry@2.0.2
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### path-to-regexp@0.1.12
 
 License: MIT
@@ -12897,7 +13669,7 @@ License: MIT
 
 - Copyright (c) 2014 Andrew Kelley
 
-### perfect-freehand@1.2.2
+### perfect-freehand@1.2.3
 
 License: MIT
 
@@ -12952,12 +13724,6 @@ License: MIT
 - Copyright (c) 2010 - 2021 Brian Carlson
 
 ### pg-protocol@1.7.0
-
-License: MIT
-
-- Copyright (c) 2010 - 2021 Brian Carlson
-
-### pg-protocol@1.7.1
 
 License: MIT
 
@@ -13511,11 +14277,61 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
-### primereact@10.9.4
+### primereact@11.0.0
 
-License: MIT
+License: unknown
 
-- Copyright (c) 2016-2025 PrimeTek
+- © 2026 PrimeTek Informatics. All rights reserved.
+
+Verbatim license text:
+
+```
+# PrimeUI License
+
+This package is part of **PrimeUI**, a family of commercial UI libraries by PrimeTek Informatics.
+
+## How PrimeUI May Be Used
+
+PrimeUI may be used under one of two licenses. You choose the one that applies to you based on eligibility.
+
+### Community License (Free)
+
+Free for organizations that meet all of the following criteria:
+
+- Less than $1,000,000 USD in annual gross revenue
+- Fewer than 5 developers
+- Fewer than 10 employees
+- Less than $3,000,000 USD in venture capital or outside funding
+
+Individuals, students, non-profits, and non-commercial open source projects also qualify.
+
+The Community License provides full access to the core libraries and supports up to 4 developers. It requires annual renewal by confirming continued eligibility.
+
+### Commercial License (Paid)
+
+For organizations that do not qualify for the Community License.
+
+Licensed per developer, perpetual, with one year of updates included. Renewal is optional and extends access to new versions. The Commercial Suite also includes PrimeBlocks, Theme Designer, all PrimeUI Pro components, and Premium Support.
+
+## License Key
+
+A valid license key is required to use this software. License verification is performed offline, with no telemetry and no remote connection. A missing, invalid, or expired key may cause the software to display a license notice.
+
+## Full Terms
+
+The complete license terms, eligibility details, and renewal information are available at:
+
+- Community License: https://primeui.dev/licenses/community
+- Commercial License: https://primeui.dev/licenses/commercial
+
+## Restrictions
+
+This software is distributed as a compiled package. You may not reverse-engineer, decompile, or extract its source code, redistribute it as a component library or development tool, or remove its license mechanisms. Redistributing the software so that third parties can develop with it requires a separate OEM License. See the full terms for details.
+
+---
+
+© 2026 PrimeTek Informatics. All rights reserved.
+```
 
 ### prisma@6.6.0
 
@@ -13779,6 +14595,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### react@19.2.8
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### react-docgen@8.0.2
 
 License: MIT
@@ -13803,31 +14625,37 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### react-dom@19.2.8
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### react-draggable@4.4.6
 
 License: MIT
 
 - Copyright (c) 2014-2016 Matt Zabriskie. All rights reserved.
 
-### react-hook-form@7.55.0
+### react-hook-form@7.83.0
 
 License: MIT
 
 - Copyright (c) 2019-present Beier(Bill) Luo
 
-### react-icons@5.5.0
+### react-icons@5.7.0
 
 License: MIT
 
 - Copyright 2018 kamijin_fanta &lt;kamijin@live.jp&gt;
 
-### react-intl@6.8.9
+### react-intl@10.1.19
 
 License: BSD-3-Clause
 
 - Copyright 2019 Oath Inc.
 
-### react-intl@7.1.10
+### react-intl@6.8.9
 
 License: BSD-3-Clause
 
@@ -13916,13 +14744,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2015 Wang Zixiao
-
-### react-transition-group@4.4.5
-
-License: BSD-3-Clause
-
-- Copyright (c) 2018, React Community
-- Forked from React (https://github.com/facebook/react) Copyright 2013-present, Facebook, Inc.
 
 ### react-virtualized@9.22.6
 
@@ -14239,6 +15060,31 @@ License: ISC
 - Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
 
 ### rollup@4.53.5
+
+License: MIT
+
+- Copyright (c) 2017 \[these people\](https://github.com/rollup/rollup/graphs/contributors)
+- &gt; Copyright 2024 Justin Ridgewell &lt;justin@ridgewell.name&gt;
+- &gt; Copyright (c) 2019 RollupJS Plugin Contributors (https://github.com/rollup/plugins/graphs/contributors)
+- &gt; Copyright (c) 2019 Elan Shanker, Paul Miller (https://paulmillr.com)
+- &gt; Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+- &gt; Copyright (c) Paul Miller (https://paulmillr.com)
+- &gt; Copyright (c) 2014-present, Jon Schlinkert.
+- &gt; Copyright (c) 2012-2019 Paul Miller (https://paulmillr.com), Elan Shanker
+- &gt; Copyright (c) Luke Edwards &lt;luke.edwards05@gmail.com&gt; (lukeed.com)
+- &gt; Copyright (c) 2015, 2019 Elan Shanker
+- &gt; Copyright (c) 2019 Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com), Paul Miller (https://paulmillr.com)
+- &gt; Copyright (c) 2014-2016, Jon Schlinkert
+- &gt; Copyright (c) 2014-2017, Jon Schlinkert.
+- &gt; Copyright 2018 Rich Harris
+- &gt; Copyright (c) 2014-2018, Jon Schlinkert.
+- &gt; Copyright (c) 2021-2024 Oleksii Raspopov, Kostiantyn Denysov, Anton Verinov
+- &gt; Copyright (c) 2017-present, Jon Schlinkert.
+- &gt; Copyright (c) 2012-2019 Thorsten Lorenz, Paul Miller (https://paulmillr.com)
+- &gt; Copyright (c) 2015-2023 Benjamin Coe, Isaac Z. Schlueter, and Contributors
+- &gt; Copyright (c) 2015-present, Jon Schlinkert.
+
+### rollup@4.62.4
 
 License: MIT
 
@@ -14727,6 +15573,12 @@ License: MIT
 - Copyright &copy; 2012-2015 Eli Skeggs
 - Copyright &copy; 2011 Kevin Kwok
 
+### semifies@1.0.0
+
+License: Apache-2.0
+
+Author: Holepunch Inc
+
 ### semver@5.7.2
 
 License: ISC
@@ -15038,6 +15890,12 @@ License: MIT
 - Copyright (c) 2014 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
 
 ### socket.io-client@4.8.1
+
+License: MIT
+
+- Copyright (c) 2014-present Guillermo Rauch and Socket.IO contributors
+
+### socket.io-client@4.8.3
 
 License: MIT
 
@@ -15560,7 +16418,7 @@ License: BSD-3-Clause
 
 - Copyright (c) 2016, Mermade Software
 
-### swr@2.3.3
+### swr@2.4.2
 
 License: MIT
 
@@ -15968,12 +16826,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
-
-### ts-pattern@5.7.0
-
-License: MIT
-
-- Copyright (c) 2021 Gabriel Vergnaud
 
 ### ts-pattern@5.9.0
 
@@ -16455,7 +17307,7 @@ License: BSD-2-Clause
 
 Author: Sindre Sorhus
 
-### uqr@0.1.2
+### uqr@0.1.3
 
 License: MIT
 
@@ -16515,12 +17367,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2017 Anton Korzunov
-
-### use-sync-external-store@1.4.0
-
-License: MIT
-
-- Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### use-sync-external-store@1.6.0
 
@@ -17168,7 +18014,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### yup@1.6.1
+### yup@1.7.1
 
 License: MIT
 
@@ -17196,9 +18042,19 @@ License: MIT
 
 No license could be determined for these packages; no license text is included:
 
+- @primereact/core@11.0.0 — unknown license, no text included
+- @primereact/headless@11.0.0 — unknown license, no text included
+- @primereact/hooks@11.0.0 — unknown license, no text included
+- @primereact/types@11.0.0 — unknown license, no text included
+- @primeui/license-manager@1.0.0 — unknown license, no text included
+- @primeuix/locale@0.1.0 — unknown license, no text included
+- @primeuix/motion@1.0.0 — unknown license, no text included
+- @primeuix/styled@1.0.0 — unknown license, no text included
+- @primeuix/utils@0.8.0 — unknown license, no text included
 - jsonify@0.0.1 — unknown license, no text included
 - matplotlib-inline@0.2.1 — unknown license, no text included
 - node-clone@0.1.1 — unknown license, no text included
+- primereact@11.0.0 — unknown license, no text included
 - scratch-render-fonts@1.0.220 — unknown license, no text included
 - union@0.5.0 — unknown license, no text included
 
