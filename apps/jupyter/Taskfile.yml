@@ -127,6 +127,7 @@ tasks:
     cmds:
       - node scripts/create-symlink.js
       - node scripts/create-version.js
+      - node scripts/create-sentry-config.js
       - task: exts:nbrunner:pip
       - task: exts:nbrunner:link
 
