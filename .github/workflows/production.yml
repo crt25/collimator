@@ -41,6 +41,7 @@ jobs:
       frontend_bucket_id: ${{ vars.PROD_FRONTEND_BUCKET_ID }}
       scratch_app_bucket_id: ${{ vars.PROD_SCRATCH_APP_BUCKET_ID }}
       jupyter_app_bucket_id: ${{ vars.PROD_JUPYTER_APP_BUCKET_ID }}
+      cloudfront_distribution_id: ${{ vars.PROD_CLOUDFRONT_DISTRIBUTION_ID }}
 
       backend_cluster_name: ${{ vars.PROD_BACKEND_CLUSTER_NAME }}
       backend_service_name: ${{ vars.PROD_BACKEND_SERVICE_NAME }}
