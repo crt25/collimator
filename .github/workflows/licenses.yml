@@ -34,6 +34,7 @@ jobs:
         with:
           mode: check
           policy: .sbomlet.policy.toml
+          docker: true
 
       - name: Regenerate licenses
         if: steps.check.outcome == 'failure'
@@ -41,6 +42,7 @@ jobs:
         with:
           mode: generate
           policy: .sbomlet.policy.toml
+          docker: true
 
       - name: Check for changes
         id: git-check
