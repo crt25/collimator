@@ -20,8 +20,9 @@ export type AppActivityInput = Omit<
 
 export type StudentActivityInput = Omit<
   Prisma.StudentActivityUncheckedCreateInput,
-  "solutionHash" | "appActivity" | "studentId"
+  "solutionHash" | "appActivity" | "studentId" | "happenedAtCounter"
 > & {
+  happenedAtCounter: number;
   appActivity: AppActivityInput | null;
 };
 
@@ -40,20 +41,11 @@ export class StudentActivityService {
       solution: SolutionInput;
     }[],
   ): Promise<StudentActivity[]> {
-    const results = await this.prisma.$transaction(
-      activityWithSolution.map(({ activity, solution }) =>
-        this.prisma.studentActivity.create({
-          data: this.buildActivityInput(student, activity, solution),
-          include: { solution: true },
-        }),
-      ),
-    );
+    const results: StudentActivity[] = [];
 
-    results.forEach((result) =>
-      // do not wait for the promise to resolve
-      // this will happen in the background
-      this.analysisService.performAnalysis(result.solution, latestAstVersion),
-    );
+    for (const { activity, solution } of activityWithSolution) {
+      results.push(await this.create(student, activity, solution));
+    }
 
     return results;
   }
@@ -63,10 +55,46 @@ export class StudentActivityService {
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    const result = await this.prisma.studentActivity.create({
-      data: this.buildActivityInput(student, activity, solution),
-      include: { solution: true },
-    });
+    let result: Prisma.StudentActivityGetPayload<{
+      include: { solution: true };
+    }>;
+
+    try {
+      result = await this.prisma.studentActivity.create({
+        data: this.buildActivityInput(student, activity, solution),
+        include: { solution: true },
+      });
+    } catch (error) {
+      if (
+        !(
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        )
+      ) {
+        throw error;
+      }
+
+      // the client may replay an activity after a timeout, reload, or concurrent requests
+      // treat the activity's unique key as an idempotency key
+      // look it up to ensure that an unrelated unique violation is not suppressed
+      const existingActivity = await this.prisma.studentActivity.findUnique({
+        where: {
+          uniqueStudentActivityPerTypeAndTime: {
+            studentId: student.id,
+            type: activity.type,
+            happenedAt: activity.happenedAt,
+            happenedAtCounter: activity.happenedAtCounter,
+          },
+        },
+        include: { solution: true },
+      });
+
+      if (!existingActivity) {
+        throw error;
+      }
+
+      return existingActivity;
+    }
 
     // do not wait for the promise to resolve
     // this will happen in the background
