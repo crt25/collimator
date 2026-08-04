@@ -166,6 +166,7 @@ export class TasksService {
       include: {
         sessions: {
           where: {
+            deletedAt: deletedAtCondition,
             session: {
               deletedAt: deletedAtCondition,
               OR: [

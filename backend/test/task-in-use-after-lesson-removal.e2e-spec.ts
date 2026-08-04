@@ -160,6 +160,20 @@ describe("TasksService.update — task removed from another teacher's lesson", (
     });
   });
 
+  it("reports a removed association as not in use in the task list", async () => {
+    const taskId = await createTask(false);
+    const { sessionId, classId } = await createLessonWithTask(taskId);
+
+    await removeTaskFromLesson(sessionId, classId);
+    await enrolStudentInClass(classId);
+
+    const tasks = await tasksService.findManyWithInUseStatus(false, ownerId);
+
+    expect(tasks).toContainEqual(
+      expect.objectContaining({ id: taskId, isInUse: false }),
+    );
+  });
+
   it("still refuses a task in a live lesson that has students", async () => {
     const taskId = await createTask(false);
     const { classId } = await createLessonWithTask(taskId);
