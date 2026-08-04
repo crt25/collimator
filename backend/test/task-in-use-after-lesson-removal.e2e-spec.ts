@@ -3,12 +3,12 @@ import { AuthenticationProvider, UserType } from "@prisma/client";
 import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
 import { mockConfigModule } from "src/utilities/test/mock-config.service";
-import { SessionsService } from "../../sessions/sessions.service";
+import { SessionsService } from "src/api/sessions/sessions.service";
 import {
   TasksService,
   TaskInOtherUsersLessonError,
   TaskInUseByClassOrLessonWithStudentsError,
-} from "../tasks.service";
+} from "src/api/tasks/tasks.service";
 
 // Removing a task from a lesson soft-deletes the SessionTask association: the
 // row stays behind with deletedAt set. An "is this task still in use" query
@@ -46,7 +46,10 @@ describe("TasksService.update — task removed from another teacher's lesson", (
     module = await Test.createTestingModule({
       imports: [CoreModule, mockConfigModule],
       providers: [TasksService, SessionsService],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useFactory({ factory: () => jestPrisma.client })
+      .compile();
 
     tasksService = module.get<TasksService>(TasksService);
     sessionsService = module.get<SessionsService>(SessionsService);
