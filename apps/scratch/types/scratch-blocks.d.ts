@@ -33,6 +33,7 @@ declare namespace ScratchBlocksExtended {
     getNextBlock: () => Block | null;
     getParent: () => Block | null;
     getChildren: () => Block[];
+    getDescendants: (ordered: boolean, ignoreShadows?: boolean) => Block[];
     id: string;
     type: string;
   }
