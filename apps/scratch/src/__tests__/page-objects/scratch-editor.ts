@@ -5,6 +5,7 @@ import {
   getAllTargetBlocksSelector,
   getBlockCanvasSelector,
   getBlockConfigButtonSelector,
+  getBlockSelector,
   getBlockConfigFormSelector,
   getFlyoutSelector,
 } from "../locators";
@@ -197,6 +198,32 @@ export class ScratchEditorPage {
         y: 50,
       },
     });
+  }
+
+  async createNewStack(opcode: string) {
+    const topBlocks = this.page.locator(isVisualTopOfStack);
+    const existingTopBlockIds = await topBlocks.evaluateAll((blocks) =>
+      blocks.map((block) => block.getAttribute("data-id")),
+    );
+
+    await this.getBlockInToolbox(opcode).dragTo(this.blockCanvas, {
+      force: true,
+      targetPosition: { x: 400, y: 200 },
+    });
+
+    const newTopBlockId = await topBlocks.evaluateAll(
+      (blocks, existingIds) =>
+        blocks
+          .map((block) => block.getAttribute("data-id"))
+          .find((id) => id !== null && !existingIds.includes(id)),
+      existingTopBlockIds,
+    );
+
+    if (!newTopBlockId) {
+      throw new Error(`Failed to create a new ${opcode} stack`);
+    }
+
+    return this.page.locator(getBlockSelector(newTopBlockId));
   }
 
   async appendNewBlockTo(opcode: string, block: Locator) {

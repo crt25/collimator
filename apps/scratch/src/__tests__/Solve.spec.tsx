@@ -206,6 +206,36 @@ test.describe("/solve", () => {
     );
   });
 
+  test("cannot paste a stack containing a block at its usage limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
+
+    const stack = await page.createNewStack("motion_goto");
+    await page.appendNewBlockTo("motion_movesteps", stack);
+
+    for (let i = 1; i < moveStepsAllowedCount; i++) {
+      await page.appendNewBlockTo(
+        "motion_movesteps",
+        page.taskBlocks.catActor.editableBlock,
+      );
+    }
+
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("0");
+
+    const blockCountBeforePaste = await page.blocksOfCurrentTarget.count();
+
+    await stack.click({ force: true, position: { x: 10, y: 10 } });
+    await pwPage.keyboard.press("Control+C");
+    await pwPage.keyboard.press("Control+V");
+
+    // give Scratch's create-event listener time to reject and undo the paste
+    await pwPage.waitForTimeout(500);
+    await expect(page.blocksOfCurrentTarget).toHaveCount(blockCountBeforePaste);
+  });
+
   test("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {
