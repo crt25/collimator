@@ -1,8 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { DeepMockProxy, mockDeep } from "jest-mock-extended";
-import { Prisma, PrismaClient, Student, User, UserType } from "@prisma/client";
+import {
+  AuthenticationProvider,
+  Student,
+  User,
+  UserType,
+} from "@prisma/client";
 import { ForbiddenException } from "@nestjs/common";
+import { CoreModule } from "src/core/core.module";
 import { PrismaService } from "src/prisma/prisma.service";
+import { mockConfigModule } from "src/utilities/test/mock-config.service";
 import { AuthorizationService } from "../../authorization/authorization.service";
 import { TasksController } from "../tasks.controller";
 import { TasksService } from "../tasks.service";
@@ -14,65 +20,103 @@ import { TasksService } from "../tasks.service";
 // endpoint already grants: public tasks, plus your own, plus everything for an
 // admin; a student instead sees the tasks of the sessions they take part in.
 
-const taskId = 3;
-const owner = { id: 10, type: UserType.TEACHER } as User;
-const otherTeacher = { id: 11, type: UserType.TEACHER } as User;
-const admin = { id: 12, type: UserType.ADMIN } as User;
-const student: Student = { id: 8, deletedAt: null };
-
 describe("Task visibility authorization", () => {
   describe("AuthorizationService.canViewTask", () => {
     let service: AuthorizationService;
-    let prismaMock: DeepMockProxy<PrismaClient>;
+    let prisma: PrismaService;
     let module: TestingModule;
 
-    beforeEach(async () => {
-      prismaMock = mockDeep<PrismaClient>();
+    let owner: User;
+    let otherTeacher: User;
+    let admin: User;
 
+    const uniqueEmail = (prefix: string): string =>
+      `${prefix}-${Date.now()}-${Math.round(Math.random() * 1e9)}@example.com`;
+
+    const createUser = (prefix: string, type: UserType): Promise<User> =>
+      prisma.user.create({
+        data: {
+          email: uniqueEmail(prefix),
+          authenticationProvider: AuthenticationProvider.MICROSOFT,
+          type,
+        },
+      });
+
+    beforeEach(async () => {
       module = await Test.createTestingModule({
-        providers: [
-          AuthorizationService,
-          { provide: PrismaService, useValue: prismaMock },
-        ],
+        imports: [CoreModule, mockConfigModule],
+        providers: [AuthorizationService],
       }).compile();
 
       service = module.get<AuthorizationService>(AuthorizationService);
+      prisma = module.get<PrismaService>(PrismaService);
+
+      owner = await createUser("owner", UserType.TEACHER);
+      otherTeacher = await createUser("other-teacher", UserType.TEACHER);
+      admin = await createUser("admin", UserType.ADMIN);
     });
 
     afterEach(() => module.close());
 
+    const createTask = async (isPublic: boolean): Promise<number> => {
+      const task = await prisma.task.create({
+        data: {
+          title: "A task",
+          description: "A task for testing",
+          type: "SCRATCH",
+          mimeType: "application/json",
+          data: Buffer.from("task-data"),
+          creatorId: owner.id,
+          isPublic,
+        },
+      });
+
+      return task.id;
+    };
+
     /**
-     * Stands in for the task lookup: resolves a row only when the given
-     * where-clause actually admits this task, so a query that forgets to
-     * constrain visibility matches it - the behaviour under test.
+     * A lesson of the owner's class containing the task, joined by a student -
+     * either enrolled in the class or anonymously, as the sharing type decides.
      */
-    const withTask = (task: {
-      isPublic: boolean;
-      creatorId: number | null;
-    }): void => {
-      const findFirst = (
-        args: Prisma.TaskFindFirstArgs,
-      ): { id: number } | null => {
-        const where = args.where ?? {};
-        // an alternative that does not constrain a field admits any value
-        const matches = (where.OR ?? [where]).some(
-          (alternative) =>
-            (alternative.isPublic === undefined ||
-              alternative.isPublic === task.isPublic) &&
-            (alternative.creatorId === undefined ||
-              alternative.creatorId === task.creatorId),
-        );
+    const createStudentInLessonWith = async (
+      taskId: number,
+      joinAnonymously: boolean,
+    ): Promise<Student> => {
+      const klass = await prisma.class.create({
+        data: { name: "A class", teacherId: owner.id },
+      });
 
-        return matches ? { id: taskId } : null;
-      };
+      const session = await prisma.session.create({
+        data: {
+          title: "A lesson",
+          description: "A lesson for testing",
+          classId: klass.id,
+          isAnonymous: joinAnonymously,
+          tasks: { create: [{ taskId, index: 0 }] },
+        },
+      });
 
-      // `as never` (the convention in authorization.service.spec.ts) lets a
-      // partial row stand in for the full model the delegate is typed to return
-      prismaMock.task.findFirst.mockImplementation(findFirst as never);
+      const student = await prisma.student.create({ data: {} });
+
+      if (joinAnonymously) {
+        await prisma.anonymousStudent.create({
+          data: { studentId: student.id, sessionId: session.id },
+        });
+      } else {
+        await prisma.authenticatedStudent.create({
+          data: {
+            studentId: student.id,
+            classId: klass.id,
+            pseudonym: Buffer.from(`pseudonym-${student.id}`),
+          },
+        });
+      }
+
+      return student;
     };
 
     it("denies a teacher another teacher's private task", async () => {
-      withTask({ isPublic: false, creatorId: owner.id });
+      const taskId = await createTask(false);
 
       await expect(
         service.canViewTask(otherTeacher, null, taskId),
@@ -80,7 +124,7 @@ describe("Task visibility authorization", () => {
     });
 
     it("allows the creator their own private task", async () => {
-      withTask({ isPublic: false, creatorId: owner.id });
+      const taskId = await createTask(false);
 
       await expect(service.canViewTask(owner, null, taskId)).resolves.toBe(
         true,
@@ -88,7 +132,7 @@ describe("Task visibility authorization", () => {
     });
 
     it("allows any teacher a public task", async () => {
-      withTask({ isPublic: true, creatorId: owner.id });
+      const taskId = await createTask(true);
 
       await expect(
         service.canViewTask(otherTeacher, null, taskId),
@@ -96,7 +140,7 @@ describe("Task visibility authorization", () => {
     });
 
     it("allows an admin another user's private task", async () => {
-      withTask({ isPublic: false, creatorId: owner.id });
+      const taskId = await createTask(false);
 
       await expect(service.canViewTask(admin, null, taskId)).resolves.toBe(
         true,
@@ -104,13 +148,28 @@ describe("Task visibility authorization", () => {
     });
 
     it("denies unauthenticated requests", async () => {
+      const taskId = await createTask(true);
+
       await expect(service.canViewTask(null, null, taskId)).resolves.toBe(
         false,
       );
     });
 
-    it("allows a student taking part in a session that uses the task", async () => {
-      prismaMock.sessionTask.findFirst.mockResolvedValue({ taskId } as never);
+    it("denies a teacher a soft-deleted task they created", async () => {
+      const taskId = await createTask(false);
+      await prisma.task.update({
+        where: { id: taskId },
+        data: { deletedAt: new Date() },
+      });
+
+      await expect(service.canViewTask(owner, null, taskId)).resolves.toBe(
+        false,
+      );
+    });
+
+    it("allows a student taking part in a lesson that uses the task", async () => {
+      const taskId = await createTask(false);
+      const student = await createStudentInLessonWith(taskId, false);
 
       await expect(service.canViewTask(null, student, taskId)).resolves.toBe(
         true,
@@ -118,33 +177,36 @@ describe("Task visibility authorization", () => {
     });
 
     it("allows a student who joined the lesson anonymously", async () => {
-      // An anonymous participant is not on any class roster, so only the
-      // anonymous branch of the participation check can authorize them.
-      // @AuthenticatedStudent resolves them like any other student: it carries
-      // the Student row of whoever holds the token, authenticated or anonymous.
-      const findFirst = (
-        args: Prisma.SessionTaskFindFirstArgs,
-      ): { taskId: number } | null => {
-        // the session filter is an XOR of a relation filter and a where input
-        const session = (args.where?.session ?? {}) as Prisma.SessionWhereInput;
-
-        const joinedAnonymously = (session.OR ?? []).some(
-          (alternative) =>
-            alternative.anonymousStudents?.some?.studentId === student.id,
-        );
-
-        return joinedAnonymously ? { taskId } : null;
-      };
-
-      prismaMock.sessionTask.findFirst.mockImplementation(findFirst as never);
+      // an anonymous participant is on no class roster, so only the anonymous
+      // branch of the participation check can authorize them
+      const taskId = await createTask(false);
+      const student = await createStudentInLessonWith(taskId, true);
 
       await expect(service.canViewTask(null, student, taskId)).resolves.toBe(
         true,
       );
     });
 
-    it("denies a student a task from a session they do not take part in", async () => {
-      prismaMock.sessionTask.findFirst.mockResolvedValue(null);
+    it("denies a student a task from a lesson they do not take part in", async () => {
+      const taskId = await createTask(false);
+      await createStudentInLessonWith(taskId, false);
+
+      // a student of some other lesson entirely
+      const outsider = await prisma.student.create({ data: {} });
+
+      await expect(service.canViewTask(null, outsider, taskId)).resolves.toBe(
+        false,
+      );
+    });
+
+    it("denies a student once the task is removed from their lesson", async () => {
+      const taskId = await createTask(false);
+      const student = await createStudentInLessonWith(taskId, false);
+
+      await prisma.sessionTask.updateMany({
+        where: { taskId },
+        data: { deletedAt: new Date() },
+      });
 
       await expect(service.canViewTask(null, student, taskId)).resolves.toBe(
         false,
@@ -152,7 +214,12 @@ describe("Task visibility authorization", () => {
     });
   });
 
+  // The controller only has to refuse when the check says no; which tasks are
+  // visible is settled against the database above.
   describe("TasksController enforces it", () => {
+    const taskId = 3;
+    const teacher = { id: 11, type: UserType.TEACHER } as User;
+
     const buildController = (
       canView: boolean,
     ): { controller: TasksController; tasksService: MockTasksService } => {
@@ -162,7 +229,7 @@ describe("Task visibility authorization", () => {
           title: "t",
           description: "d",
           type: "SCRATCH",
-          creatorId: owner.id,
+          creatorId: 10,
           isPublic: false,
         }),
         findByIdOrThrowWithReferenceSolutions: jest.fn().mockResolvedValue({
@@ -170,7 +237,7 @@ describe("Task visibility authorization", () => {
           title: "t",
           description: "d",
           type: "SCRATCH",
-          creatorId: owner.id,
+          creatorId: 10,
           isPublic: false,
           referenceSolutions: [],
         }),
@@ -195,9 +262,9 @@ describe("Task visibility authorization", () => {
     it("refuses the task detail when the task is not visible", async () => {
       const { controller, tasksService } = buildController(false);
 
-      await expect(
-        controller.findOne(otherTeacher, null, taskId),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(controller.findOne(teacher, null, taskId)).rejects.toThrow(
+        ForbiddenException,
+      );
 
       expect(tasksService.findByIdOrThrow).not.toHaveBeenCalled();
     });
@@ -206,7 +273,7 @@ describe("Task visibility authorization", () => {
       const { controller, tasksService } = buildController(false);
 
       await expect(
-        controller.downloadOne(otherTeacher, null, taskId),
+        controller.downloadOne(teacher, null, taskId),
       ).rejects.toThrow(ForbiddenException);
 
       expect(tasksService.downloadByIdOrThrow).not.toHaveBeenCalled();
@@ -216,7 +283,7 @@ describe("Task visibility authorization", () => {
       const { controller, tasksService } = buildController(false);
 
       await expect(
-        controller.findOneWithReferenceSolutions(otherTeacher, taskId),
+        controller.findOneWithReferenceSolutions(teacher, taskId),
       ).rejects.toThrow(ForbiddenException);
 
       expect(
@@ -228,7 +295,7 @@ describe("Task visibility authorization", () => {
       const { controller, tasksService } = buildController(true);
 
       await expect(
-        controller.findOne(owner, null, taskId),
+        controller.findOne(teacher, null, taskId),
       ).resolves.toBeDefined();
 
       expect(tasksService.findByIdOrThrow).toHaveBeenCalled();
