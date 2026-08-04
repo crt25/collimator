@@ -243,12 +243,8 @@ export class SessionsService {
       where: {
         id: sessionId,
         deletedAt: includeSoftDelete ? undefined : null,
-        // Which students can lose access depends on the sharing type. An
-        // anonymous lesson never admits the class's enrolled students - it
-        // hands out ad-hoc identities - so only its own anonymous participants
-        // count. Conversely a regular lesson is joined through the class
-        // roster. Checking both for every lesson would lock every anonymous
-        // lesson in a class that has ever enrolled a student.
+        // an anonymous lesson is joined anonymously, a regular one through the
+        // class roster
         OR: [
           {
             isAnonymous: true,
