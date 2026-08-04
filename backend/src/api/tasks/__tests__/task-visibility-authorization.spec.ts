@@ -116,6 +116,32 @@ describe("Task visibility authorization", () => {
       );
     });
 
+    it("allows a student who joined the lesson anonymously", async () => {
+      // An anonymous participant is not on any class roster, so only the
+      // anonymous branch of the participation check can authorize them.
+      // @AuthenticatedStudent resolves them like any other student: it carries
+      // the Student row of whoever holds the token, authenticated or anonymous.
+      prismaMock.sessionTask.findFirst.mockImplementation(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (args: any) => {
+          const alternatives = args?.where?.session?.OR ?? [];
+
+          const matchesAnonymously = alternatives.some(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (alternative: any) =>
+              alternative.anonymousStudents?.some?.studentId === student.id,
+          );
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return (matchesAnonymously ? { taskId } : null) as any;
+        },
+      );
+
+      await expect(service.canViewTask(null, student, taskId)).resolves.toBe(
+        true,
+      );
+    });
+
     it("denies a student a task from a session they do not take part in", async () => {
       prismaMock.sessionTask.findFirst.mockResolvedValue(null);
 
