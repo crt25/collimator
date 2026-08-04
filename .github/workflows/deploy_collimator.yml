@@ -44,6 +44,10 @@ on:
         required: true
         type: string
 
+      cloudfront_distribution_id:
+        required: true
+        type: string
+
       backend_cluster_name:
         required: true
         type: string
@@ -61,6 +65,10 @@ on:
         type: string
 
       scratch_app_sentry_dsn:
+        required: true
+        type: string
+
+      jupyter_app_sentry_dsn:
         required: true
         type: string
 
@@ -113,6 +121,7 @@ jobs:
       FRONTEND_BUCKET_ID: ${{ inputs.frontend_bucket_id }}
       SCRATCH_APP_BUCKET_ID: ${{ inputs.scratch_app_bucket_id }}
       JUPYTER_APP_BUCKET_ID: ${{ inputs.jupyter_app_bucket_id }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ inputs.cloudfront_distribution_id }}
 
       BACKEND_CLUSTER_NAME: ${{ inputs.backend_cluster_name }}
       BACKEND_SERVICE_NAME: ${{ inputs.backend_service_name }}
@@ -122,6 +131,7 @@ jobs:
       SENTRY_ENVIRONMENT: ${{ inputs.sentry_environment }}
       FRONTEND_SENTRY_DSN: ${{ inputs.frontend_sentry_dsn }}
       APP_SCRATCH_SENTRY_DSN: ${{ inputs.scratch_app_sentry_dsn }}
+      APP_JUPYTER_SENTRY_DSN: ${{ inputs.jupyter_app_sentry_dsn }}
 
     steps:
       - name: Check out repository code
@@ -203,6 +213,9 @@ jobs:
           aws s3 sync ./frontend/dist/ "s3://${FRONTEND_BUCKET_ID}/" --delete
           aws s3 sync ./apps/scratch/build/ "s3://${SCRATCH_APP_BUCKET_ID}/" --delete
           aws s3 sync ./apps/jupyter/dist/app/ "s3://${JUPYTER_APP_BUCKET_ID}/" --delete
+
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" --paths "/*"
 
       - name: Authenticate to ECR
         shell: bash

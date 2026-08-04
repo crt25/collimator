@@ -13,6 +13,9 @@ notebook_runner/labextension
 # Version file is handled by hatchling
 notebook_runner/_version.py
 
+# Generated from APP_JUPYTER_SENTRY_DSN during setup
+src/sentry-config.ts
+
 # Integration tests
 ui-tests/test-results/
 ui-tests/playwright-report/
