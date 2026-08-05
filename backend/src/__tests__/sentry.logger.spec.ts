@@ -20,23 +20,36 @@ const sentryLogger = Sentry.logger as unknown as Record<
   jest.Mock
 >;
 
+const nestMethods = [
+  "log",
+  "error",
+  "warn",
+  "debug",
+  "verbose",
+  "fatal",
+] as const;
+
 // The console output must stay exactly what ConsoleLogger produces, so the
 // forwarding is asserted against a spied-on super call rather than stdout.
 describe("SentryLogger", () => {
-  const consoleSpies = (
-    ["log", "error", "warn", "debug", "verbose", "fatal"] as const
-  ).reduce(
-    (spies, method) => {
-      spies[method] = jest
-        .spyOn(ConsoleLogger.prototype, method)
-        .mockImplementation(() => undefined);
-      return spies;
-    },
-    {} as Record<string, jest.SpyInstance>,
-  );
+  let consoleSpies: Record<(typeof nestMethods)[number], jest.SpyInstance>;
 
-  afterEach(() => jest.clearAllMocks());
-  afterAll(() => jest.restoreAllMocks());
+  beforeEach(() => {
+    consoleSpies = nestMethods.reduce(
+      (spies, method) => {
+        spies[method] = jest
+          .spyOn(ConsoleLogger.prototype, method)
+          .mockImplementation(() => undefined);
+        return spies;
+      },
+      {} as Record<(typeof nestMethods)[number], jest.SpyInstance>,
+    );
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
 
   it.each([
     ["log", "info"],
@@ -54,7 +67,7 @@ describe("SentryLogger", () => {
 
       expect(sentryLogger[sentryMethod]).toHaveBeenCalledWith(
         "something happened",
-        expect.objectContaining({ context: "SomeContext" }),
+        { context: "SomeContext" },
       );
       expect(consoleSpies[nestMethod]).toHaveBeenCalledWith(
         "something happened",
@@ -64,14 +77,27 @@ describe("SentryLogger", () => {
   );
 
   it("forwards levels to Sentry even when the console suppresses them", () => {
+    // let the real ConsoleLogger.log run so its level filter actually applies
+    consoleSpies.log.mockRestore();
+    const stdoutSpy = jest
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
+    const stderrSpy = jest
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
+
     const logger = new SentryLogger({ logLevels: ["error"] });
 
     logger.log("suppressed on the console", "SomeContext");
 
     expect(sentryLogger.info).toHaveBeenCalledWith(
       "suppressed on the console",
-      expect.objectContaining({ context: "SomeContext" }),
+      {
+        context: "SomeContext",
+      },
     );
+    expect(stdoutSpy).not.toHaveBeenCalled();
+    expect(stderrSpy).not.toHaveBeenCalled();
   });
 
   it("attaches the stack trace passed to error()", () => {
@@ -79,13 +105,73 @@ describe("SentryLogger", () => {
 
     logger.error("it broke", "Error: it broke\n  at somewhere", "SomeContext");
 
-    expect(sentryLogger.error).toHaveBeenCalledWith(
-      "it broke",
-      expect.objectContaining({
-        context: "SomeContext",
-        stack: "Error: it broke\n  at somewhere",
-      }),
-    );
+    expect(sentryLogger.error).toHaveBeenCalledWith("it broke", {
+      context: "SomeContext",
+      stack: "Error: it broke\n  at somewhere",
+    });
+  });
+
+  it("attaches the stack of the two-argument error() form", () => {
+    const logger = new SentryLogger();
+    const stack =
+      "Error: kaboom\n    at Object.<anonymous> (/app/src/x.ts:10:15)";
+
+    logger.error("kaboom happened", stack);
+
+    expect(sentryLogger.error).toHaveBeenCalledWith("kaboom happened", {
+      stack,
+    });
+  });
+
+  it("treats a non-stack second argument to error() as the context", () => {
+    const logger = new SentryLogger();
+
+    logger.error("it broke", "SomeContext");
+
+    expect(sentryLogger.error).toHaveBeenCalledWith("it broke", {
+      context: "SomeContext",
+    });
+  });
+
+  it("takes the last remaining string as the stack of a longer error() call", () => {
+    const logger = new SentryLogger();
+
+    logger.error("it broke", "a", "b", "Ctx");
+
+    expect(sentryLogger.error).toHaveBeenCalledWith("it broke", {
+      context: "Ctx",
+      stack: "b",
+    });
+  });
+
+  it("never attaches a stack for non-error levels", () => {
+    const logger = new SentryLogger();
+
+    logger.log("something happened", "extra", "SomeContext");
+
+    expect(sentryLogger.info).toHaveBeenCalledWith("something happened", {
+      context: "SomeContext",
+    });
+  });
+
+  it("falls back to the logger's configured context", () => {
+    const logger = new SentryLogger("MyService");
+
+    logger.log("hello");
+
+    expect(sentryLogger.info).toHaveBeenCalledWith("hello", {
+      context: "MyService",
+    });
+  });
+
+  it("prefers an explicit context over the configured one", () => {
+    const logger = new SentryLogger("MyService");
+
+    logger.log("hello", "OtherContext");
+
+    expect(sentryLogger.info).toHaveBeenCalledWith("hello", {
+      context: "OtherContext",
+    });
   });
 
   it("uses an Error's message and stack when one is logged", () => {
@@ -94,13 +180,10 @@ describe("SentryLogger", () => {
 
     logger.error(error, "SomeContext");
 
-    expect(sentryLogger.error).toHaveBeenCalledWith(
-      "kaboom",
-      expect.objectContaining({
-        context: "SomeContext",
-        stack: error.stack,
-      }),
-    );
+    expect(sentryLogger.error).toHaveBeenCalledWith("kaboom", {
+      context: "SomeContext",
+      stack: error.stack,
+    });
   });
 
   it("stringifies non-string messages", () => {
@@ -110,7 +193,7 @@ describe("SentryLogger", () => {
 
     expect(sentryLogger.info).toHaveBeenCalledWith(
       expect.stringContaining("42"),
-      expect.objectContaining({ context: "SomeContext" }),
+      { context: "SomeContext" },
     );
   });
 
