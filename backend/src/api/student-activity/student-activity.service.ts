@@ -5,6 +5,11 @@ import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
 
 const latestAstVersion = AstVersion.v1;
+const activityCreateAttempts = 2;
+
+type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
+  include: { solution: true };
+}>;
 
 export type SolutionInput = Pick<
   Prisma.SolutionUncheckedCreateInput,
@@ -55,45 +60,57 @@ export class StudentActivityService {
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    let result: Prisma.StudentActivityGetPayload<{
-      include: { solution: true };
-    }>;
+    const data = this.buildActivityInput(student, activity, solution);
+    let result: StudentActivityWithSolution | null = null;
 
-    try {
-      result = await this.prisma.studentActivity.create({
-        data: this.buildActivityInput(student, activity, solution),
-        include: { solution: true },
-      });
-    } catch (error) {
-      if (
-        !(
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          error.code === "P2002"
-        )
-      ) {
-        throw error;
-      }
+    for (let attempt = 1; attempt <= activityCreateAttempts; attempt++) {
+      try {
+        result = await this.prisma.studentActivity.create({
+          data,
+          include: { solution: true },
+        });
+        break;
+      } catch (error) {
+        if (
+          !(
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+          )
+        ) {
+          throw error;
+        }
 
-      // the client may replay an activity after a timeout, reload, or concurrent requests
-      // treat the activity's unique key as an idempotency key
-      // look it up to ensure that an unrelated unique violation is not suppressed
-      const existingActivity = await this.prisma.studentActivity.findUnique({
-        where: {
-          uniqueStudentActivityPerTypeAndTime: {
-            studentId: student.id,
-            type: activity.type,
-            happenedAt: activity.happenedAt,
-            happenedAtCounter: activity.happenedAtCounter,
+        // the client may replay an activity after a timeout, reload, or concurrent requests
+        // treat the activity's unique key as an idempotency key
+        // look it up to ensure that an unrelated unique violation is not suppressed
+        const existingActivity = await this.prisma.studentActivity.findUnique({
+          where: {
+            uniqueStudentActivityPerTypeAndTime: {
+              studentId: student.id,
+              type: activity.type,
+              happenedAt: activity.happenedAt,
+              happenedAtCounter: activity.happenedAtCounter,
+            },
           },
-        },
-        include: { solution: true },
-      });
+          include: { solution: true },
+        });
 
-      if (!existingActivity) {
-        throw error;
+        if (existingActivity) {
+          // A replay may contain different solution data, but comparing or replacing it would complicate replay
+          // handling and could trigger analysis more than once
+          return existingActivity;
+        }
+
+        // connectOrCreate can race when another request creates the same solution
+        // once that request commits, one retry can connect to the solution instead
+        if (attempt === activityCreateAttempts) {
+          throw error;
+        }
       }
+    }
 
-      return existingActivity;
+    if (!result) {
+      throw new Error("Student activity creation did not return a result");
     }
 
     // do not wait for the promise to resolve
