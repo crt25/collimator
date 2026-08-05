@@ -4,7 +4,10 @@ import { connect } from "react-redux";
 
 import ControlsComponent from "@scratch-submodule/packages/scratch-gui/src/components/controls/controls.jsx";
 import { CrtContext } from "../../contexts/CrtContext";
-import { sendGreenFlagActivity } from "../../utilities/scratch-student-activities/senders";
+import {
+  sendGreenFlagActivity,
+  sendStopAllActivity,
+} from "../../utilities/scratch-student-activities/senders";
 
 interface Props {
   isStarted: boolean;
@@ -53,9 +56,19 @@ const Controls = ({
   const handleStopAllClick = useCallback(
     (e: Event) => {
       e.preventDefault();
+
+      if (!canEditTask) {
+        const solution = new Blob([vm.toJSON()], {
+          type: "application/json",
+        });
+
+        // do not wait for this request to succeed
+        sendStopAllActivity(sendRequest, solution);
+      }
+
       vm.stopAll();
     },
-    [vm],
+    [vm, canEditTask, sendRequest],
   );
 
   return (
