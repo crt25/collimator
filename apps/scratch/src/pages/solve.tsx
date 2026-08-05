@@ -10,6 +10,7 @@ const Solve = () => {
   return (
     <Gui
       canEditTask={false}
+      isStudentSolving={true}
       isCodeTabEnabled={true}
       isStageEnabled={true}
       isCostumesTabEnabled={false}

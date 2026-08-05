@@ -14,7 +14,7 @@ interface Props {
   projectRunning: boolean;
   turbo: boolean;
   vm: VM;
-  canEditTask?: boolean;
+  isStudentSolving?: boolean;
 }
 
 const Controls = ({
@@ -22,7 +22,7 @@ const Controls = ({
   isStarted,
   projectRunning,
   turbo,
-  canEditTask,
+  isStudentSolving,
   ...props
 }: Props) => {
   const { sendRequest } = useContext(CrtContext);
@@ -37,7 +37,7 @@ const Controls = ({
           vm.start();
         }
 
-        if (!canEditTask) {
+        if (isStudentSolving) {
           const solution = new Blob([vm.toJSON()], {
             type: "application/json",
           });
@@ -50,14 +50,14 @@ const Controls = ({
         vm.greenFlag();
       }
     },
-    [vm, isStarted, turbo, sendRequest, canEditTask],
+    [vm, isStarted, turbo, sendRequest, isStudentSolving],
   );
 
   const handleStopAllClick = useCallback(
     (e: Event) => {
       e.preventDefault();
 
-      if (!canEditTask) {
+      if (isStudentSolving) {
         const solution = new Blob([vm.toJSON()], {
           type: "application/json",
         });
@@ -68,7 +68,7 @@ const Controls = ({
 
       vm.stopAll();
     },
-    [vm, canEditTask, sendRequest],
+    [vm, isStudentSolving, sendRequest],
   );
 
   return (

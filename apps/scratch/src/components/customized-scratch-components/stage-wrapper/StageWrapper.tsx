@@ -68,6 +68,7 @@ interface Props {
 
   isStageInteractive?: boolean;
   canEditTask?: boolean;
+  isStudentSolving?: boolean;
 }
 
 const StageWrapper = function (props: Props) {
@@ -81,6 +82,7 @@ const StageWrapper = function (props: Props) {
     stageSize,
     vm,
     canEditTask,
+    isStudentSolving,
   } = props;
 
   const dispatch = useDispatch();
@@ -110,7 +112,7 @@ const StageWrapper = function (props: Props) {
             style={{ width: getStageDimensions(null, true).width }}
           >
             <div className="d-contents" data-testid="stage-controls">
-              <Controls vm={vm} canEditTask={canEditTask} />
+              <Controls vm={vm} isStudentSolving={isStudentSolving} />
             </div>
             <div className={headerStyles.unselectWrapper}>
               <Button
@@ -136,7 +138,7 @@ const StageWrapper = function (props: Props) {
         <Box className={headerStyles.stageHeaderWrapper}>
           <Box className={headerStyles.stageMenuWrapper}>
             <div className="d-contents" data-testid="stage-controls">
-              <Controls vm={vm} canEditTask={canEditTask} />
+              <Controls vm={vm} isStudentSolving={isStudentSolving} />
             </div>
             <div>
               <div className={crtStyles.buttons}>

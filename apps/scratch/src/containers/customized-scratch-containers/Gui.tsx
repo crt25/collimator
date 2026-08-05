@@ -93,6 +93,7 @@ type Props = {
 
   cannotInteractWithBlocks?: boolean;
   canEditTask?: boolean;
+  isStudentSolving?: boolean;
   isStandaloneCodeEnabled?: boolean;
   isCodeTabEnabled?: boolean;
   isStageEnabled?: boolean;
@@ -115,6 +116,7 @@ type ExternalProps = Pick<
   Props,
   | "cannotInteractWithBlocks"
   | "canEditTask"
+  | "isStudentSolving"
   | "isStandaloneCodeEnabled"
   | "isCodeTabEnabled"
   | "isStageEnabled"
