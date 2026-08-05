@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 import { waitFor } from "@testing-library/react";
+import { UserFormPageObject } from "./UserForm.PageObject";
 import { UserType } from "@/api/collimator/generated/models";
 import UserForm from "@/components/user/UserForm";
 import { renderWithProviders } from "@/__tests__/helpers/render-with-providers";
-import { UserFormPageObject } from "./UserForm.PageObject";
 
 const submitMessage = { id: "submit", defaultMessage: "Save" };
 
@@ -28,6 +28,8 @@ describe("UserForm UI Interactions", () => {
     );
 
     const form = new UserFormPageObject();
+
+    expect(form.typeInput).toHaveValue(UserType.TEACHER);
     expect(form.queryEditedBadge()).toBeNull();
 
     await form.clearAndTypeName("Updated Name");
