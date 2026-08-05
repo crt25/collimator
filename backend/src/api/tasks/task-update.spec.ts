@@ -20,6 +20,7 @@ describe("TasksService.update", () => {
   const studentUsageQuery = {
     where: {
       taskId,
+      deletedAt: null,
       task: { deletedAt: null },
       session: {
         deletedAt: null,
@@ -125,6 +126,7 @@ describe("TasksService.update", () => {
     expect(tx.sessionTask.findFirst).toHaveBeenCalledWith({
       where: {
         taskId,
+        deletedAt: null,
         session: {
           deletedAt: null,
           class: {
@@ -155,6 +157,7 @@ describe("TasksService.update", () => {
     expect(tx.sessionTask.findFirst).toHaveBeenNthCalledWith(1, {
       where: {
         taskId,
+        deletedAt: null,
         session: {
           deletedAt: null,
           class: {
