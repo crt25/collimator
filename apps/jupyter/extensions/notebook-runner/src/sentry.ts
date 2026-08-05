@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { SENTRY_DSN } from "./sentry-config";
+import { SENTRY_DSN, SENTRY_ENVIRONMENT } from "./sentry-config";
 import { VERSION } from "./version";
 
 export const enableSentry = (): void => {
@@ -19,6 +19,6 @@ export const enableSentry = (): void => {
     // if your build tool supports it.
     release: `crt-jupyter@${VERSION}`,
     enabled: isProductionEnvironment,
-    environment: isProductionEnvironment ? "production" : "development",
+    environment: SENTRY_ENVIRONMENT,
   });
 };
