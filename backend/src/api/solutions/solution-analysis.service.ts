@@ -36,7 +36,7 @@ export class SolutionAnalysisService {
 
       if (conversion.status === SolutionConversionStatus.InvalidInput) {
         // invalid input is an expected state while a student is editing
-        this.logger.warn(
+        this.logger.debug(
           `Skipping analysis for invalid solution (task id: ${solution.taskId}, hash: ${Buffer.from(solution.hash).toString("hex")}): ${JSON.stringify(conversion.errors)}`,
         );
 
