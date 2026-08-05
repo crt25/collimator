@@ -232,4 +232,5 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          # SONAR_TOKEN may not be set if called in a pull_request or merge_group run
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || secrets.DEV_SONAR_TOKEN }}
