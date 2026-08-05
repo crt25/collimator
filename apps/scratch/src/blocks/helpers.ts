@@ -62,12 +62,10 @@ const shouldPreventBlockCreation = (
 
   const eventBlockId = event.blockId ?? "";
 
-  const excludeBlockId =
-    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId
-      ? event.blockId
-      : undefined;
+  const excludeStackBlocksInRuntime =
+    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId;
 
-  if (!wouldExceedLimits(vm, block, excludeBlockId)) {
+  if (!wouldExceedLimits(vm, block, excludeStackBlocksInRuntime)) {
     if (isBlockCreated) {
       blockCreatedInCurrentGesture = eventBlockId;
     } else if (isBlockDraggedToSprite) {
@@ -215,8 +213,7 @@ const countStackBlocksInRuntimeByType = (
 export const wouldExceedLimits = (
   vm: VMExtended,
   block: ScratchBlocksExtended.Block,
-  // id of a block that is already included in the VM counts but should not be counted against the limit
-  excludeBlockId?: string,
+  excludeStackBlocksInRuntime = false,
 ): boolean => {
   const config = vm.crtConfig;
   if (!config) {
@@ -234,7 +231,7 @@ export const wouldExceedLimits = (
 
   // record temporary blocks added during flyout-to-sprite drag so we can subtract
   // them from usedBlocks and avoid counting the dragged stack twice
-  const stackBlockCountsInRuntime = excludeBlockId
+  const stackBlockCountsInRuntime = excludeStackBlocksInRuntime
     ? countStackBlocksInRuntimeByType(vm, blocksInStack)
     : {};
 
