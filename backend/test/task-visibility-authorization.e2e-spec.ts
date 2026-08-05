@@ -141,6 +141,26 @@ describe("AuthorizationService.canViewTask (e2e)", () => {
     );
   });
 
+  it("denies a student the task once it is soft-deleted, even in an active lesson", async () => {
+    // isStudentOfSessionTasks keeps a student *working* on a soft-deleted task
+    // (submit/activity go through the SessionTask row), but the task detail and
+    // download never exposed it: a student's fetch defaults to deletedAt: null
+    // and 404s. canViewTask stays strict here so the outcome is a denial either
+    // way - the student sees a 403 instead of that pre-existing 404, not new
+    // access.
+    await createOwnedTask(false);
+    const student = await createStudentInLessonWith(false);
+
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { deletedAt: new Date() },
+    });
+
+    await expect(service.canViewTask(null, student, taskId)).resolves.toBe(
+      false,
+    );
+  });
+
   it("denies a student a task from a lesson they do not take part in", async () => {
     await createOwnedTask(false);
     await createStudentInLessonWith(false);
