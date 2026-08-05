@@ -34,7 +34,7 @@ describe("SolutionAnalysisService", () => {
       status: SolutionConversionStatus.InvalidInput,
       errors: conversionErrors,
     });
-    const warn = jest.spyOn(Logger.prototype, "warn").mockImplementation();
+    const debug = jest.spyOn(Logger.prototype, "debug").mockImplementation();
 
     const service = new SolutionAnalysisService(
       {
@@ -59,7 +59,7 @@ describe("SolutionAnalysisService", () => {
         },
       },
     });
-    expect(warn).toHaveBeenCalledWith(
+    expect(debug).toHaveBeenCalledWith(
       expect.stringContaining(JSON.stringify(conversionErrors)),
     );
     expect(upsertAnalysis).not.toHaveBeenCalled();
