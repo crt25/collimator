@@ -60,7 +60,7 @@ const UserForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: PartialNullable<UserFormValues>;
-  onSubmit: (data: UserFormValues) => void;
+  onSubmit: (data: UserFormValues) => void | Promise<void>;
 }) => {
   const intl = useIntl();
 
@@ -102,6 +102,7 @@ const UserForm = ({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, dirtyFields, isDirty, isSubmitting },
   } = useForm<UserFormValues>({
     resolver,
@@ -117,7 +118,12 @@ const UserForm = ({
   return (
     <FormContainer
       as="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(async (values) => {
+        await onSubmit(values);
+        // re-baseline the form to the saved values so no field stays marked
+        // as edited and the validation state resets after a successful save
+        reset(values);
+      })}
       data-testid="user-form"
     >
       <Grid templateColumns="repeat(12, 1fr)" gap={4}>
