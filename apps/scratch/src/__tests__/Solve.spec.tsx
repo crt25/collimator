@@ -240,16 +240,13 @@ test.describe("/solve", () => {
     const blockCountBeforeRejectedPaste =
       await page.blocksOfCurrentTarget.count();
 
-    const rejectionLogged = pwPage.waitForEvent("console", (message) =>
-      message.text().includes("Block limit reached for motion_movesteps"),
-    );
-
     await page.pasteStack();
-    await rejectionLogged;
 
     await expect(page.blocksOfCurrentTarget).toHaveCount(
       blockCountBeforeRejectedPaste,
     );
+
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("0");
   });
 
   test("removing student-added blocks increases the limit", async ({
