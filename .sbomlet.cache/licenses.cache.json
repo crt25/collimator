@@ -1,5 +1,29 @@
 {
   "entries": {
+    "pkg:maven/org.antlr/antlr-runtime@3.5.3": {
+      "fetchedFrom": "deps-dev",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
+    "pkg:maven/org.antlr/antlr4-runtime@4.13.2": {
+      "fetchedFrom": "deps-dev",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "deps-dev-licenses"
+    },
+    "pkg:maven/org.antlr/antlr4@4.13.2": {
+      "fetchedFrom": "deps-dev",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "deps-dev-licenses"
+    },
+    "pkg:npm/%3C%25%3D%20name%20%25%3E@%3C%25%3D%20version%20%25%3E": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
     "pkg:npm/%40babel/compat-data@7.27.7": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1308,6 +1332,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/backend@0.0.1": {
+      "fetchedFrom": "npm",
+      "license": "BSD",
+      "resolvable": true,
+      "via": "top-license"
+    },
     "pkg:npm/balanced-match@2.0.0": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1860,6 +1890,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/package@0.0.0": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
     "pkg:npm/parse-srcset@1.0.2": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1907,6 +1943,12 @@
       "license": "MIT",
       "resolvable": true,
       "via": "version-license"
+    },
+    "pkg:npm/prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
     },
     "pkg:npm/quick-lru@5.1.1": {
       "fetchedFrom": "npm",
