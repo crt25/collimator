@@ -3,10 +3,15 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from "@sentry/nextjs";
-import { backendHostName, sentryDsn } from "./src/utilities/constants";
+import {
+  backendHostName,
+  sentryDsn,
+  sentryEnvironment,
+} from "./src/utilities/constants";
 
 Sentry.init({
   dsn: sentryDsn,
+  environment: sentryEnvironment,
 
   // Add optional integrations for additional features
   integrations: [

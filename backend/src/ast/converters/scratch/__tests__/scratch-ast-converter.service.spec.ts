@@ -4218,6 +4218,41 @@ describe("Scratch AST converter", () => {
       );
     });
 
+    it("converts a 'control_repeat_until' block with an empty condition (CRT-380)", () => {
+      // A student can drag a `repeat until` block and run/submit it without
+      // plugging anything into the hexagonal condition slot. In sb3 the
+      // CONDITION input is then simply absent, which used to throw
+      // "Reference was undefined" and crash the whole conversion. An empty
+      // condition has no expression to negate, so the loop simply has no
+      // condition, exactly as an empty `if`/`if else` condition does.
+      const ast = convertScratchToGeneralAst(
+        createScratchCodeInput([
+          {
+            opcode: "control_repeat_until",
+            inputs: {},
+            fields: {},
+            shadow: false,
+            topLevel: false,
+          },
+        ]),
+      );
+
+      expect(ast).toEqual(
+        createScratchCodeOutput([
+          {
+            nodeType: AstNodeType.statement,
+            statementType: StatementNodeType.loop,
+            condition: null,
+            body: {
+              nodeType: AstNodeType.statement,
+              statementType: StatementNodeType.sequence,
+              statements: [],
+            },
+          },
+        ]),
+      );
+    });
+
     it("can convert 'control_if' blocks to general AST nodes", () => {
       const ast = convertScratchToGeneralAst(
         createScratchCodeInput(
