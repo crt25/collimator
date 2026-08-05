@@ -23,7 +23,7 @@ describe("UserForm UI Interactions", () => {
       <UserForm
         submitMessage={submitMessage}
         initialValues={initialValues}
-        onSubmit={jest.fn()}
+        onSubmit={jest.fn().mockResolvedValue(true)}
       />,
     );
 
@@ -36,7 +36,7 @@ describe("UserForm UI Interactions", () => {
   });
 
   it("clears the edited badge after a successful save (CRT-461)", async () => {
-    const onSubmit = jest.fn().mockResolvedValue(undefined);
+    const onSubmit = jest.fn().mockResolvedValue(true);
     renderWithProviders(
       <UserForm
         submitMessage={submitMessage}
@@ -47,6 +47,14 @@ describe("UserForm UI Interactions", () => {
 
     const form = new UserFormPageObject();
 
+    await form.clearAndTypeEmail("invalid-email");
+    await form.clickSubmit();
+    await waitFor(() =>
+      expect(form.queryEmailValidationError()).not.toBeNull(),
+    );
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    await form.clearAndTypeEmail("updated@example.com");
     await form.clearAndTypeName("Updated Name");
     await waitFor(() => expect(form.queryEditedBadge()).not.toBeNull());
     await waitFor(() => expect(form.submitButton.disabled).toBe(false));
@@ -56,6 +64,53 @@ describe("UserForm UI Interactions", () => {
 
     // after saving, the form is re-baselined: the field is no longer edited
     await waitFor(() => expect(form.queryEditedBadge()).toBeNull());
+    expect(form.queryEmailValidationError()).toBeNull();
     await waitFor(() => expect(form.submitButton.disabled).toBe(true));
+  });
+
+  it("preserves unsaved state after a failed save", async () => {
+    const onSubmit = jest.fn().mockResolvedValue(false);
+    renderWithProviders(
+      <UserForm
+        submitMessage={submitMessage}
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+      />,
+    );
+
+    const form = new UserFormPageObject();
+    await form.clearAndTypeName("Updated Name");
+    await form.clickSubmit();
+
+    await waitFor(() => expect(onSubmit).toHaveBeenCalled());
+    await waitFor(() => expect(form.submitButton.disabled).toBe(false));
+    expect(form.queryEditedBadge()).not.toBeNull();
+  });
+
+  it("locks editable controls while saving", async () => {
+    let resolveSubmit: (succeeded: boolean) => void = () => undefined;
+    const onSubmit = jest.fn().mockReturnValue(
+      new Promise<boolean>((resolve) => {
+        resolveSubmit = resolve;
+      }),
+    );
+    renderWithProviders(
+      <UserForm
+        submitMessage={submitMessage}
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+      />,
+    );
+
+    const form = new UserFormPageObject();
+    await form.clearAndTypeName("Updated Name");
+    await form.clickSubmit();
+
+    await waitFor(() => expect(form.nameInput).toBeDisabled());
+    expect(form.emailInput).toBeDisabled();
+    expect(form.typeSelect).toBeDisabled();
+
+    resolveSubmit(true);
+    await waitFor(() => expect(form.queryEditedBadge()).toBeNull());
   });
 });
