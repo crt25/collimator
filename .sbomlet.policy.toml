@@ -18,3 +18,8 @@ handling = "warn"
 
 [os_dependencies]
 handling = "warn"
+
+[[compatible]]
+  match = "license"
+  pattern = "MPL-2.0"
+  reason = "MPL-2.0 dependencies have been reviewed and accepted."
