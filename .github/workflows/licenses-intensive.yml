@@ -17,6 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 480 # the intensive scan can take a long time for large repos
 
+    # Postgres is required because `task setup` runs `db:migrate:deploy`.
+    services: &services
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5433 on the host to Postgres
+          - 5433:5432
+
+    env: &job_env
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v6
