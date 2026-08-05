@@ -29,6 +29,9 @@ jobs:
       - name: Setup CI environment
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2
 
+      - name: Setup dependencies
+        run: task setup # required before SBOMlet's intensive analysis
+
       - name: Regenerate licenses
         uses: Anansi-Solutions/SBOMlet@main # until the definitive version is set
         with:
