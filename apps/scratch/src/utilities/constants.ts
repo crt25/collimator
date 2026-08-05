@@ -5,4 +5,7 @@ export const isDevelopment =
 export const sentryDsn = process.env
   .NEXT_PUBLIC_SENTRY_DSN as unknown as string;
 
+export const sentryEnvironment =
+  process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT ?? "development";
+
 export const defaultMaximumExecutionTimeInMs = 1000 * 30;
