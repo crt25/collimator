@@ -61,15 +61,19 @@ export class StudentActivityService {
     solution: SolutionInput,
   ): Promise<StudentActivity> {
     const data = this.buildActivityInput(student, activity, solution);
-    let result: StudentActivityWithSolution | null = null;
 
-    for (let attempt = 1; attempt <= activityCreateAttempts; attempt++) {
+    for (let attempt = 1; ; attempt++) {
       try {
-        result = await this.prisma.studentActivity.create({
+        const result = await this.prisma.studentActivity.create({
           data,
           include: { solution: true },
         });
-        break;
+
+        // do not wait for the promise to resolve
+        // this will happen in the background
+        this.analysisService.performAnalysis(result.solution, latestAstVersion);
+
+        return result;
       } catch (error) {
         if (
           !(
@@ -108,16 +112,6 @@ export class StudentActivityService {
         }
       }
     }
-
-    if (!result) {
-      throw new Error("Student activity creation did not return a result");
-    }
-
-    // do not wait for the promise to resolve
-    // this will happen in the background
-    this.analysisService.performAnalysis(result.solution, latestAstVersion);
-
-    return result;
   }
 
   private buildActivityInput(
