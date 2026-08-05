@@ -171,16 +171,11 @@ export const convertControlBlockTreeToStatement = (
     .with(
       P.when(isRepeatUntilBlock),
       (block: RepeatUntilBlock & ControlCodeTreeNode) => {
-        // An empty hexagonal condition slot is a valid state a student can
-        // submit; the CONDITION input is then absent. Fall back to null
-        // instead of throwing "Reference was undefined". With no expression to
-        // negate, the loop simply has no condition - the same representation an
-        // empty `if` condition already produces.
         const condition = convertChildWithReferenceId(
           block,
           (block) => block.inputs.CONDITION,
           convertBlockTreeToExpression,
-          null,
+          null, // fallback value if condition input is absent
         );
 
         // a repeat until block is a  negated while loop, *not* a negated do-while loop as the name may suggest
