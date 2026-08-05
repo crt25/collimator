@@ -226,6 +226,15 @@ export class ScratchEditorPage {
     return this.page.locator(getBlockSelector(newTopBlockId));
   }
 
+  async copyStack(stack: Locator) {
+    await stack.click({ force: true, position: { x: 10, y: 10 } });
+    await this.page.keyboard.press("Control+C");
+  }
+
+  async pasteStack() {
+    await this.page.keyboard.press("Control+V");
+  }
+
   async appendNewBlockTo(opcode: string, block: Locator) {
     await this.scrollBlockIntoView(block);
 

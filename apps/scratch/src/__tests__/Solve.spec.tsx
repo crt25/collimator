@@ -216,24 +216,40 @@ test.describe("/solve", () => {
     const stack = await page.createNewStack("motion_goto");
     await page.appendNewBlockTo("motion_movesteps", stack);
 
-    for (let i = 1; i < moveStepsAllowedCount; i++) {
+    for (let i = 1; i < moveStepsAllowedCount - 1; i++) {
       await page.appendNewBlockTo(
         "motion_movesteps",
         page.taskBlocks.catActor.editableBlock,
       );
     }
 
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("1");
+
+    const blockCountBeforeAllowedPaste =
+      await page.blocksOfCurrentTarget.count();
+
+    await page.copyStack(stack);
+    await page.pasteStack();
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      blockCountBeforeAllowedPaste + 2,
+    );
+
     await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("0");
 
-    const blockCountBeforePaste = await page.blocksOfCurrentTarget.count();
+    const blockCountBeforeRejectedPaste =
+      await page.blocksOfCurrentTarget.count();
 
-    await stack.click({ force: true, position: { x: 10, y: 10 } });
-    await pwPage.keyboard.press("Control+C");
-    await pwPage.keyboard.press("Control+V");
+    const rejectionLogged = pwPage.waitForEvent("console", (message) =>
+      message.text().includes("Block limit reached for motion_movesteps"),
+    );
 
-    // give Scratch's create-event listener time to reject and undo the paste
-    await pwPage.waitForTimeout(500);
-    await expect(page.blocksOfCurrentTarget).toHaveCount(blockCountBeforePaste);
+    await page.pasteStack();
+    await rejectionLogged;
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      blockCountBeforeRejectedPaste,
+    );
   });
 
   test("removing student-added blocks increases the limit", async ({
