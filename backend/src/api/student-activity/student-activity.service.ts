@@ -7,7 +7,7 @@ import { SolutionAnalysisService } from "../solutions/solution-analysis.service"
 const latestAstVersion = AstVersion.v1;
 const activityCreateAttempts = 2;
 
-type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
+export type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
   include: { solution: true };
 }>;
 
