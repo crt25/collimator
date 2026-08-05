@@ -30,7 +30,7 @@ jobs:
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2
 
       - name: Regenerate licenses
-        uses: Anansi-Solutions/SBOMlet@f2ac28672a5113b9d57552efd0c06e6ce225181c
+        uses: Anansi-Solutions/SBOMlet@main # until the definitive version is set
         with:
           mode: generate
           policy: .sbomlet.policy.toml
