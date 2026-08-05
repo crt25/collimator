@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { randomBytes } from "crypto";
-import { Locator, Page } from "playwright/test";
+import { expect, Locator, Page } from "playwright/test";
 import {
   getAllTargetBlocksSelector,
   getBlockCanvasSelector,
   getBlockConfigButtonSelector,
+  getBlockSelector,
   getBlockConfigFormSelector,
   getFlyoutSelector,
 } from "../locators";
@@ -201,6 +202,66 @@ export class ScratchEditorPage {
         y: 50,
       },
     });
+  }
+
+  async createNewStack(opcode: string) {
+    const stackDropMargin = 150;
+
+    const getStackDropCoordinate = (canvasSize: number) =>
+      canvasSize - Math.min(stackDropMargin, canvasSize / 2);
+
+    const topBlocks = this.page.locator(isVisualTopOfStack);
+    const existingTopBlockIds = await topBlocks.evaluateAll((blocks) =>
+      blocks.map((block) => block.getAttribute("data-id")),
+    );
+    const canvasBounds = await this.blockCanvas.boundingBox();
+
+    if (!canvasBounds) {
+      throw new Error("Failed to find the block canvas");
+    }
+
+    await this.getBlockInToolbox(opcode).dragTo(this.blockCanvas, {
+      force: true,
+      targetPosition: {
+        // keep the new stack away from the toolbox
+        // on a workspace thinner than twice the margin, fallback to its midpoint
+        x: getStackDropCoordinate(canvasBounds.width),
+        y: getStackDropCoordinate(canvasBounds.height),
+      },
+    });
+
+    const newTopBlockId = await topBlocks.evaluateAll(
+      (blocks, existingIds) =>
+        blocks
+          .map((block) => block.getAttribute("data-id"))
+          .find((id) => id !== null && !existingIds.includes(id)),
+      existingTopBlockIds,
+    );
+
+    if (!newTopBlockId) {
+      throw new Error(`Failed to create a new ${opcode} stack`);
+    }
+
+    return this.page.locator(getBlockSelector(newTopBlockId));
+  }
+
+  async copyStack(stack: Locator) {
+    const blockPath = stack.locator(".blocklyPath").first();
+
+    // blockly selects a block on mouse down. it is dispatched directly because an SVG
+    // stack can be outside of the mobile viewport even though it is present in the workspace
+    await blockPath.dispatchEvent("mousedown", { button: 0, buttons: 1 });
+    await this.page.locator("body").dispatchEvent("mouseup", {
+      button: 0,
+      buttons: 0,
+    });
+
+    await expect(stack).toHaveClass(/blocklySelected/);
+    await this.page.keyboard.press("ControlOrMeta+C");
+  }
+
+  async pasteStack() {
+    await this.page.keyboard.press("ControlOrMeta+V");
   }
 
   async appendNewBlockTo(opcode: string, block: Locator) {
