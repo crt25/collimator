@@ -20,6 +20,10 @@ export class UserFormPageObject {
     return screen.getByTestId("type") as HTMLButtonElement;
   }
 
+  get typeInput(): HTMLSelectElement {
+    return document.querySelector<HTMLSelectElement>('select[name="type"]')!;
+  }
+
   get submitButton(): HTMLInputElement {
     return screen.getByTestId("submit") as HTMLInputElement;
   }
