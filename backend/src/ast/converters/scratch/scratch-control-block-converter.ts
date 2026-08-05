@@ -170,35 +170,46 @@ export const convertControlBlockTreeToStatement = (
     ])
     .with(
       P.when(isRepeatUntilBlock),
-      (block: RepeatUntilBlock & ControlCodeTreeNode) => [
+      (block: RepeatUntilBlock & ControlCodeTreeNode) => {
+        // An empty hexagonal condition slot is a valid state a student can
+        // submit; the CONDITION input is then absent. Fall back to null
+        // instead of throwing "Reference was undefined". With no expression to
+        // negate, the loop simply has no condition - the same representation an
+        // empty `if` condition already produces.
+        const condition = convertChildWithReferenceId(
+          block,
+          (block) => block.inputs.CONDITION,
+          convertBlockTreeToExpression,
+          null,
+        );
+
         // a repeat until block is a  negated while loop, *not* a negated do-while loop as the name may suggest
-        {
-          nodeType: AstNodeType.statement,
-          statementType: StatementNodeType.loop,
-          condition: {
-            nodeType: AstNodeType.expression,
-            expressionType: ExpressionNodeType.operator,
-            operator: "operator_not",
-            operands: [
-              convertChildWithReferenceId(
-                block,
-                (block) => block.inputs.CONDITION,
-                convertBlockTreeToExpression,
-              ),
-            ],
-          },
-          body: {
+        return [
+          {
             nodeType: AstNodeType.statement,
-            statementType: StatementNodeType.sequence,
-            statements: convertChildWithReferenceId(
-              block,
-              (block) => block.inputs.SUBSTACK,
-              convertBlockTreeToStatement,
-              [],
-            ),
+            statementType: StatementNodeType.loop,
+            condition:
+              condition === null
+                ? null
+                : {
+                    nodeType: AstNodeType.expression,
+                    expressionType: ExpressionNodeType.operator,
+                    operator: "operator_not",
+                    operands: [condition],
+                  },
+            body: {
+              nodeType: AstNodeType.statement,
+              statementType: StatementNodeType.sequence,
+              statements: convertChildWithReferenceId(
+                block,
+                (block) => block.inputs.SUBSTACK,
+                convertBlockTreeToStatement,
+                [],
+              ),
+            },
           },
-        },
-      ],
+        ];
+      },
     )
     .with(P.when(isRepeatBlock), (block: RepeatBlock & ControlCodeTreeNode) => [
       // a repeat until block is a  negated while loop, *not* a negated do-while loop as the name may suggest
