@@ -4,14 +4,17 @@ import { connect } from "react-redux";
 
 import ControlsComponent from "@scratch-submodule/packages/scratch-gui/src/components/controls/controls.jsx";
 import { CrtContext } from "../../contexts/CrtContext";
-import { sendGreenFlagActivity } from "../../utilities/scratch-student-activities/senders";
+import {
+  sendGreenFlagActivity,
+  sendStopAllActivity,
+} from "../../utilities/scratch-student-activities/senders";
 
 interface Props {
   isStarted: boolean;
   projectRunning: boolean;
   turbo: boolean;
   vm: VM;
-  canEditTask?: boolean;
+  isStudentSolving?: boolean;
 }
 
 const Controls = ({
@@ -19,7 +22,7 @@ const Controls = ({
   isStarted,
   projectRunning,
   turbo,
-  canEditTask,
+  isStudentSolving,
   ...props
 }: Props) => {
   const { sendRequest } = useContext(CrtContext);
@@ -34,7 +37,7 @@ const Controls = ({
           vm.start();
         }
 
-        if (!canEditTask) {
+        if (isStudentSolving) {
           const solution = new Blob([vm.toJSON()], {
             type: "application/json",
           });
@@ -47,15 +50,25 @@ const Controls = ({
         vm.greenFlag();
       }
     },
-    [vm, isStarted, turbo, sendRequest, canEditTask],
+    [vm, isStarted, turbo, sendRequest, isStudentSolving],
   );
 
   const handleStopAllClick = useCallback(
     (e: Event) => {
       e.preventDefault();
+
+      if (isStudentSolving) {
+        const solution = new Blob([vm.toJSON()], {
+          type: "application/json",
+        });
+
+        // do not wait for this request to succeed
+        sendStopAllActivity(sendRequest, solution);
+      }
+
       vm.stopAll();
     },
-    [vm],
+    [vm, isStudentSolving, sendRequest],
   );
 
   return (

@@ -481,6 +481,31 @@ test.describe("/solve", () => {
     });
   });
 
+  test("records a stop-all student activity when the stop button is pressed", async ({
+    page: pwPage,
+  }) => {
+    const { page } = await AssertionTaskPage.load(pwPage);
+
+    // run the project, then stop the ongoing execution
+    await page.pressGreenFlag();
+    await page.pressStopButton();
+
+    // the stop is reported as a student app activity, carrying only the action
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some((m) => {
+        const message = m.message as {
+          method?: string;
+          params?: { action?: string };
+        };
+
+        return (
+          message.method === "postStudentAppActivity" &&
+          message.params?.action === "stopAll"
+        );
+      }),
+    );
+  });
+
   test("reports the correct numbers of assertions when passing", async ({
     page: pwPage,
   }) => {

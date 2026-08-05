@@ -113,6 +113,10 @@ export class ScratchEditorPage {
       .click();
   }
 
+  async pressStopButton() {
+    return this.page.getByTestId("stage-controls").getByTitle("Stop").click();
+  }
+
   async removeAllNonFrozenBlocks() {
     while ((await this.blocksOfCurrentTargetNonFrozen.count()) > 0) {
       await this.blocksOfCurrentTargetNonFrozen.first().dragTo(this.toolbox, {
