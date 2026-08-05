@@ -170,6 +170,8 @@ jobs:
 
       - name: Build jupyter app
         run: task apps:jupyter:build
+        env:
+          SENTRY_ENVIRONMENT: ${{ env.SENTRY_ENVIRONMENT }}
 
       - name: Upload jupyter app source maps
         run: task apps:jupyter:sourcemap:upload

@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { VERSION } from "./version";
+import { SENTRY_ENVIRONMENT, VERSION } from "./version";
 
 export const enableSentry = (): void => {
   // Check if running on localhost, i.e. in a development environment
@@ -18,6 +18,6 @@ export const enableSentry = (): void => {
     // if your build tool supports it.
     release: `crt-jupyter@${VERSION}`,
     enabled: isProductionEnvironment,
-    environment: isProductionEnvironment ? "production" : "development",
+    environment: SENTRY_ENVIRONMENT,
   });
 };
