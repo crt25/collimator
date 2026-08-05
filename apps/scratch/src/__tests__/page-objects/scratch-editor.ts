@@ -114,12 +114,7 @@ export class ScratchEditorPage {
   }
 
   async pressStopButton() {
-    // the stage controls render the green flag first and the stop-all button
-    // last (mirrors pressGreenFlag, which clicks the first control)
-    return this.page
-      .getByTestId("stage-controls")
-      .locator("img:last-child")
-      .click();
+    return this.page.getByTestId("stage-controls").getByTitle("Stop").click();
   }
 
   async removeAllNonFrozenBlocks() {
