@@ -4,12 +4,12 @@ import {
   AnonymousStudent,
   AuthenticatedStudent,
   AuthenticationProvider,
-  Prisma,
   Student as PrismaStudent,
   User,
   UserType,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { runSerializableTransaction } from "src/prisma/transactions";
 import { PrismaTransactionClient } from "src/prisma/types";
 import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
@@ -29,8 +29,6 @@ const slidingTokenLifetime = 1000 * 60 * 60 * 4; // 4 hours
 const lastUsedAccuracy = 1000 * 60 * 10; // 10 minutes
 
 const registrationTokenLifetime = 1000 * 60 * 60 * 24 * 5; // 5 days
-
-const serializableTransactionMaxAttempts = 3;
 
 export type PublicKey = {
   id: number;
@@ -262,34 +260,6 @@ export class AuthenticationService {
     });
   }
 
-  private async runSerializableTransaction<T>(
-    callback: (prisma: PrismaTransactionClient) => Promise<T>,
-  ): Promise<T> {
-    for (
-      let attempt = 1;
-      attempt <= serializableTransactionMaxAttempts;
-      attempt++
-    ) {
-      try {
-        return await this.prisma.$transaction(callback, {
-          isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-        });
-      } catch (error) {
-        // PostgreSQL can report a concurrent unique insert as P2002 even at
-        // serializable isolation. Retrying lets the lookup see the committed row.
-        const shouldRetry =
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          (error.code === "P2002" || error.code === "P2034");
-
-        if (!shouldRetry || attempt === serializableTransactionMaxAttempts) {
-          throw error;
-        }
-      }
-    }
-
-    throw new Error("Serializable transaction exhausted its retry attempts");
-  }
-
   /**
    * Tries to sign in a user with the given JWT token.
    * @param jwt The JWT token to sign in with.
@@ -415,12 +385,12 @@ export class AuthenticationService {
   }
 
   private async findAuthenticatedStudent(
-    prisma: PrismaTransactionClient,
+    txClient: PrismaTransactionClient,
     classId: number,
     rawPseudonym: Buffer,
     rawIdentifier: Buffer,
   ): Promise<AuthenticatedStudent | null> {
-    const byIdentifier = await prisma.authenticatedStudent.findUnique({
+    const byIdentifier = await txClient.authenticatedStudent.findUnique({
       where: {
         studentIdentifierUniquePerClass: {
           classId,
@@ -434,7 +404,7 @@ export class AuthenticationService {
       return byIdentifier;
     }
 
-    const byPseudonym = await prisma.authenticatedStudent.findUnique({
+    const byPseudonym = await txClient.authenticatedStudent.findUnique({
       where: {
         pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
         deletedAt: null,
@@ -442,7 +412,7 @@ export class AuthenticationService {
     });
 
     if (byPseudonym && byPseudonym.studentIdentifier === null) {
-      return prisma.authenticatedStudent.update({
+      return txClient.authenticatedStudent.update({
         where: { studentId: byPseudonym.studentId },
         data: { studentIdentifier: rawIdentifier },
       });
@@ -473,7 +443,7 @@ export class AuthenticationService {
     // before signing in, delete all expired tokens
     await this.deleteExpiredTokens();
 
-    const result = await this.runSerializableTransaction(async (tx) => {
+    const result = await runSerializableTransaction(this.prisma, async (tx) => {
       const authenticatedStudent = await this.findAuthenticatedStudent(
         tx,
         classId,
