@@ -205,10 +205,18 @@ export class ScratchEditorPage {
     const existingTopBlockIds = await topBlocks.evaluateAll((blocks) =>
       blocks.map((block) => block.getAttribute("data-id")),
     );
+    const canvasBounds = await this.blockCanvas.boundingBox();
+
+    if (!canvasBounds) {
+      throw new Error("Failed to find the block canvas");
+    }
 
     await this.getBlockInToolbox(opcode).dragTo(this.blockCanvas, {
       force: true,
-      targetPosition: { x: 400, y: 200 },
+      targetPosition: {
+        x: canvasBounds.width - 150,
+        y: canvasBounds.height - 150,
+      },
     });
 
     const newTopBlockId = await topBlocks.evaluateAll(
@@ -227,7 +235,7 @@ export class ScratchEditorPage {
   }
 
   async copyStack(stack: Locator) {
-    await stack.click({ force: true, position: { x: 10, y: 10 } });
+    await stack.locator(".blocklyPath").first().click({ force: true });
     await this.page.keyboard.press("Control+C");
   }
 
