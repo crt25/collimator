@@ -3,11 +3,23 @@ import * as Sentry from "@sentry/node";
 import { GeneralAst } from "../types/general-ast";
 import { convertScratchToGeneralAst } from "./scratch";
 import { convertJupyterToGeneralAst } from "./jupyter";
-import { PythonSyntaxError } from "./python/python-syntax-error";
 import {
+  ConversionError,
   SolutionConversionResult,
   SolutionConversionStatus,
 } from "./solution-conversion-result";
+
+const parseSolutionJson = <T>(solution: Solution): T => {
+  try {
+    return JSON.parse(new TextDecoder("utf-8").decode(solution.data)) as T;
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new ConversionError(error.message, [{ message: error.message }]);
+    }
+
+    throw error;
+  }
+};
 
 const SolutionConversionWorker = ({
   solution,
@@ -31,27 +43,28 @@ const SolutionConversionWorker = ({
         taskType === TaskType.SCRATCH &&
         solution.mimeType === "application/json"
       ) {
-        ast = convertScratchToGeneralAst(
-          JSON.parse(new TextDecoder("utf-8").decode(solution.data)),
-        );
+        ast = convertScratchToGeneralAst(parseSolutionJson(solution));
       } else if (
         taskType === TaskType.JUPYTER &&
         solution.mimeType === "application/json"
       ) {
-        ast = convertJupyterToGeneralAst(
-          JSON.parse(new TextDecoder("utf-8").decode(solution.data)),
-        );
+        ast = convertJupyterToGeneralAst(parseSolutionJson(solution));
       } else {
-        throw new Error(
-          `Unsupported (task, solution mime type) tuple '(${taskType}, ${solution.mimeType})'`,
-        );
+        return {
+          status: SolutionConversionStatus.InvalidInput,
+          errors: [
+            {
+              message: `Unsupported (task, solution mime type) tuple '(${taskType}, ${solution.mimeType})'`,
+            },
+          ],
+        };
       }
 
       return { status: SolutionConversionStatus.Success, ast };
     } catch (error) {
-      if (error instanceof PythonSyntaxError) {
+      if (error instanceof ConversionError) {
         return {
-          status: SolutionConversionStatus.InvalidSyntax,
+          status: SolutionConversionStatus.InvalidInput,
           errors: error.errors,
         };
       }

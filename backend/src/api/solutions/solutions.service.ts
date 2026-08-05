@@ -700,8 +700,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map((solution) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }
@@ -755,8 +756,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map(({ solution }) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }

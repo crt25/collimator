@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { AstVersion, Prisma, Solution, SolutionAnalysis } from "@prisma/client";
 import { AstConversionService } from "src/ast/ast-conversion.service";
 import { SolutionConversionStatus } from "src/ast/converters/solution-conversion-result";
 import { PrismaService } from "src/prisma/prisma.service";
 import { incrementFailedAnalysis } from "@prisma/client/sql";
 import { TasksService } from "../tasks/tasks.service";
-import { maximumNumberOfAnalysisRetries } from "./solution-analysis.constants";
+import { permanentlyFailedAnalysisCount } from "./solution-analysis.constants";
 
 export type SolutionAnalysisCreateInput = Omit<
   Prisma.SolutionAnalysisUncheckedCreateInput,
@@ -14,6 +14,8 @@ export type SolutionAnalysisCreateInput = Omit<
 
 @Injectable()
 export class SolutionAnalysisService {
+  private readonly logger = new Logger(SolutionAnalysisService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
@@ -32,10 +34,14 @@ export class SolutionAnalysisService {
         solution,
       );
 
-      if (conversion.status === SolutionConversionStatus.InvalidSyntax) {
-        // invalid syntax is an expected state while a student is editing
+      if (conversion.status === SolutionConversionStatus.InvalidInput) {
+        // invalid input is an expected state while a student is editing
+        this.logger.warn(
+          `Skipping analysis for invalid solution (task id: ${solution.taskId}, hash: ${Buffer.from(solution.hash).toString("hex")}): ${JSON.stringify(conversion.errors)}`,
+        );
+
         await this.prisma.solution.update({
-          data: { failedAnalyses: maximumNumberOfAnalysisRetries },
+          data: { failedAnalyses: permanentlyFailedAnalysisCount },
           where: {
             taskId_hash: {
               taskId: solution.taskId,
