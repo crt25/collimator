@@ -4,12 +4,13 @@ import {
   AnonymousStudent,
   AuthenticatedStudent,
   AuthenticationProvider,
-  Prisma,
   Student as PrismaStudent,
   User,
   UserType,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { runSerializableTransaction } from "src/prisma/transactions";
+import { PrismaTransactionClient } from "src/prisma/types";
 import * as jose from "jose";
 import { ConfigService } from "@nestjs/config";
 
@@ -384,11 +385,12 @@ export class AuthenticationService {
   }
 
   private async findAuthenticatedStudent(
+    txClient: PrismaTransactionClient,
     classId: number,
     rawPseudonym: Buffer,
     rawIdentifier: Buffer,
   ): Promise<AuthenticatedStudent | null> {
-    const byIdentifier = await this.prisma.authenticatedStudent.findUnique({
+    const byIdentifier = await txClient.authenticatedStudent.findUnique({
       where: {
         studentIdentifierUniquePerClass: {
           classId,
@@ -402,7 +404,7 @@ export class AuthenticationService {
       return byIdentifier;
     }
 
-    const byPseudonym = await this.prisma.authenticatedStudent.findUnique({
+    const byPseudonym = await txClient.authenticatedStudent.findUnique({
       where: {
         pseudonymUniquePerClass: { classId, pseudonym: rawPseudonym },
         deletedAt: null,
@@ -410,28 +412,10 @@ export class AuthenticationService {
     });
 
     if (byPseudonym && byPseudonym.studentIdentifier === null) {
-      try {
-        return await this.prisma.authenticatedStudent.update({
-          where: { studentId: byPseudonym.studentId },
-          data: { studentIdentifier: rawIdentifier },
-        });
-      } catch (error) {
-        if (
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          error.code === "P2002"
-        ) {
-          return this.prisma.authenticatedStudent.findUnique({
-            where: {
-              studentIdentifierUniquePerClass: {
-                classId,
-                studentIdentifier: rawIdentifier,
-              },
-              deletedAt: null,
-            },
-          });
-        }
-        throw error;
-      }
+      return txClient.authenticatedStudent.update({
+        where: { studentId: byPseudonym.studentId },
+        data: { studentIdentifier: rawIdentifier },
+      });
     }
 
     return byPseudonym;
@@ -456,85 +440,61 @@ export class AuthenticationService {
     const rawPseudonym = Buffer.from(pseudonym, "base64");
     const rawIdentifier = Buffer.from(studentIdentifier, "base64url");
 
-    let authenticatedStudent = await this.findAuthenticatedStudent(
-      classId,
-      rawPseudonym,
-      rawIdentifier,
-    );
-
-    let student: PrismaStudent;
-
-    if (authenticatedStudent === null) {
-      try {
-        student = await this.prisma.student.create({
-          data: {
-            authenticatedStudent: {
-              create: {
-                pseudonym: rawPseudonym,
-                studentIdentifier: rawIdentifier,
-                classId,
-                keyPairId,
-              },
-            },
-          },
-        });
-      } catch (error) {
-        // re-resolve the now-existing student here instead of failing for concurrent join attempts
-        if (
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          error.code === "P2002"
-        ) {
-          authenticatedStudent = await this.findAuthenticatedStudent(
-            classId,
-            rawPseudonym,
-            rawIdentifier,
-          );
-
-          if (authenticatedStudent === null) {
-            // this should never happen in theory, but if it does, throw
-            throw error;
-          }
-
-          student = await this.prisma.student.findUniqueOrThrow({
-            where: { id: authenticatedStudent.studentId, deletedAt: null },
-          });
-        } else {
-          throw error;
-        }
-      }
-    } else {
-      student = await this.prisma.student.findUniqueOrThrow({
-        where: {
-          id: authenticatedStudent.studentId,
-          deletedAt: null,
-        },
-      });
-    }
-
-    const randomToken = generateToken();
-
     // before signing in, delete all expired tokens
     await this.deleteExpiredTokens();
 
-    const authToken = await this.prisma.authenticationToken.create({
-      data: {
-        token: randomToken,
+    const result = await runSerializableTransaction(this.prisma, async (tx) => {
+      const authenticatedStudent = await this.findAuthenticatedStudent(
+        tx,
+        classId,
+        rawPseudonym,
+        rawIdentifier,
+      );
+
+      const student = authenticatedStudent
+        ? await tx.student.findUniqueOrThrow({
+            where: {
+              id: authenticatedStudent.studentId,
+              deletedAt: null,
+            },
+          })
+        : await tx.student.create({
+            data: {
+              authenticatedStudent: {
+                create: {
+                  pseudonym: rawPseudonym,
+                  studentIdentifier: rawIdentifier,
+                  classId,
+                  keyPairId,
+                },
+              },
+            },
+          });
+
+      const authToken = await tx.authenticationToken.create({
+        data: {
+          token: generateToken(),
+          studentId: student.id,
+          lastUsedAt: new Date(),
+        },
+      });
+
+      const resolvedIdentifier =
+        authenticatedStudent?.studentIdentifier ?? rawIdentifier;
+
+      return {
+        token: authToken.token,
         studentId: student.id,
-        lastUsedAt: new Date(),
-      },
+        studentIdentifier:
+          Buffer.from(resolvedIdentifier).toString("base64url"),
+      };
     });
 
-    this.logger.log(`Student sign-in successful (student id: ${student.id})`);
+    this.logger.log(
+      `Student sign-in successful (student id: ${result.studentId})`,
+    );
 
-    // prefer the authoritative stored identifier, falling back to the one just provided
-    const resolvedIdentifier =
-      authenticatedStudent?.studentIdentifier ?? rawIdentifier;
-
-    return {
-      token: authToken.token,
-      studentId: student.id,
-      studentIdentifier: Buffer.from(resolvedIdentifier).toString("base64url"),
-    };
+    return result;
   }
 
   /**
