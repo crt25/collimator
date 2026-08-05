@@ -82,4 +82,19 @@ describe("SolutionConversionWorker", () => {
       ]);
     }
   });
+
+  it.each([TaskType.JUPYTER, TaskType.SCRATCH])(
+    "returns an invalid-input result for %s JSON with the wrong root shape",
+    (taskType) => {
+      const result = SolutionConversionWorker({
+        solution: buildSolution(null),
+        taskType,
+      });
+
+      expect(result).toEqual({
+        status: SolutionConversionStatus.InvalidInput,
+        errors: [{ message: `Invalid ${taskType} solution JSON structure` }],
+      });
+    },
+  );
 });
