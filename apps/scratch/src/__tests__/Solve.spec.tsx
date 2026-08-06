@@ -494,10 +494,12 @@ test.describe("/solve", () => {
       pwPage,
       "postTaskStarted",
     )) as {
-      params?: { solution?: unknown };
+      params?: { solution?: unknown; locale?: string };
     };
 
     expect(taskStarted?.params?.solution).toBeDefined();
+    // the task was loaded in English, so the reported locale must match
+    expect(taskStarted?.params?.locale).toBe("en");
   });
 
   test("records a stop-all student activity when the stop button is pressed", async ({

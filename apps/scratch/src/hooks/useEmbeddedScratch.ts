@@ -243,6 +243,10 @@ export class EmbeddedScratchCallbacks {
     | ReturnType<typeof useIframeParent>["sendRequest"]
     | null = null;
 
+  // the language the task is currently presented in, reported alongside the
+  // task-started activity; kept in sync by setScratchLocale
+  private currentLanguage: Language = Language.en;
+
   constructor(
     private vm: VM,
     private intl: IntlShape,
@@ -271,7 +275,10 @@ export class EmbeddedScratchCallbacks {
     });
 
     // fire-and-forget, exactly like postSolutionRun
-    this.sendRequest("postTaskStarted", { solution });
+    this.sendRequest("postTaskStarted", {
+      solution,
+      locale: this.currentLanguage,
+    });
   }
 
   static readonly errorMessages: Record<
@@ -454,6 +461,8 @@ export class EmbeddedScratchCallbacks {
   }
 
   private setScratchLocale(language: Language): void {
+    this.currentLanguage = language;
+
     // ensure that the languages are supported by scratch
     // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
     this.dispatch(selectLocale(language));

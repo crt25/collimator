@@ -1,6 +1,6 @@
 import { RefObject, useCallback, useEffect } from "react";
 import { chakra, Dialog, Icon } from "@chakra-ui/react";
-import { Submission, ToastType } from "iframe-rpc-react/src";
+import { Language, Submission, ToastType } from "iframe-rpc-react/src";
 import { FormattedMessage } from "react-intl";
 import { IoMdClose } from "react-icons/io";
 import EmbeddedApp, { EmbeddedAppRef } from "@/components/EmbeddedApp";
@@ -78,12 +78,17 @@ const Task = ({
   );
 
   const onTaskStarted = useCallback(
-    (solution: Blob) => {
+    (solution: Blob, locale: Language) => {
       trackStudentActivity({
         type: StudentActivityType.TASK_STARTED,
         sessionId: session.id,
         taskId: task.id,
-        appActivity: null,
+        // persist the language the task was presented in so replay can
+        // reconstruct it; a fresh TASK_STARTED is emitted per locale change
+        appActivity: {
+          type: "task-started",
+          data: { locale },
+        },
         solution,
       });
     },

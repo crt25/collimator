@@ -113,6 +113,10 @@ export class EmbeddedPythonCallbacks {
   // that use it only run after the platform's handshake
   private sendRequest: AppCrtIframeApi["sendRequest"] | null = null;
 
+  // the language the task is currently presented in, reported alongside the
+  // task-started activity; kept in sync by setJupyterLocale
+  private currentLanguage: Language = Language.en;
+
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
@@ -144,7 +148,10 @@ export class EmbeddedPythonCallbacks {
         EmbeddedPythonCallbacks.studentTaskLocation,
       );
 
-      await this.sendRequest("postTaskStarted", { solution });
+      await this.sendRequest("postTaskStarted", {
+        solution,
+        locale: this.currentLanguage,
+      });
     } catch (error) {
       console.warn(`${logModule} Failed to report the task start`, error);
     }
@@ -432,6 +439,8 @@ export class EmbeddedPythonCallbacks {
   }
 
   private async setJupyterLocale(locale: Language): Promise<void> {
+    this.currentLanguage = locale;
+
     const settings = await this.settingRegistry.load(
       EmbeddedPythonCallbacks.pluginId,
     );
