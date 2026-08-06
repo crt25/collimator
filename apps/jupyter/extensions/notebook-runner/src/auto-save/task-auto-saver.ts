@@ -25,6 +25,12 @@ export class TaskAutoSaver {
     NotebookPanel,
     ExecutionScheduledCallback
   >();
+  // keyed by panel for the same reason: the contentChanged signal lives on the
+  // shared model, so each panel's slot must be disconnected individually
+  private readonly contentChangeListeners = new Map<
+    NotebookPanel,
+    () => void
+  >();
   private readonly inFlightSaves = new Map<INotebookModel, Promise<void>>();
   public static readonly debounceInterval = 30000;
 
@@ -59,9 +65,12 @@ export class TaskAutoSaver {
   }
 
   private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
-    panel.context.model.contentChanged.connect(() => {
+    const contentChangeListener = (): void => {
       this.handleContentChange(panel, model);
-    });
+    };
+
+    model.contentChanged.connect(contentChangeListener);
+    this.contentChangeListeners.set(panel, contentChangeListener);
 
     const executionListener: ExecutionScheduledCallback = (sender, args) => {
       if (args.notebook === panel.content) {
@@ -121,11 +130,18 @@ export class TaskAutoSaver {
   private handleNotebookDisposed(panel: NotebookPanel): void {
     this.cancelContentChangeTimer(panel.context.model);
 
-    const listener = this.executionListeners.get(panel);
+    const executionListener = this.executionListeners.get(panel);
 
-    if (listener) {
-      NotebookActions.executionScheduled.disconnect(listener);
+    if (executionListener) {
+      NotebookActions.executionScheduled.disconnect(executionListener);
       this.executionListeners.delete(panel);
+    }
+
+    const contentChangeListener = this.contentChangeListeners.get(panel);
+
+    if (contentChangeListener) {
+      panel.context.model.contentChanged.disconnect(contentChangeListener);
+      this.contentChangeListeners.delete(panel);
     }
   }
 
@@ -138,6 +154,13 @@ export class TaskAutoSaver {
     // once the save resolves - so each emission would trigger its own save
     // and solution post. Coalesce them onto the save already in flight
     // (CRT-467).
+    //
+    // We deliberately do not re-check dirtiness and re-save when the in-flight
+    // save settles: changes that land mid-save (e.g. the run-all's cell
+    // outputs) fire contentChanged, which re-arms the debounce timer in
+    // handleContentChange independently of this map, so they are still saved -
+    // just debounced rather than immediately. Re-saving on settle would
+    // reintroduce an extra immediate post per run-all.
     const inFlight = this.inFlightSaves.get(model);
     if (inFlight) {
       return inFlight;

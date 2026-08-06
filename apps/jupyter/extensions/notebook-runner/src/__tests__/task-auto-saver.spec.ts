@@ -346,6 +346,15 @@ describe("TaskAutoSaver", () => {
       }
     ).forEach = (callback): void => callback(mockPanel);
 
+    // Capture the beforeunload handler this saver registers rather than
+    // dispatching a global event: earlier trackNotebook calls in this file
+    // leave their own beforeunload listeners on the shared jsdom window, and
+    // dispatching would fire those too - their stale mock trackers have no
+    // forEach, throwing unhandled rejections behind these assertions.
+    const addEventListenerSpy = jest
+      .spyOn(window, "addEventListener")
+      .mockImplementation(() => undefined);
+
     TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
     mockPanel.context.model.dirty = true;
     makeSaveClearDirty(mockPanel);
@@ -355,7 +364,12 @@ describe("TaskAutoSaver", () => {
       mockTracker.widgetAdded.connect as jest.Mock
     ).mock.calls.length;
 
-    dispatchEvent(new Event("beforeunload"));
+    const beforeUnloadHandler = addEventListenerSpy.mock.calls
+      .filter(([type]) => type === "beforeunload")
+      .map(([, handler]) => handler)
+      .pop() as EventListener;
+
+    beforeUnloadHandler(new Event("beforeunload"));
     await flushMicrotasks();
 
     expect(mockSave).toHaveBeenCalledTimes(1);
@@ -396,5 +410,20 @@ describe("TaskAutoSaver", () => {
     expect(
       jest.mocked(NotebookActions.executionScheduled.disconnect),
     ).toHaveBeenCalledWith(visiblePanelListener);
+  });
+
+  it("disconnects the disposed panel's own content-changed listener", () => {
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
+    addNotebookToTracker(mockPanel);
+
+    const contentChangedDisconnect = mockPanel.context.model.contentChanged
+      .disconnect as jest.Mock;
+    const connectedListener = (
+      mockPanel.context.model.contentChanged.connect as jest.Mock
+    ).mock.calls[0][0];
+
+    simulateDisposal(mockPanel);
+
+    expect(contentChangedDisconnect).toHaveBeenCalledWith(connectedListener);
   });
 });
