@@ -8,6 +8,7 @@ import {
 } from "react";
 import {
   useIframeChild,
+  Language,
   PlatformCrtIframeApi,
   Submission,
   ToastType,
@@ -78,6 +79,7 @@ export interface Props {
   onSolutionRun?: (solution: Blob) => void;
   onReceiveMessage?: (title: string, message: string, type: ToastType) => void;
   onReceiveTaskSolution?: (solution: Blob) => void;
+  onTaskStarted?: (solution: Blob, locale: Language) => void;
   onStudentAppActivity?: (
     action: string,
     data: Record<string, unknown>,
@@ -95,6 +97,7 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
     onStudentAppActivity,
     onReceiveMessage,
     onReceiveTaskSolution,
+    onTaskStarted,
   },
   ref,
 ) {
@@ -127,6 +130,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       },
       postTaskSolution: async (request) => {
         onReceiveTaskSolution?.(request.params.solution);
+      },
+      postTaskStarted: async (request) => {
+        onTaskStarted?.(request.params.solution, request.params.locale);
       },
       postSolutionRun: async (request) => {
         onSolutionRun?.(request.params);

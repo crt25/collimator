@@ -6,11 +6,15 @@ import {
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
 import { TestFailingTaskPage } from "./page-objects/test-failing-task";
-import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import {
+  findPostedMessage,
+  getExpectedBlockConfigButtonLabel,
+  getPostedMessageMethods,
+  waitForPostedMessage,
+} from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
 import tasks from "./tasks/index";
 import { ScratchEditorPage } from "./page-objects/scratch-editor";
-import type { RpcMethodName } from "../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 declare global {
   interface Window {
@@ -100,13 +104,11 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() => window.postedMessages.length > 1);
+    await waitForPostedMessage(page, "getSubmission");
 
-    const messages = await page.evaluate(() => window.postedMessages);
+    const submissionMessage = await findPostedMessage(page, "getSubmission");
 
-    expect(messages).toHaveLength(2);
-
-    expect(messages[1].message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 1,
       method: "getSubmission",
@@ -457,13 +459,11 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() => window.postedMessages.length > 3);
+    await waitForPostedMessage(pwPage, "getSubmission");
 
-    const messages = await pwPage.evaluate(() => window.postedMessages);
+    const submissionMessage = await findPostedMessage(pwPage, "getSubmission");
 
-    expect(messages).toHaveLength(4);
-
-    expect(messages[3].message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",
@@ -479,6 +479,27 @@ test.describe("/solve", () => {
         passedTests: [],
       },
     });
+  });
+
+  test("reports a task-started activity once the task is loaded", async ({
+    page: pwPage,
+  }) => {
+    await TestTaskPage.load(pwPage);
+
+    // loading the task for a solving student pushes postTaskStarted to the
+    // platform, carrying the project as it was opened (CRT-454)
+    await waitForPostedMessage(pwPage, "postTaskStarted");
+
+    const taskStarted = (await findPostedMessage(
+      pwPage,
+      "postTaskStarted",
+    )) as {
+      params?: { solution?: unknown; locale?: string };
+    };
+
+    expect(taskStarted?.params?.solution).toBeDefined();
+    // the task was loaded in English, so the reported locale must match
+    expect(taskStarted?.params?.locale).toBe("en");
   });
 
   test("records a stop-all student activity when the stop button is pressed", async ({
@@ -535,25 +556,13 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() => window.postedMessages.length > 2);
+    await waitForPostedMessage(pwPage, "getSubmission");
 
-    await pwPage.waitForFunction(() =>
-      window.postedMessages.some(
-        (m) =>
-          (m.message as { method?: RpcMethodName }).method === "getSubmission",
-      ),
-    );
-
-    const messages = await pwPage.evaluate(() => window.postedMessages);
-
-    const submissionMessage = messages.find(
-      (m) =>
-        (m.message as { method?: RpcMethodName }).method === "getSubmission",
-    );
+    const submissionMessage = await findPostedMessage(pwPage, "getSubmission");
 
     expect(submissionMessage).toBeDefined();
 
-    expect(submissionMessage!.message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",
@@ -574,7 +583,10 @@ test.describe("/solve", () => {
   test("resets to the initial state when running", async ({ page: pwPage }) => {
     const { page } = await AssertionTaskPage.load(pwPage);
 
-    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+    // nothing beyond the load has been reported before the student acts: the
+    // loadTask response and the postTaskStarted activity it triggers
+    const initialMethods = await getPostedMessageMethods(pwPage);
+    expect(initialMethods.sort()).toEqual(["loadTask", "postTaskStarted"]);
 
     // solve task
     for (let i = 0; i < 5; i++) {

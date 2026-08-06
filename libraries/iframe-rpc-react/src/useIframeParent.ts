@@ -47,6 +47,10 @@ export const useIframeParent = (
               // cache the parent origin and set it in state
               cachedParentOrigin = args[1].origin;
               setTaskOrigin(args[1].origin);
+              // also set it synchronously, so a request the handler sends back
+              // to the platform (e.g. postTaskStarted) has a live origin - the
+              // state effect only runs after the handler has returned
+              crtPlatform.current.setOrigin(args[1].origin);
 
               return handleRequest.loadSubmission(...args);
             },
@@ -55,6 +59,7 @@ export const useIframeParent = (
             ): ReturnType<typeof handleRequest.loadTask> => {
               cachedParentOrigin = args[1].origin;
               setTaskOrigin(args[1].origin);
+              crtPlatform.current.setOrigin(args[1].origin);
 
               return handleRequest.loadTask(...args);
             },

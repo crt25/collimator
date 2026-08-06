@@ -1,5 +1,5 @@
 import VM from "@scratch/scratch-vm";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { defineMessages, IntlShape, MessageDescriptor } from "react-intl";
 import JSZip from "jszip";
 import { useDispatch } from "react-redux";
@@ -237,11 +237,49 @@ const getSubmission = async (vm: VM, intl: IntlShape): Promise<Submission> => {
 };
 
 export class EmbeddedScratchCallbacks {
+  // set once useIframeParent has produced the sender; the RPC handlers that
+  // use it only run after the platform's handshake, by which point it is set
+  private sendRequest:
+    | ReturnType<typeof useIframeParent>["sendRequest"]
+    | null = null;
+
+  // the language the task is currently presented in, reported alongside the
+  // task-started activity; kept in sync by setScratchLocale
+  private currentLanguage: Language = Language.en;
+
   constructor(
     private vm: VM,
     private intl: IntlShape,
     private dispatch: Dispatch<AnyAction>,
+    private isStudentSolving: boolean,
   ) {}
+
+  setSendRequest(
+    sendRequest: ReturnType<typeof useIframeParent>["sendRequest"],
+  ): void {
+    this.sendRequest = sendRequest;
+  }
+
+  /**
+   * Reports that a solving student opened the task, carrying the project as it
+   * was opened (the same raw encoding postSolutionRun uses, without running
+   * the assertions). The platform turns it into a TASK_STARTED activity.
+   */
+  private emitTaskStarted(): void {
+    if (!this.isStudentSolving || !this.sendRequest) {
+      return;
+    }
+
+    const solution = new Blob([this.vm.toJSON()], {
+      type: "application/json",
+    });
+
+    // fire-and-forget, exactly like postSolutionRun
+    this.sendRequest("postTaskStarted", {
+      solution,
+      locale: this.currentLanguage,
+    });
+  }
 
   static readonly errorMessages: Record<
     ScratchProjectErrorCode,
@@ -317,6 +355,8 @@ export class EmbeddedScratchCallbacks {
 
       const sb3Project = await request.params.task.arrayBuffer();
       await loadCrtProject(this.vm, sb3Project);
+
+      this.emitTaskStarted();
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -404,6 +444,8 @@ export class EmbeddedScratchCallbacks {
           this.vm.setEditingTarget(target.id);
         }
       }
+
+      this.emitTaskStarted();
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -413,9 +455,14 @@ export class EmbeddedScratchCallbacks {
 
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
     this.setScratchLocale(request.params);
+
+    // the task is re-presented in the new language: record a fresh start
+    this.emitTaskStarted();
   }
 
   private setScratchLocale(language: Language): void {
+    this.currentLanguage = language;
+
     // ensure that the languages are supported by scratch
     // see https://github.com/scratchfoundation/scratch-l10n/blob/master/src/locale-data.mjs#L77
     this.dispatch(selectLocale(language));
@@ -427,6 +474,7 @@ const initialMessages = stopBufferingIframeMessages();
 export const useEmbeddedScratch = (
   vm: VM | null,
   intl: IntlShape,
+  isStudentSolving = false,
 ): ReturnType<typeof useIframeParent> => {
   const dispatch = useDispatch();
 
@@ -435,8 +483,8 @@ export const useEmbeddedScratch = (
       return null;
     }
 
-    return new EmbeddedScratchCallbacks(vm, intl, dispatch);
-  }, [vm, intl, dispatch]);
+    return new EmbeddedScratchCallbacks(vm, intl, dispatch, isStudentSolving);
+  }, [vm, intl, dispatch, isStudentSolving]);
 
   const handleRequest = useMemo<Parameters<typeof useIframeParent>[0]>(() => {
     if (callbacks) {
@@ -455,5 +503,11 @@ export const useEmbeddedScratch = (
     return null;
   }, [callbacks]);
 
-  return useIframeParent(handleRequest, initialMessages);
+  const embeddedParent = useIframeParent(handleRequest, initialMessages);
+
+  useEffect(() => {
+    callbacks?.setSendRequest(embeddedParent.sendRequest);
+  }, [callbacks, embeddedParent.sendRequest]);
+
+  return embeddedParent;
 };

@@ -8,6 +8,7 @@ import { LoadSubmission } from "./load-submission";
 import { LoadTask } from "./load-task";
 import { PostSolutionRun } from "./post-solution-run";
 import { PostTaskSolution } from "./post-task-solution";
+import { PostTaskStarted } from "./post-task-started";
 import { PostSubmission } from "./post-submission";
 import { SetLocale } from "./set-locale";
 import { PostStudentAppActivity } from "./post-student-activity";
@@ -25,6 +26,7 @@ export type {
 } from "./load-task";
 export { isLoadTaskWithTask } from "./load-task";
 export type { PostSubmission } from "./post-submission";
+export type { PostTaskStarted } from "./post-task-started";
 export { ToastType } from "./post-message";
 export type { SetLocale } from "./set-locale";
 export type { ImportTask } from "./import-task";
@@ -47,7 +49,8 @@ type Methods =
   | PostStudentAppActivity
   | PostSolutionRun
   | PostMessage
-  | PostTaskSolution;
+  | PostTaskSolution
+  | PostTaskStarted;
 
 type IframeRpcDefinitionForCaller<Caller extends RpcCaller> = Methods & {
   caller: Caller;
@@ -78,9 +81,7 @@ export type IframeRpcPlatformResponse = ResponseOf<
 >;
 
 export type IframeRpcPlatformMessage =
-  | IframeRpcPlatformRequest
-  | IframeRpcPlatformResponse;
+  IframeRpcPlatformRequest | IframeRpcPlatformResponse;
 
 export type IframeRpcApplicationMessage =
-  | IframeRpcApplicationRequest
-  | IframeRpcApplicationResponse;
+  IframeRpcApplicationRequest | IframeRpcApplicationResponse;
