@@ -13,6 +13,12 @@ export const useIframeChild = (
   onAppAvailable: (
     iframe: HTMLIFrameElement,
     api: PlatformCrtIframeApi,
+    /**
+     * True when the iframe just fired a load event: its previous document -
+     * and any request still in flight to it - is gone. False when the app is
+     * re-announced only because the callback identity rotated.
+     */
+    justLoaded: boolean,
   ) => Promise<void>,
 ): {
   sendRequest: <Method extends IframeRpcPlatformMethods>(
@@ -70,14 +76,14 @@ export const useIframeChild = (
 
         isIFrameLoaded.current = true;
 
-        await onAppAvailable(iframe, crtPlatform.current);
+        await onAppAvailable(iframe, crtPlatform.current, true);
       };
 
       if (isIFrameLoaded.current) {
         // If the iframe has already been loaded, call immediately.
         // This is necessary when switching content in the embedded app, as
         // the load event may have already fired when the iframe was loaded.
-        onAppAvailable(iframe, crtPlatform.current);
+        onAppAvailable(iframe, crtPlatform.current, false);
       }
 
       iframe.addEventListener("load", callback);

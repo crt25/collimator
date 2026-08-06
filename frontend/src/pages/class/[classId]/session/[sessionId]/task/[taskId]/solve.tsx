@@ -215,68 +215,79 @@ const SolveTaskPage = () => {
     }
   }, [intl.locale]);
 
-  const onAppAvailable = useCallback(async () => {
-    if (
-      embeddedApp.current &&
-      taskFile &&
-      session &&
-      task &&
-      isScratchMutexAvailable.current
-    ) {
-      wasInitialized.current = true;
-
-      const intl = intlRef.current;
-
-      // Prefer a solution stashed just before a reload (it includes changes
-      // that may not have reached the backend yet); otherwise load the latest
-      // persisted solution. Consume the stash synchronously so a solution
-      // arriving while the load below is in flight is not clobbered, and only
-      // accept it for the task it was stashed for.
-      const stashed = pendingSolution.current;
-      pendingSolution.current = null;
-      const stashedSolution =
-        stashed?.taskId === task.id ? stashed.solution : null;
-
-      try {
-        const solutionFile =
-          stashedSolution ??
-          (await fetchLatestSolutionFile(
-            session.klass.id,
-            session.id,
-            task.id,
-          ));
-
-        isScratchMutexAvailable.current = false;
-
-        await executeAsyncWithToasts(
-          () =>
-            embeddedApp.current!.sendRequest("loadSubmission", {
-              task: taskFile,
-              submission: solutionFile,
-              language: intl.locale as Language,
-            }),
-          { intl, descriptor: taskMessages.cannotLoadSubmission },
-        );
-      } catch {
-        if (stashedSolution !== null) {
-          pendingSolution.current ??= stashed;
-          return;
-        }
-
-        // if we cannot fetch the latest solution file we load the task from scratch
-        await embeddedApp.current.sendRequest("loadTask", {
-          task: taskFile,
-          language: intl.locale as Language,
-        });
-      } finally {
+  const onAppAvailable = useCallback(
+    async (justLoaded: boolean = false) => {
+      // When the iframe just (re)loaded - e.g. the Jupyter app navigates itself
+      // to apply a locale - any request still in flight went to a document that
+      // no longer exists and can never settle, so the mutex it holds must not
+      // stay locked: it would block every future load (CRT-464).
+      if (justLoaded) {
         isScratchMutexAvailable.current = true;
       }
-    }
+
+      if (
+        embeddedApp.current &&
+        taskFile &&
+        session &&
+        task &&
+        isScratchMutexAvailable.current
+      ) {
+        wasInitialized.current = true;
+
+        const intl = intlRef.current;
+
+        // Prefer a solution stashed just before a reload (it includes changes
+        // that may not have reached the backend yet); otherwise load the latest
+        // persisted solution. Consume the stash synchronously so a solution
+        // arriving while the load below is in flight is not clobbered, and only
+        // accept it for the task it was stashed for.
+        const stashed = pendingSolution.current;
+        pendingSolution.current = null;
+        const stashedSolution =
+          stashed?.taskId === task.id ? stashed.solution : null;
+
+        try {
+          const solutionFile =
+            stashedSolution ??
+            (await fetchLatestSolutionFile(
+              session.klass.id,
+              session.id,
+              task.id,
+            ));
+
+          isScratchMutexAvailable.current = false;
+
+          await executeAsyncWithToasts(
+            () =>
+              embeddedApp.current!.sendRequest("loadSubmission", {
+                task: taskFile,
+                submission: solutionFile,
+                language: intl.locale as Language,
+              }),
+            { intl, descriptor: taskMessages.cannotLoadSubmission },
+          );
+        } catch {
+          if (stashedSolution !== null) {
+            pendingSolution.current ??= stashed;
+            return;
+          }
+
+          // if we cannot fetch the latest solution file we load the task from scratch
+          await embeddedApp.current.sendRequest("loadTask", {
+            task: taskFile,
+            language: intl.locale as Language,
+          });
+        } finally {
+          isScratchMutexAvailable.current = true;
+        }
+      }
+    },
     // since taskFile is a blob, use its hash as a proxy for its content.
     // intl is intentionally read through intlRef (not listed as a dep): see the
     // comment on intlRef — a locale change must not rotate this callback.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session, task]);
+    [embeddedApp, taskFileHash, session, task],
+  );
 
   const onReceiveTaskSolution = useCallback(
     async (solutionBlob: Blob) => {

@@ -72,7 +72,11 @@ export interface EmbeddedAppRef {
 
 export interface Props {
   src: string;
-  onAppAvailable?: () => void;
+  /**
+   * justLoaded is true when the iframe just fired a load event, meaning its
+   * previous document - and any request still in flight to it - is gone.
+   */
+  onAppAvailable?: (justLoaded: boolean) => void;
   onAppError?: (error: Error) => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
@@ -109,13 +113,17 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   }
 
   const onAvailable = useCallback(
-    async (iframe: HTMLIFrameElement, api: PlatformCrtIframeApi) => {
+    async (
+      iframe: HTMLIFrameElement,
+      api: PlatformCrtIframeApi,
+      justLoaded: boolean,
+    ) => {
       const response = await api.sendRequest("getHeight", undefined);
 
       iframe.style.height = `${response.result}px`;
 
       setLoadingState(LoadingState.available);
-      onAppAvailable?.();
+      onAppAvailable?.(justLoaded);
     },
     [onAppAvailable],
   );

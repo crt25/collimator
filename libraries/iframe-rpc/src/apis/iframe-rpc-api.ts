@@ -63,8 +63,8 @@ export abstract class IframeRpcApi<
   /**
    * The error response this instance may send to the iframe as the response to a request.
    */
-  TOutgoingErrorResponse extends
-    IframeRpcError<TIncomingMethods> = IframeRpcError<TIncomingMethods>,
+  TOutgoingErrorResponse extends IframeRpcError<TIncomingMethods> =
+    IframeRpcError<TIncomingMethods>,
 > {
   private readonly pendingRequests: {
     [key: number]: {
@@ -80,7 +80,10 @@ export abstract class IframeRpcApi<
   /**
    * Buffer for incoming requests received before onRequest handler is set.
    */
-  private bufferedRequests: {request: TIncomingRequests; event: MessageEvent}[] = [];
+  private bufferedRequests: {
+    request: TIncomingRequests;
+    event: MessageEvent;
+  }[] = [];
 
   constructor(
     private onRequest: HandleRequestMap<
@@ -99,12 +102,12 @@ export abstract class IframeRpcApi<
   ): void {
     this.onRequest = onRequest;
 
-    if(this.onRequest !== null){
+    if (this.onRequest !== null) {
       // Process buffered requests
       const bufferedRequests = this.bufferedRequests;
       this.bufferedRequests = [];
 
-      for (const {request, event} of bufferedRequests) {
+      for (const { request, event } of bufferedRequests) {
         this.handleRequest(request, event);
       }
     }
@@ -212,9 +215,7 @@ export abstract class IframeRpcApi<
     }
 
     const message = event.data as
-      | TIncomingRequests
-      | TIncomingResult
-      | TOutgoingErrorResponse;
+      TIncomingRequests | TIncomingResult | TOutgoingErrorResponse;
 
     return this.isResponse(message)
       ? this.handleReponse(message)
@@ -229,8 +230,12 @@ export abstract class IframeRpcApi<
     // get the resolve function from the pendingRequests object
     const handleResponse = this.pendingRequests[response.id];
     if (!handleResponse) {
-      console.error("No resolve function found for message", response);
-      throw new Error("No resolve function found for message");
+      // Expected across embedded-app reloads and remounts: a remounted app
+      // replays buffered requests and answers them a second time, and a
+      // document that navigated away can be answered after a fresh RPC
+      // instance took over. Drop the response instead of throwing (CRT-464).
+      console.warn("No resolve function found for message", response);
+      return;
     }
 
     // call the resolve function with the message
@@ -250,8 +255,8 @@ export abstract class IframeRpcApi<
     request: TIncomingRequests,
     event: MessageEvent,
   ): Promise<void> {
-    if(this.onRequest === null){
-      this.bufferedRequests.push({request, event});
+    if (this.onRequest === null) {
+      this.bufferedRequests.push({ request, event });
       return;
     }
 
