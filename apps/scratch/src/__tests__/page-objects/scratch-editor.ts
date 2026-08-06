@@ -160,6 +160,38 @@ export class ScratchEditorPage {
     return block.dragTo(this.toolbox, { force: true });
   }
 
+  getSpriteSelectorItem(spriteName: string) {
+    return this.page
+      .locator('[class*="sprite-selector-item"]')
+      .filter({ hasText: spriteName })
+      .first();
+  }
+
+  /**
+   * Drags a block from the current workspace onto another sprite in the
+   * sprite pane, which copies it into that sprite. A single mouse jump does
+   * not register as a scratch-blocks drag, so the pointer is moved in steps
+   * and rests on the sprite before dropping.
+   */
+  async dragBlockToSprite(block: Locator, spriteName: string) {
+    await this.scrollBlockIntoView(block);
+
+    const sprite = this.getSpriteSelectorItem(spriteName);
+    const blockPosition = (await block.boundingBox())!;
+
+    await this.page.mouse.move(
+      blockPosition.x + blockPosition.width / 2,
+      blockPosition.y + blockPosition.height / 2,
+    );
+    await this.page.mouse.down();
+    await this.page.mouse.move(blockPosition.x + 100, blockPosition.y + 100, {
+      steps: 5,
+    });
+    await sprite.hover({ force: true });
+    await this.page.waitForTimeout(500);
+    await this.page.mouse.up();
+  }
+
   async moveBlock(
     block: Locator,
     target: Locator,

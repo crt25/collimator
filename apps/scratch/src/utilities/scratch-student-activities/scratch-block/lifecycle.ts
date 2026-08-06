@@ -57,7 +57,15 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        refreshBlockConfigButtonsFromXml(vm, xml, blocks, canEditTask);
+        // Clone synchronously: scratch-blocks may still reference the
+        // dragged block's xml after this handler returns. A macrotask is
+        // required for the deferral - shareBlocksToTarget completes on the
+        // microtask queue, possibly after several hops.
+        const clonedXml = xml.cloneNode(true) as Element;
+
+        setTimeout(() => {
+          refreshBlockConfigButtonsFromXml(vm, clonedXml, blocks, canEditTask);
+        });
       }
       break;
   }
