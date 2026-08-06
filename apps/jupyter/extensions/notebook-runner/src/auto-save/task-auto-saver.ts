@@ -19,10 +19,13 @@ export class TaskAutoSaver {
     INotebookModel,
     NodeJS.Timeout
   >();
+  // keyed by panel: two panels over the same document (e.g. the hidden
+  // grading panel) share one model, and each needs its own listener
   private readonly executionListeners = new Map<
-    INotebookModel,
+    NotebookPanel,
     ExecutionScheduledCallback
   >();
+  private readonly inFlightSaves = new Map<INotebookModel, Promise<void>>();
   public static readonly debounceInterval = 30000;
 
   constructor(
@@ -34,7 +37,7 @@ export class TaskAutoSaver {
     });
 
     addEventListener("beforeunload", async () => {
-      await this.handlePageUnload(notebookTracker);
+      await this.handlePageUnload();
     });
   }
 
@@ -66,12 +69,12 @@ export class TaskAutoSaver {
       }
     };
 
-    this.executionListeners.set(model, executionListener);
+    this.executionListeners.set(panel, executionListener);
 
     NotebookActions.executionScheduled.connect(executionListener);
 
     panel.disposed.connect(() => {
-      this.handleNotebookDisposed(model);
+      this.handleNotebookDisposed(panel);
     });
   }
 
@@ -89,37 +92,18 @@ export class TaskAutoSaver {
     this.contentChangeTimers.set(model, timer);
   }
 
-  private async handlePageUnload(
-    notebookTracker: INotebookTracker,
-  ): Promise<void> {
-    for (const [model, _] of this.contentChangeTimers.entries()) {
-      // The listener/timer cleanup is technically unnecessary since the page is unloading
-      // but we do it for good measure and to avoid any potential side effects
-      // if the unload gets canceled for some reason.
-      NotebookActions.executionScheduled.disconnect(
-        this.executionListeners.get(model)!,
-      );
-
-      this.contentChangeTimers.delete(model);
+  private async handlePageUnload(): Promise<void> {
+    // The timer cleanup is technically unnecessary since the page is
+    // unloading, but we do it for good measure and to avoid any potential
+    // side effects if the unload gets canceled for some reason.
+    for (const model of [...this.contentChangeTimers.keys()]) {
+      this.cancelContentChangeTimer(model);
     }
 
-    notebookTracker.forEach(async (panel) => {
-      const model = panel.context.model;
-
-      const saver = new TaskAutoSaver(
-        notebookTracker,
-        this.sendRequest.bind(this),
-      );
-
-      try {
-        await saver.saveNotebook(panel, model);
-      } catch (error) {
-        console.error(
-          `${logModule} Failed to save notebook ${model.toString()}:`,
-          error,
-        );
-      }
-    });
+    // save through this instance: constructing a fresh TaskAutoSaver here
+    // would register another beforeunload listener each time, doubling every
+    // later save (CRT-467)
+    await this.saveAllNotebooks();
   }
 
   private async handleExecutionScheduled(
@@ -134,25 +118,44 @@ export class TaskAutoSaver {
     await this.saveNotebook(panel, model);
   }
 
-  private handleNotebookDisposed(model: INotebookModel): void {
-    this.cancelContentChangeTimer(model);
+  private handleNotebookDisposed(panel: NotebookPanel): void {
+    this.cancelContentChangeTimer(panel.context.model);
 
-    const listener = this.executionListeners.get(model);
+    const listener = this.executionListeners.get(panel);
 
     if (listener) {
       NotebookActions.executionScheduled.disconnect(listener);
-      this.executionListeners.delete(model);
+      this.executionListeners.delete(panel);
     }
   }
 
-  private async saveNotebook(
+  private saveNotebook(
     panel: NotebookPanel,
     model: INotebookModel,
   ): Promise<void> {
-    if (!model.dirty) {
-      return;
+    // A run-all schedules every code cell in the same synchronous tick, one
+    // executionScheduled emission per cell, and the dirty flag only clears
+    // once the save resolves - so each emission would trigger its own save
+    // and solution post. Coalesce them onto the save already in flight
+    // (CRT-467).
+    const inFlight = this.inFlightSaves.get(model);
+    if (inFlight) {
+      return inFlight;
     }
 
+    if (!model.dirty) {
+      return Promise.resolve();
+    }
+
+    const save = this.performSave(panel).finally(() => {
+      this.inFlightSaves.delete(model);
+    });
+    this.inFlightSaves.set(model, save);
+
+    return save;
+  }
+
+  private async performSave(panel: NotebookPanel): Promise<void> {
     try {
       await panel.context.save();
       await this.postCurrentSolution(panel);
