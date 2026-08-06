@@ -83,7 +83,7 @@ const TaskInstanceAnalysis = () => {
                 sessionId={session.id}
                 taskId={task.id}
               />
-              <Analyzer session={session} task={task} />
+              <Analyzer key={task.id} session={session} task={task} />
             </>
           )}
         </MultiSwrContent>

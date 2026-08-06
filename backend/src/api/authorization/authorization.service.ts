@@ -84,6 +84,57 @@ export class AuthorizationService {
     return task !== null;
   }
 
+  /**
+   * A task may be read by an admin, by its creator, by any user while it is
+   * public, and by a student taking part in a session that uses it. This
+   * mirrors what the task list already returns, so nothing a user cannot
+   * discover through the list becomes reachable by guessing an id.
+   */
+  async canViewTask(
+    authenticatedUser: User | null,
+    authenticatedStudent: Student | null,
+    taskId: number,
+  ): Promise<boolean> {
+    if (authenticatedUser !== null) {
+      if (authenticatedUser.type === UserType.ADMIN) {
+        return true;
+      }
+
+      const task = await this.prisma.task.findFirst({
+        where: {
+          id: taskId,
+          deletedAt: null,
+          OR: [{ isPublic: true }, { creatorId: authenticatedUser.id }],
+        },
+        select: { id: true },
+      });
+
+      return task !== null;
+    }
+
+    if (authenticatedStudent !== null) {
+      // the student flow reads a task by id alone, without naming a session,
+      // so any session they take part in that uses the task authorizes it
+      const sessionTask = await this.prisma.sessionTask.findFirst({
+        where: {
+          taskId,
+          deletedAt: null,
+          task: { deletedAt: null },
+          session: {
+            deletedAt: null,
+            class: { deletedAt: null },
+            ...this.participatesInSession(authenticatedStudent.id),
+          },
+        },
+        select: { taskId: true },
+      });
+
+      return sessionTask !== null;
+    }
+
+    return false;
+  }
+
   async canUpdateTask(
     authenticatedUser: User,
     taskId: number,

@@ -4,8 +4,8 @@ import { Solution } from "@prisma/client";
 import { Piscina } from "piscina";
 import { TaskWithoutData } from "src/api/tasks/tasks.service";
 import { getPiscinaPath } from "src/utilities/is-test";
-import { GeneralAst } from "./types/general-ast";
 import SolutionConversionWorker from "./converters/solution-conversion-worker.piscina";
+import { SolutionConversionResult } from "./converters/solution-conversion-result";
 
 type ConversionWorker = typeof SolutionConversionWorker;
 
@@ -35,7 +35,7 @@ export class AstConversionService implements OnModuleDestroy {
   async convertSolutionToAst(
     task: TaskWithoutData,
     solution: Solution,
-  ): Promise<GeneralAst> {
+  ): Promise<SolutionConversionResult> {
     return this.conversionWorker.run({
       solution,
       taskType: task.type,

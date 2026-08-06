@@ -51,7 +51,7 @@ const UserDetail = () => {
   const onSubmit = useCallback(
     async (formValues: UserFormValues) => {
       if (!user) {
-        return;
+        return false;
       }
 
       try {
@@ -66,12 +66,16 @@ const UserDetail = () => {
           id: `user-update-success-${user.id}`,
           title: intl.formatMessage(messages.successMessage),
         });
+
+        return true;
       } catch (e) {
         console.error("Failed to update user:", e);
         toaster.error({
           id: `user-update-error-${user.id}`,
           title: intl.formatMessage(messages.errorMessage),
         });
+
+        return false;
       }
     },
     [user, updateUser, intl],

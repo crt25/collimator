@@ -60,7 +60,7 @@ const UserForm = ({
 }: {
   submitMessage: MessageDescriptor;
   initialValues?: PartialNullable<UserFormValues>;
-  onSubmit: (data: UserFormValues) => void;
+  onSubmit: (data: UserFormValues) => boolean | Promise<boolean>;
 }) => {
   const intl = useIntl();
 
@@ -102,6 +102,7 @@ const UserForm = ({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, dirtyFields, isDirty, isSubmitting },
   } = useForm<UserFormValues>({
     resolver,
@@ -117,7 +118,17 @@ const UserForm = ({
   return (
     <FormContainer
       as="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(async (values) => {
+        const succeeded = await onSubmit(values);
+
+        if (!succeeded) {
+          return;
+        }
+
+        // re-baseline the form to the saved values so no field stays marked
+        // as edited and the validation state resets after a successful save
+        reset(values);
+      })}
       data-testid="user-form"
     >
       <Grid templateColumns="repeat(12, 1fr)" gap={4}>
@@ -126,6 +137,7 @@ const UserForm = ({
             label={messages.name}
             {...register("name")}
             data-testid="name"
+            disabled={isSubmitting}
             invalid={!!errors.name}
             errorText={errors.name?.message}
             labelBadge={showEditedBadges && dirtyFields.name && <EditedBadge />}
@@ -142,7 +154,8 @@ const UserForm = ({
               value: userType,
               label: getUserTypeMessage(userType as UserType),
             }))}
-            data-testid="type"
+            testID="type"
+            disabled={isSubmitting}
           >
             <ValidationErrorMessage>
               {errors.type?.message}
@@ -155,6 +168,7 @@ const UserForm = ({
             label={messages.email}
             {...register("email")}
             data-testid="email"
+            disabled={isSubmitting}
             invalid={!!errors.email}
             errorText={errors.email?.message}
             labelBadge={

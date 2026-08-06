@@ -35,8 +35,6 @@ export const usePatchStudentReferenceSolutions =
           undefined,
           authOptions,
         ).then(() => {
-          revalidateSolutionList(classId, sessionId, taskId);
-
           const key = getSolutionsControllerFindCurrentAnalysesV0Url(
             classId,
             sessionId,
@@ -60,6 +58,8 @@ export const usePatchStudentReferenceSolutions =
               { revalidate: false },
             );
           }
+
+          revalidateSolutionList(classId, sessionId, taskId);
         }),
       [authOptions, cache, mutate, revalidateSolutionList],
     );
