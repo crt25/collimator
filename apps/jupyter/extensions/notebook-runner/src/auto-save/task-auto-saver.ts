@@ -66,7 +66,7 @@ export class TaskAutoSaver {
 
   private registerNotebook(panel: NotebookPanel, model: INotebookModel): void {
     const contentChangeListener = (): void => {
-      this.handleContentChange(panel, model);
+      this.handleContentChange(model);
     };
 
     model.contentChanged.connect(contentChangeListener);
@@ -87,15 +87,24 @@ export class TaskAutoSaver {
     });
   }
 
-  private handleContentChange(
-    panel: NotebookPanel,
-    model: INotebookModel,
-  ): void {
+  private handleContentChange(model: INotebookModel): void {
     this.cancelContentChangeTimer(model);
 
     const timer = setTimeout(async () => {
-      await this.saveNotebook(panel, model);
-      this.contentChangeTimers.delete(model);
+      // a model can be shared by more than one panels
+      // resolve the panel when the timer fires so we never save through the panel that originally scheduled the timer after it closed
+      const livePanel = [...this.contentChangeListeners.keys()].find(
+        (panel) => panel.context.model === model,
+      );
+
+      if (livePanel) {
+        await this.saveNotebook(livePanel, model);
+      }
+
+      // a content change can replace this timer while the save is awaiting, so only remove the map entry if it still belongs to this callback
+      if (this.contentChangeTimers.get(model) === timer) {
+        this.contentChangeTimers.delete(model);
+      }
     }, TaskAutoSaver.debounceInterval);
 
     this.contentChangeTimers.set(model, timer);
@@ -128,7 +137,7 @@ export class TaskAutoSaver {
   }
 
   private handleNotebookDisposed(panel: NotebookPanel): void {
-    this.cancelContentChangeTimer(panel.context.model);
+    const model = panel.context.model;
 
     const executionListener = this.executionListeners.get(panel);
 
@@ -140,8 +149,19 @@ export class TaskAutoSaver {
     const contentChangeListener = this.contentChangeListeners.get(panel);
 
     if (contentChangeListener) {
-      panel.context.model.contentChanged.disconnect(contentChangeListener);
+      model.contentChanged.disconnect(contentChangeListener);
       this.contentChangeListeners.delete(panel);
+    }
+
+    // the debounce timer belongs to the shared model, not to one panel
+    // keep it while another panel can still save that model, and cancel it
+    // only when the model's final panel has been disposed
+    const modelStillHasPanel = [...this.contentChangeListeners.keys()].some(
+      (livePanel) => livePanel.context.model === model,
+    );
+
+    if (!modelStillHasPanel) {
+      this.cancelContentChangeTimer(model);
     }
   }
 

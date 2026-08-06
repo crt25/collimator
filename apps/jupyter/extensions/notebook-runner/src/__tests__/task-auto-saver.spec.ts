@@ -426,4 +426,29 @@ describe("TaskAutoSaver", () => {
 
     expect(contentChangedDisconnect).toHaveBeenCalledWith(connectedListener);
   });
+
+  it("keeps a shared model's pending save when one panel is disposed", async () => {
+    TaskAutoSaver.trackNotebook(mockTracker, mockSendRequest);
+    addNotebookToTracker(mockPanel);
+
+    const hiddenPanel = {
+      context: mockPanel.context,
+      content: {
+        id: "/test/notebook.ipynb-hidden",
+        activeCell: mockCell,
+      } as NotebookPanel["content"],
+      disposed: {
+        connect: jest.fn(),
+        disconnect: jest.fn(),
+      },
+    } as Partial<NotebookPanel> as NotebookPanel;
+    addNotebookToTracker(hiddenPanel);
+
+    simulateContentChange(mockPanel);
+    simulateDisposal(hiddenPanel);
+    await jest.advanceTimersByTimeAsync(TaskAutoSaver.debounceInterval);
+
+    expect(mockSave).toHaveBeenCalledTimes(1);
+    expect(mockSendTaskSolution).toHaveBeenCalledTimes(1);
+  });
 });
