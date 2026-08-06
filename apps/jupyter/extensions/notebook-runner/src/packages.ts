@@ -121,7 +121,13 @@ const trackSession = async (
 
   // Start the kernel only after the context has applied the notebook's
   // kernelspec, so Pyodide is auto-selected rather than prompted for (CRT-399).
-  await panel.context.ready;
+  await panel.context.ready.catch((error) =>
+    console.error(
+      `${logModule} Failed to load notebook context for`,
+      notebookPath,
+      error,
+    ),
+  );
 
   sessionContext.initialize().catch((error) => {
     console.error(

@@ -25,29 +25,36 @@ export interface KernelSpecWaitTarget {
 }
 
 /**
- * Resolves once at least one kernelspec (the Pyodide kernel) is registered,
- * or after a bounded wait. Opening a notebook before any spec is registered
- * makes JupyterLab prompt the user to pick a kernel (CRT-399): the session
- * initialization cannot resolve a default kernel without specs, no matter
- * what the notebook's metadata says. The wait is bounded so that a broken
- * kernel extension degrades to the pre-existing behavior (the notebook opens
- * and JupyterLab may prompt for a kernel) instead of hanging the caller -
- * and with it the embedded app - forever.
+ * Resolves once at least one kernelspec - in this app that is the Pyodide
+ * kernel - is registered, or after a bounded wait. Opening a notebook before
+ * any spec is registered makes JupyterLab prompt the user to pick a kernel
+ * (CRT-399): the session initialization cannot resolve a default kernel
+ * without specs, no matter what the notebook's metadata says. The wait is
+ * bounded - and covers waiting for the manager to become ready - so that a
+ * broken, slow or rejecting kernel extension degrades to the pre-existing
+ * behavior (the notebook opens and JupyterLab may prompt for a kernel)
+ * instead of hanging the caller, and with it the embedded app, forever.
  */
 export const waitForKernelSpecs = async (
   kernelSpecs: KernelSpecWaitTarget,
   timeoutMs: number = defaultTimeoutMs,
 ): Promise<void> => {
-  await kernelSpecs.ready;
-
   const hasSpec = (specs = kernelSpecs.specs): boolean =>
     !!specs && Object.keys(specs.kernelspecs).length > 0;
 
-  if (hasSpec()) {
-    return;
-  }
-
   await new Promise<void>((resolve) => {
+    let settled = false;
+
+    const finish = (): void => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearTimeout(timeout);
+      kernelSpecs.specsChanged.disconnect(onChange);
+      resolve();
+    };
+
     // specsChanged emits the freshly fetched specs, so use the emitted
     // payload instead of re-reading the manager's mutable specs property
     function onChange(
@@ -55,30 +62,35 @@ export const waitForKernelSpecs = async (
       specs: KernelSpec.ISpecModels | null,
     ): void {
       if (hasSpec(specs)) {
-        clearTimeout(timeout);
-        kernelSpecs.specsChanged.disconnect(onChange);
-        resolve();
+        finish();
       }
     }
 
+    // Arm the deadline and the listener before awaiting readiness, so a
+    // manager that never becomes ready (or whose readiness rejects) still
+    // falls back through this same timeout rather than hanging the caller.
     const timeout = setTimeout(() => {
-      kernelSpecs.specsChanged.disconnect(onChange);
       console.warn(
         `${logModule} No kernelspec registered after ${timeoutMs}ms; opening the notebook anyway (the kernel selection dialog may appear)`,
       );
-      resolve();
+      finish();
     }, timeoutMs);
 
     kernelSpecs.specsChanged.connect(onChange);
 
-    // Re-check after connecting so that a spec registered between the check
-    // above and the connect cannot be missed. This makes the wait correct by
-    // inspection instead of relying on the surrounding block staying free of
-    // awaits between the check and the connect.
+    // a spec may already be present, or arrive once the manager is ready; a
+    // rejected readiness is treated the same as the timeout fallback
     if (hasSpec()) {
-      clearTimeout(timeout);
-      kernelSpecs.specsChanged.disconnect(onChange);
-      resolve();
+      finish();
     }
+    void kernelSpecs.ready
+      .then(() => {
+        if (hasSpec()) {
+          finish();
+        }
+      })
+      .catch(() => {
+        // fall through to the bounded wait / timeout above
+      });
   });
 };

@@ -23,6 +23,7 @@ const pyodideSpecs = {
 
 const createManager = (
   initialSpecs: KernelSpecWaitTarget["specs"],
+  ready: Promise<void> = Promise.resolve(),
 ): {
   manager: KernelSpecWaitTarget;
   emitSpecs: (specs: KernelSpecWaitTarget["specs"]) => void;
@@ -31,7 +32,7 @@ const createManager = (
   const callbacks = new Set<SpecsChangedCallback>();
 
   const manager = {
-    ready: Promise.resolve(),
+    ready,
     specs: initialSpecs,
     specsChanged: {
       connect: (callback: SpecsChangedCallback): boolean => {
@@ -136,6 +137,53 @@ describe("waitForKernelSpecs", () => {
     // the manager's mutable specs may be populated before the helper has a
     // chance to connect to the signal; the specs re-checks cover it
     const { manager, emitSpecs, connected } = createManager(null);
+
+    const wait = waitForKernelSpecs(manager);
+    emitSpecs(pyodideSpecs);
+
+    await wait;
+
+    expect(connected()).toBe(0);
+  });
+
+  it("falls back through the timeout when readiness rejects", async () => {
+    jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    const { manager, connected } = createManager(
+      null,
+      Promise.reject(new Error("kernelspec manager failed")),
+    );
+
+    const wait = waitForKernelSpecs(manager, 1_000);
+
+    await jest.advanceTimersByTimeAsync(1_000);
+    await wait;
+
+    expect(connected()).toBe(0);
+    expect(console.warn).toHaveBeenCalled();
+  });
+
+  it("still gives up when the manager never becomes ready", async () => {
+    jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    // a readiness promise that never settles must not hang the caller
+    const { manager, connected } = createManager(
+      null,
+      new Promise<void>(() => {}),
+    );
+
+    const wait = waitForKernelSpecs(manager, 1_000);
+
+    await jest.advanceTimersByTimeAsync(1_000);
+    await wait;
+
+    expect(connected()).toBe(0);
+    expect(console.warn).toHaveBeenCalled();
+  });
+
+  it("resolves on a late spec even after readiness rejected", async () => {
+    const { manager, emitSpecs, connected } = createManager(
+      null,
+      Promise.reject(new Error("kernelspec manager failed")),
+    );
 
     const wait = waitForKernelSpecs(manager);
     emitSpecs(pyodideSpecs);
