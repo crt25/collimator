@@ -57,10 +57,7 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        // Clone synchronously: scratch-blocks may still reference the
-        // dragged block's xml after this handler returns. A macrotask is
-        // required for the deferral - shareBlocksToTarget completes on the
-        // microtask queue, possibly after several hops.
+        // Clone the blocks so we can check them asynchronously
         const clonedXml = xml.cloneNode(true) as Element;
 
         setTimeout(() => {

@@ -161,9 +161,13 @@ export class ScratchEditorPage {
   }
 
   getSpriteSelectorItem(spriteName: string) {
+    // Match on the sprite-name element with an exact text match: a plain
+    // `hasText` filter matches substrings, so a name that is a prefix of
+    // another sprite's name (e.g. "Sprite1" vs "Sprite10") would ambiguously
+    // select the wrong item.
     return this.page
       .locator('[class*="sprite-selector-item"]')
-      .filter({ hasText: spriteName })
+      .filter({ has: this.page.getByText(spriteName, { exact: true }) })
       .first();
   }
 
