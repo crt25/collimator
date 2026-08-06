@@ -4,7 +4,6 @@ import { FilterCriterion } from "./filter";
 import { ChartSplit, SplitType } from "./chartjs-plugins";
 
 export enum AnalyzerStateActionType {
-  setSelectedTask,
   setSelectedSubTask,
   setFilters,
   addSplit,
@@ -14,11 +13,6 @@ export enum AnalyzerStateActionType {
   setAutomaticGrouping,
   setAnalysesSelectedForComparison,
   setSelectedAnalyses,
-}
-
-export interface SetSelectedTaskAction {
-  type: AnalyzerStateActionType.setSelectedTask;
-  selectedTaskId: number;
 }
 
 export interface SetSelectedSubTaskAction {
@@ -64,7 +58,6 @@ export interface SetSelectedAnalysesAction {
 }
 
 export type AnalyzerStateAction =
-  | SetSelectedTaskAction
   | SetSelectedSubTaskAction
   | SetFiltersAction
   | AddSplitAction
@@ -75,7 +68,6 @@ export type AnalyzerStateAction =
   | SetSelectedAnalysesAction;
 
 export interface AnalyzerState {
-  selectedTask: number | undefined;
   selectedSubTaskId: string | undefined;
   isAutomaticGrouping: boolean;
   xAxis: AxesCriterionType;
@@ -137,8 +129,6 @@ export const analyzerStateReducer = (
   action: AnalyzerStateAction,
 ): AnalyzerState => {
   switch (action.type) {
-    case AnalyzerStateActionType.setSelectedTask:
-      return { ...state, selectedTask: action.selectedTaskId };
     case AnalyzerStateActionType.setSelectedSubTask:
       return { ...state, selectedSubTaskId: action.selectedSubTaskId };
     case AnalyzerStateActionType.setFilters:
