@@ -51,21 +51,29 @@ export const loadTask = async (
     window.dispatchEvent(event);
   }, url);
 
-  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
+  // a solving student's load also posts a postTaskStarted activity, so match
+  // the loadTask response by method rather than assuming it is the only message
+  await pwPage.waitForFunction(() =>
+    window.postedMessages.some(
+      (m) => (m.message as { method?: string }).method === "loadTask",
+    ),
+  );
 
   const messages = await pwPage.evaluate(() => window.postedMessages);
 
-  expect(messages).toHaveLength(1);
+  const loadTaskResponse = messages.find(
+    (m) => (m.message as { method?: string }).method === "loadTask",
+  )?.message;
 
   if (expectError) {
-    expect(messages[0].message).toMatchObject({
+    expect(loadTaskResponse).toMatchObject({
       jsonrpc: "2.0",
       id: 0,
       method: "loadTask",
       error: expect.any(String),
     });
   } else {
-    expect(messages[0].message).toEqual({
+    expect(loadTaskResponse).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "loadTask",

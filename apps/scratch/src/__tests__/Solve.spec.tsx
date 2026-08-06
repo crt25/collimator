@@ -100,13 +100,21 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() => window.postedMessages.length > 1);
+    await page.waitForFunction(() =>
+      window.postedMessages.some(
+        (m) =>
+          (m.message as { method?: RpcMethodName }).method === "getSubmission",
+      ),
+    );
 
     const messages = await page.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(2);
+    const submissionMessage = messages.find(
+      (m) =>
+        (m.message as { method?: RpcMethodName }).method === "getSubmission",
+    );
 
-    expect(messages[1].message).toEqual({
+    expect(submissionMessage!.message).toEqual({
       jsonrpc: "2.0",
       id: 1,
       method: "getSubmission",
@@ -457,13 +465,21 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() => window.postedMessages.length > 3);
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some(
+        (m) =>
+          (m.message as { method?: RpcMethodName }).method === "getSubmission",
+      ),
+    );
 
     const messages = await pwPage.evaluate(() => window.postedMessages);
 
-    expect(messages).toHaveLength(4);
+    const submissionMessage = messages.find(
+      (m) =>
+        (m.message as { method?: RpcMethodName }).method === "getSubmission",
+    );
 
-    expect(messages[3].message).toEqual({
+    expect(submissionMessage!.message).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",
@@ -479,6 +495,28 @@ test.describe("/solve", () => {
         passedTests: [],
       },
     });
+  });
+
+  test("reports a task-started activity once the task is loaded", async ({
+    page: pwPage,
+  }) => {
+    await TestTaskPage.load(pwPage);
+
+    // loading the task for a solving student pushes postTaskStarted to the
+    // platform, carrying the project as it was opened (CRT-454)
+    await pwPage.waitForFunction(() =>
+      window.postedMessages.some((m) => {
+        const message = m.message as {
+          method?: string;
+          params?: { solution?: unknown };
+        };
+
+        return (
+          message.method === "postTaskStarted" &&
+          message.params?.solution !== undefined
+        );
+      }),
+    );
   });
 
   test("records a stop-all student activity when the stop button is pressed", async ({
@@ -574,7 +612,13 @@ test.describe("/solve", () => {
   test("resets to the initial state when running", async ({ page: pwPage }) => {
     const { page } = await AssertionTaskPage.load(pwPage);
 
-    expect(await pwPage.evaluate(() => window.postedMessages)).toHaveLength(1);
+    // nothing beyond the load has been reported before the student acts: the
+    // loadTask response and the postTaskStarted activity it triggers
+    const initialMessages = await pwPage.evaluate(() => window.postedMessages);
+    const initialMethods = initialMessages.map(
+      (m) => (m.message as { method?: RpcMethodName }).method,
+    );
+    expect(initialMethods.sort()).toEqual(["loadTask", "postTaskStarted"]);
 
     // solve task
     for (let i = 0; i < 5; i++) {

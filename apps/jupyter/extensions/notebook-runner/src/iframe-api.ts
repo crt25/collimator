@@ -109,6 +109,10 @@ export class EmbeddedPythonCallbacks {
 
   private readonly beforeReloadCallbacks: Array<() => Promise<void>> = [];
 
+  // set by setupIframeApi once the platform sender exists; the RPC handlers
+  // that use it only run after the platform's handshake
+  private sendRequest: AppCrtIframeApi["sendRequest"] | null = null;
+
   constructor(
     private readonly mode: Mode,
     private readonly app: JupyterFrontEnd,
@@ -117,8 +121,33 @@ export class EmbeddedPythonCallbacks {
     private readonly settingRegistry: ISettingRegistry,
   ) {}
 
+  setSendRequest(sendRequest: AppCrtIframeApi["sendRequest"]): void {
+    this.sendRequest = sendRequest;
+  }
+
   addBeforeReloadCallback(callback: () => Promise<void>): void {
     this.beforeReloadCallbacks.push(callback);
+  }
+
+  /**
+   * Reports that a solving student opened the task, carrying the student
+   * notebook as it was opened (the raw file, without running otter grading -
+   * unlike getSubmission). The platform turns it into a TASK_STARTED activity.
+   */
+  private async emitTaskStarted(): Promise<void> {
+    if (this.mode !== Mode.solve || this.sendRequest === null) {
+      return;
+    }
+
+    try {
+      const solution = await this.getFileContents(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+      );
+
+      await this.sendRequest("postTaskStarted", { solution });
+    } catch (error) {
+      console.warn(`${logModule} Failed to report the task start`, error);
+    }
   }
 
   async getHeight(): Promise<number> {
@@ -283,6 +312,7 @@ export class EmbeddedPythonCallbacks {
 
       if (!isLoadTaskWithTask(request.params)) {
         await this.openTaskNotebook(this.notebookToOpen);
+        await this.emitTaskStarted();
         return undefined;
       }
 
@@ -292,6 +322,8 @@ export class EmbeddedPythonCallbacks {
       await this.closeAllDocuments();
 
       await this.writeCrtInternalTask(importedFiles);
+
+      await this.emitTaskStarted();
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -379,6 +411,8 @@ export class EmbeddedPythonCallbacks {
       );
 
       await this.openTaskNotebook(this.notebookToOpen);
+
+      await this.emitTaskStarted();
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -391,6 +425,9 @@ export class EmbeddedPythonCallbacks {
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
     await this.setJupyterLocale(request.params);
     await this.openTaskNotebook(this.notebookToOpen);
+
+    // the task is re-presented in the new language: record a fresh start
+    await this.emitTaskStarted();
     return undefined;
   }
 
@@ -758,7 +795,7 @@ export class EmbeddedPythonCallbacks {
 export const setupIframeApi = (
   callbacks: EmbeddedPythonCallbacks,
 ): AppCrtIframeApi => {
-  return initIframeApi({
+  const platform = initIframeApi({
     getHeight: callbacks.getHeight.bind(callbacks),
     getSubmission: callbacks.getSubmission.bind(callbacks),
     getTask: callbacks.getTask.bind(callbacks),
@@ -768,4 +805,8 @@ export const setupIframeApi = (
     importTask: callbacks.importTask.bind(callbacks),
     exportTask: callbacks.exportTask.bind(callbacks),
   });
+
+  callbacks.setSendRequest(platform.sendRequest.bind(platform));
+
+  return platform;
 };

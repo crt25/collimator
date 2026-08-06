@@ -77,6 +77,19 @@ const Task = ({
     [trackStudentActivity, session.id, task.id],
   );
 
+  const onTaskStarted = useCallback(
+    (solution: Blob) => {
+      trackStudentActivity({
+        type: StudentActivityType.TASK_STARTED,
+        sessionId: session.id,
+        taskId: task.id,
+        appActivity: null,
+        solution,
+      });
+    },
+    [trackStudentActivity, session.id, task.id],
+  );
+
   const onStudentAppActivity = useCallback(
     (action: string, data: Record<string, unknown>, solution: Blob) => {
       trackStudentActivity({
@@ -142,6 +155,7 @@ const Task = ({
         onSolutionRun={onSolutionRun}
         onStudentAppActivity={onStudentAppActivity}
         onReceiveTaskSolution={onReceiveTaskSolution}
+        onTaskStarted={onTaskStarted}
         onReceiveMessage={onReceiveMessage}
       />
     </TaskWrapper>
