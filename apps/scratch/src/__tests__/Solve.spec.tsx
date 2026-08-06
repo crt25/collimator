@@ -231,6 +231,49 @@ test.describe("/solve", () => {
     await expect(moveSteps).toHaveText((moveStepsAllowedCount - 2).toString());
   });
 
+  test("cannot paste a stack containing a block at its usage limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
+
+    const stack = await page.createNewStack("motion_goto");
+    await page.appendNewBlockTo("motion_movesteps", stack);
+
+    for (let i = 1; i < moveStepsAllowedCount - 1; i++) {
+      await page.appendNewBlockTo(
+        "motion_movesteps",
+        page.taskBlocks.catActor.editableBlock,
+      );
+    }
+
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("1");
+
+    const blockCountBeforeAllowedPaste =
+      await page.blocksOfCurrentTarget.count();
+
+    await page.copyStack(stack);
+    await page.pasteStack();
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      blockCountBeforeAllowedPaste + 2,
+    );
+
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("0");
+
+    const blockCountBeforeRejectedPaste =
+      await page.blocksOfCurrentTarget.count();
+
+    await page.pasteStack();
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      blockCountBeforeRejectedPaste,
+    );
+
+    await expect(page.enabledBlockConfigButtons.moveSteps).toHaveText("0");
+  });
+
   test("removing student-added blocks increases the limit", async ({
     page: pwPage,
   }) => {

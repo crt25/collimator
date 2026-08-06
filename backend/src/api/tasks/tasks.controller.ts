@@ -31,9 +31,10 @@ import {
 } from "@nestjs/swagger";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import "multer";
-import { User, UserType } from "@prisma/client";
+import { Student, User, UserType } from "@prisma/client";
 import { JsonToObjectsInterceptor } from "src/utilities/json-to-object-interceptor";
 import { AuthenticatedUser } from "../authentication/authenticated-user.decorator";
+import { AuthenticatedStudent } from "../authentication/authenticated-student.decorator";
 import { NonUserRoles, Roles } from "../authentication/role.decorator";
 import { AuthorizationService } from "../authorization/authorization.service";
 import { ErrorCode, ErrorCodeDto } from "../exceptions/error-codes";
@@ -171,10 +172,22 @@ export class TasksController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOne(
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("id", ParseIntPipe) id: TaskId,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskDto> {
+    const isAuthorized = await this.authorizationService.canViewTask(
+      user,
+      student,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrow(id, includeSoftDelete),
       // todo: probably needs to include soft delete too
@@ -199,10 +212,22 @@ export class TasksController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async findOneWithReferenceSolutions(
+    @AuthenticatedUser() user: User | null,
     @Param("id", ParseIntPipe) id: TaskId,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<ExistingTaskWithReferenceSolutionsDto> {
+    // students are already excluded by the role guard above
+    const isAuthorized = await this.authorizationService.canViewTask(
+      user,
+      null,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const [task, isInUse] = await Promise.all([
       this.tasksService.findByIdOrThrowWithReferenceSolutions(
         id,
@@ -236,10 +261,22 @@ export class TasksController {
   @ApiForbiddenResponse()
   @ApiNotFoundResponse()
   async downloadOne(
+    @AuthenticatedUser() user: User | null,
+    @AuthenticatedStudent() student: Student | null,
     @Param("id", ParseIntPipe) id: TaskId,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
   ): Promise<StreamableFile> {
+    const isAuthorized = await this.authorizationService.canViewTask(
+      user,
+      student,
+      id,
+    );
+
+    if (!isAuthorized) {
+      throw new ForbiddenException();
+    }
+
     const task = await this.tasksService.downloadByIdOrThrow(
       id,
       includeSoftDelete,

@@ -5,6 +5,11 @@ import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
 
 const latestAstVersion = AstVersion.v1;
+const activityCreateAttempts = 2;
+
+export type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
+  include: { solution: true };
+}>;
 
 export type SolutionInput = Pick<
   Prisma.SolutionUncheckedCreateInput,
@@ -20,8 +25,9 @@ export type AppActivityInput = Omit<
 
 export type StudentActivityInput = Omit<
   Prisma.StudentActivityUncheckedCreateInput,
-  "solutionHash" | "appActivity" | "studentId"
+  "solutionHash" | "appActivity" | "studentId" | "happenedAtCounter"
 > & {
+  happenedAtCounter: number;
   appActivity: AppActivityInput | null;
 };
 
@@ -40,20 +46,11 @@ export class StudentActivityService {
       solution: SolutionInput;
     }[],
   ): Promise<StudentActivity[]> {
-    const results = await this.prisma.$transaction(
-      activityWithSolution.map(({ activity, solution }) =>
-        this.prisma.studentActivity.create({
-          data: this.buildActivityInput(student, activity, solution),
-          include: { solution: true },
-        }),
-      ),
-    );
+    const results: StudentActivity[] = [];
 
-    results.forEach((result) =>
-      // do not wait for the promise to resolve
-      // this will happen in the background
-      this.analysisService.performAnalysis(result.solution, latestAstVersion),
-    );
+    for (const { activity, solution } of activityWithSolution) {
+      results.push(await this.create(student, activity, solution));
+    }
 
     return results;
   }
@@ -63,16 +60,58 @@ export class StudentActivityService {
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    const result = await this.prisma.studentActivity.create({
-      data: this.buildActivityInput(student, activity, solution),
-      include: { solution: true },
-    });
+    const data = this.buildActivityInput(student, activity, solution);
 
-    // do not wait for the promise to resolve
-    // this will happen in the background
-    this.analysisService.performAnalysis(result.solution, latestAstVersion);
+    for (let attempt = 1; ; attempt++) {
+      try {
+        const result = await this.prisma.studentActivity.create({
+          data,
+          include: { solution: true },
+        });
 
-    return result;
+        // do not wait for the promise to resolve
+        // this will happen in the background
+        this.analysisService.performAnalysis(result.solution, latestAstVersion);
+
+        return result;
+      } catch (error) {
+        if (
+          !(
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+          )
+        ) {
+          throw error;
+        }
+
+        // the client may replay an activity after a timeout, reload, or concurrent requests
+        // treat the activity's unique key as an idempotency key
+        // look it up to ensure that an unrelated unique violation is not suppressed
+        const existingActivity = await this.prisma.studentActivity.findUnique({
+          where: {
+            uniqueStudentActivityPerTypeAndTime: {
+              studentId: student.id,
+              type: activity.type,
+              happenedAt: activity.happenedAt,
+              happenedAtCounter: activity.happenedAtCounter,
+            },
+          },
+          include: { solution: true },
+        });
+
+        if (existingActivity) {
+          // A replay may contain different solution data, but comparing or replacing it would complicate replay
+          // handling and could trigger analysis more than once
+          return existingActivity;
+        }
+
+        // connectOrCreate can race when another request creates the same solution
+        // once that request commits, one retry can connect to the solution instead
+        if (attempt === activityCreateAttempts) {
+          throw error;
+        }
+      }
+    }
   }
 
   private buildActivityInput(
