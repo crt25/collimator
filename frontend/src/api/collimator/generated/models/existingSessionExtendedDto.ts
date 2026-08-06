@@ -8,6 +8,7 @@
 import type { SessionStatus } from "./sessionStatus";
 import type { SessionClassDto } from "./sessionClassDto";
 import type { SessionTaskDto } from "./sessionTaskDto";
+import type { SessionStudentDto } from "./sessionStudentDto";
 
 export interface ExistingSessionExtendedDto {
   /** The session's unique identifier, a positive integer. */
@@ -26,6 +27,6 @@ export interface ExistingSessionExtendedDto {
   tasks: SessionTaskDto[];
   /** Indicates whether the session has any students. */
   hasStudents: boolean;
-  /** The ids of the students that joined this session anonymously, including those that have not started any task yet. */
-  anonymousStudentIds: number[];
+  /** The students taking part in this session, including those that have not started any task yet: for an anonymous session everyone who joined it (without a pseudonym), for a class-roster session the enrolled students. */
+  students: SessionStudentDto[];
 }

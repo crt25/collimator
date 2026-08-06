@@ -2,8 +2,10 @@ import {
   ExistingSessionExtendedDto,
   SessionStatus,
 } from "../../generated/models";
+import { fromDtos } from "../../hooks/helpers";
 import { ClassProperties } from "../class-properties";
 import { SessionClass } from "./session-class";
+import { SessionStudent } from "./session-student";
 import { SessionTask } from "./session-task";
 
 export class ExistingSessionExtended {
@@ -16,7 +18,7 @@ export class ExistingSessionExtended {
   readonly status: SessionStatus;
   readonly tasks: SessionTask[];
   readonly hasStudents: boolean;
-  readonly anonymousStudentIds: number[];
+  readonly students: SessionStudent[];
 
   protected constructor({
     id,
@@ -28,7 +30,7 @@ export class ExistingSessionExtended {
     status,
     tasks,
     hasStudents,
-    anonymousStudentIds,
+    students,
   }: ClassProperties<ExistingSessionExtended>) {
     this.id = id;
     this.title = title;
@@ -39,7 +41,7 @@ export class ExistingSessionExtended {
     this.status = status;
     this.tasks = tasks;
     this.hasStudents = hasStudents;
-    this.anonymousStudentIds = anonymousStudentIds;
+    this.students = students;
   }
 
   equals(other?: ExistingSessionExtended): boolean {
@@ -53,9 +55,9 @@ export class ExistingSessionExtended {
       this.status === other.status &&
       this.tasks.length === other.tasks.length &&
       this.hasStudents === other.hasStudents &&
-      this.anonymousStudentIds.length === other.anonymousStudentIds.length &&
-      this.anonymousStudentIds.every(
-        (id, idx) => id === other.anonymousStudentIds[idx],
+      this.students.length === other.students.length &&
+      this.students.every((student, idx) =>
+        student.equals(other.students[idx]),
       ) &&
       this.tasks.every((task, idx) => task.equals(other.tasks[idx]))
     );
@@ -67,7 +69,7 @@ export class ExistingSessionExtended {
       tasks: dto.tasks.map(SessionTask.fromDto),
       klass: SessionClass.fromDto(dto.class),
       hasStudents: dto.hasStudents,
-      anonymousStudentIds: dto.anonymousStudentIds,
+      students: fromDtos(SessionStudent, dto.students),
     });
   }
 }

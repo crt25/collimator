@@ -41,6 +41,12 @@ interface StudentTaskProgress {
   taskProgress: TaskProgress;
 }
 
+export interface SessionStudent {
+  studentId: number;
+  pseudonym: Uint8Array | null;
+  keyPairId: number | null;
+}
+
 @Injectable()
 export class SessionsService {
   private readonly logger = new Logger(SessionsService.name);
@@ -268,18 +274,38 @@ export class SessionsService {
   }
 
   /**
-   * The students that joined this lesson anonymously. This is what makes a
-   * participant of an anonymous lesson visible to the teacher before they
-   * have started a task - solutions and analyses only exist afterwards.
+   * The students taking part in this lesson: for an anonymous lesson everyone
+   * who joined it, for a class-roster lesson the enrolled students. This is
+   * what makes a participant visible to the teacher before they have started
+   * a task - solutions and analyses only exist afterwards. Participants of an
+   * anonymous lesson carry no pseudonym: they are never resolved to an
+   * identity, even when they are also enrolled in the class (CRT-439).
    */
-  async getAnonymousStudentIds(sessionId: SessionId): Promise<number[]> {
-    const students = await this.prisma.anonymousStudent.findMany({
-      where: { sessionId, deletedAt: null },
-      select: { studentId: true },
-      orderBy: { studentId: "asc" },
+  async getSessionStudents(sessionId: SessionId): Promise<SessionStudent[]> {
+    const session = await this.prisma.session.findUniqueOrThrow({
+      where: { id: sessionId },
+      select: { isAnonymous: true, classId: true },
     });
 
-    return students.map(({ studentId }) => studentId);
+    if (session.isAnonymous) {
+      const joined = await this.prisma.anonymousStudent.findMany({
+        where: { sessionId, deletedAt: null },
+        select: { studentId: true },
+        orderBy: { studentId: "asc" },
+      });
+
+      return joined.map(({ studentId }) => ({
+        studentId,
+        pseudonym: null,
+        keyPairId: null,
+      }));
+    }
+
+    return this.prisma.authenticatedStudent.findMany({
+      where: { classId: session.classId, deletedAt: null },
+      select: { studentId: true, pseudonym: true, keyPairId: true },
+      orderBy: { studentId: "asc" },
+    });
   }
 
   async changeStatusByIdAndClass(

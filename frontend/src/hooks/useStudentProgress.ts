@@ -13,50 +13,39 @@ type AnonymousStudent = {
 export type ResolvedStudent = ClassStudent | AnonymousStudent;
 
 export const useStudentProgress = (
-  klass: ExistingClassExtended | undefined,
   session: ExistingSessionExtended | undefined,
   activeStudentIds: number[],
 ): ResolvedStudent[] =>
   useMemo(() => {
-    if (!klass || !session) {
+    if (!session) {
       return [];
     }
 
-    // In an anonymous lesson students participate with ad-hoc anonymous
-    // identities, so the class roster is not part of the lesson: seeding the
-    // list with it would show the real class members (with their tasks
-    // eternally "not started") next to the anonymous participants, and
-    // resolving ids against the roster would reveal identities. Every
-    // participant is shown with an ad-hoc identity instead, even if they
-    // happen to also be a registered class member (CRT-439).
-    if (session.isAnonymous) {
-      // seed with everyone who joined the lesson, so a student is visible
-      // before they start their first task (CRT-454)
-      return [
-        ...new Set([...session.anonymousStudentIds, ...activeStudentIds]),
-      ].map<ResolvedStudent>((studentId) => ({
-        isAnonymous: true,
-        studentId,
-      }));
-    }
-
+    // The lesson's own students seed the list, so a participant is visible
+    // before they start their first task (CRT-454). A participant without a
+    // pseudonym renders under an ad-hoc identity: the backend never resolves
+    // participants of an anonymous lesson to an identity, even when they are
+    // also enrolled in the class (CRT-439).
     const studentsById = new Map(
-      klass.students.map((student) => [student.studentId, student]),
+      session.students.map((student) => [student.studentId, student]),
     );
 
     const studentIds = [
       ...new Set([...studentsById.keys(), ...activeStudentIds]),
     ];
 
-    return studentIds.map<ResolvedStudent>(
-      (studentId) =>
-        studentsById.get(studentId) ??
-        ({
-          isAnonymous: true,
-          studentId,
-        } satisfies AnonymousStudent),
-    );
-  }, [klass, session, activeStudentIds]);
+    return studentIds.map<ResolvedStudent>((studentId) => {
+      const student = studentsById.get(studentId);
+
+      return student && student.pseudonym !== null
+        ? {
+            studentId,
+            pseudonym: student.pseudonym,
+            keyPairId: student.keyPairId,
+          }
+        : { isAnonymous: true, studentId };
+    });
+  }, [session, activeStudentIds]);
 
 export const useSessionStudents = (
   classId: number,
@@ -81,7 +70,7 @@ export const useSessionStudents = (
     isLoading: isLoadingSession,
   } = useClassSession(classId, sessionId);
 
-  const students = useStudentProgress(klass, session, activeStudentIds);
+  const students = useStudentProgress(session, activeStudentIds);
 
   return {
     klass,

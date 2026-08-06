@@ -17,6 +17,8 @@ import { downloadBlob } from "@/utilities/download";
 import { readSingleFileFromDisk } from "@/utilities/file-from-disk";
 import { useFileHash } from "@/hooks/useFileHash";
 import { useFetchLatestSolutionFile } from "@/api/collimator/hooks/solutions/useSolution";
+import { useTrackStudentActivity } from "@/api/collimator/hooks/student-activity/useTrackStudentActivity";
+import { StudentActivityType } from "@/api/collimator/generated/models";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BreadcrumbItem from "@/components/BreadcrumbItem";
 import { toastDuration, toaster } from "@/components/Toaster";
@@ -114,6 +116,38 @@ const SolveTaskPage = () => {
   useEffect(() => {
     intlRef.current = intl;
   });
+
+  // Same latest-ref pattern for activity tracking: its identity depends on
+  // the authentication options and must not rotate onAppAvailable either.
+  const [trackStudentActivity] = useTrackStudentActivity();
+  const trackStudentActivityRef = useRef(trackStudentActivity);
+  useEffect(() => {
+    trackStudentActivityRef.current = trackStudentActivity;
+  });
+
+  /**
+   * Records that the student opened the task, together with the solution the
+   * task was opened with (their latest work, or the pristine task when there
+   * is none) - the starting point when replaying their interactions
+   * (CRT-454).
+   */
+  const trackTaskStarted = useCallback(
+    (sessionId: number, taskId: number, solution: Blob) => {
+      trackStudentActivityRef
+        .current({
+          type: StudentActivityType.TASK_STARTED,
+          sessionId,
+          taskId,
+          appActivity: null,
+          solution,
+        })
+        .catch((error) =>
+          // the tracking hook re-queues failed activities on its own
+          console.error("Failed to track the task start", error),
+        );
+    },
+    [],
+  );
 
   const toggleSessionMenu = useCallback(() => {
     setShowSessionMenu((show) => !show);
@@ -257,6 +291,8 @@ const SolveTaskPage = () => {
             }),
           { intl, descriptor: taskMessages.cannotLoadSubmission },
         );
+
+        trackTaskStarted(session.id, task.id, solutionFile);
       } catch {
         if (stashedSolution !== null) {
           pendingSolution.current ??= stashed;
@@ -268,6 +304,9 @@ const SolveTaskPage = () => {
           task: taskFile,
           language: intl.locale as Language,
         });
+
+        // opened with the pristine task - the student's default solution
+        trackTaskStarted(session.id, task.id, taskFile);
       } finally {
         isScratchMutexAvailable.current = true;
       }

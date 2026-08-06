@@ -155,20 +155,20 @@ export class SessionsController {
       throw new ForbiddenException();
     }
 
-    const [session, hasStudents, anonymousStudentIds] = await Promise.all([
+    const [session, hasStudents, students] = await Promise.all([
       this.sessionsService.findByIdAndClassOrThrow(
         id,
         classId,
         includeSoftDelete,
       ),
       this.sessionsService.hasStudents(id),
-      this.sessionsService.getAnonymousStudentIds(id),
+      this.sessionsService.getSessionStudents(id),
     ]);
 
     return ExistingSessionExtendedDto.fromQueryResult({
       ...session,
       hasStudents,
-      anonymousStudentIds,
+      students,
     });
   }
 

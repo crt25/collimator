@@ -1,31 +1,15 @@
 import { renderHook } from "@testing-library/react";
 import {
-  ExistingClassExtendedDto,
   ExistingSessionExtendedDto,
   SessionStatus,
+  SessionStudentDto,
 } from "@/api/collimator/generated/models";
-import { ExistingClassExtended } from "@/api/collimator/models/classes/existing-class-extended";
 import { ExistingSessionExtended } from "@/api/collimator/models/sessions/existing-session-extended";
 import { useStudentProgress } from "@/hooks/useStudentProgress";
 
-const buildClass = (
-  students: {
-    studentId: number;
-    pseudonym: string;
-    keyPairId: number | null;
-  }[],
-): ExistingClassExtended =>
-  ExistingClassExtended.fromDto({
-    id: 1,
-    name: "a class",
-    teacher: { id: 2, name: "the teacher" },
-    sessions: [],
-    students,
-  } as unknown as ExistingClassExtendedDto);
-
 const buildSession = (
   isAnonymous: boolean,
-  anonymousStudentIds: number[],
+  students: SessionStudentDto[],
 ): ExistingSessionExtended =>
   ExistingSessionExtended.fromDto({
     id: 3,
@@ -36,27 +20,28 @@ const buildSession = (
     class: { id: 1, name: "a class" },
     status: SessionStatus.ONGOING,
     tasks: [],
-    hasStudents: anonymousStudentIds.length > 0,
-    anonymousStudentIds,
+    hasStudents: students.length > 0,
+    students,
   } as unknown as ExistingSessionExtendedDto);
 
 describe("useStudentProgress", () => {
   it("lists an anonymous student who joined without starting a task", () => {
-    const klass = buildClass([]);
-    const session = buildSession(true, [7]);
+    const session = buildSession(true, [
+      { studentId: 7, pseudonym: null, keyPairId: null },
+    ]);
 
-    const { result } = renderHook(() => useStudentProgress(klass, session, []));
+    const { result } = renderHook(() => useStudentProgress(session, []));
 
     expect(result.current).toEqual([{ isAnonymous: true, studentId: 7 }]);
   });
 
-  it("merges joined and active anonymous students without duplicates", () => {
-    const klass = buildClass([]);
-    const session = buildSession(true, [7, 8]);
+  it("merges joined and active students without duplicates", () => {
+    const session = buildSession(true, [
+      { studentId: 7, pseudonym: null, keyPairId: null },
+      { studentId: 8, pseudonym: null, keyPairId: null },
+    ]);
 
-    const { result } = renderHook(() =>
-      useStudentProgress(klass, session, [8, 9]),
-    );
+    const { result } = renderHook(() => useStudentProgress(session, [8, 9]));
 
     expect(result.current).toEqual([
       { isAnonymous: true, studentId: 7 },
@@ -65,28 +50,41 @@ describe("useStudentProgress", () => {
     ]);
   });
 
-  it("never resolves anonymous participants against the class roster", () => {
-    // CRT-439: even a registered class member participates in an anonymous
-    // lesson under an ad-hoc identity
-    const klass = buildClass([
-      { studentId: 7, pseudonym: "real-name", keyPairId: null },
+  it("resolves a student with a pseudonym to their identity", () => {
+    const session = buildSession(false, [
+      { studentId: 4, pseudonym: "cGxhaW4=", keyPairId: 11 },
     ]);
-    const session = buildSession(true, [7]);
 
-    const { result } = renderHook(() => useStudentProgress(klass, session, []));
+    const { result } = renderHook(() => useStudentProgress(session, []));
+
+    expect(result.current).toEqual([
+      { studentId: 4, pseudonym: "cGxhaW4=", keyPairId: 11 },
+    ]);
+  });
+
+  it("renders a participant without a pseudonym anonymously", () => {
+    // CRT-439: the backend never sends a pseudonym for participants of an
+    // anonymous lesson, even for registered class members - such a student
+    // must render under an ad-hoc identity
+    const session = buildSession(true, [
+      { studentId: 7, pseudonym: null, keyPairId: null },
+    ]);
+
+    const { result } = renderHook(() => useStudentProgress(session, [7]));
 
     expect(result.current).toEqual([{ isAnonymous: true, studentId: 7 }]);
   });
 
-  it("seeds a class-roster lesson from the roster", () => {
-    const klass = buildClass([
-      { studentId: 4, pseudonym: "enrolled", keyPairId: null },
+  it("falls back to an ad-hoc identity for an active student the lesson does not know", () => {
+    const session = buildSession(false, [
+      { studentId: 4, pseudonym: "cGxhaW4=", keyPairId: 11 },
     ]);
-    const session = buildSession(false, []);
 
-    const { result } = renderHook(() => useStudentProgress(klass, session, []));
+    const { result } = renderHook(() => useStudentProgress(session, [5]));
 
-    expect(result.current).toHaveLength(1);
-    expect(result.current[0]).toMatchObject({ studentId: 4 });
+    expect(result.current).toEqual([
+      { studentId: 4, pseudonym: "cGxhaW4=", keyPairId: 11 },
+      { isAnonymous: true, studentId: 5 },
+    ]);
   });
 });

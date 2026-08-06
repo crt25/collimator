@@ -17,12 +17,13 @@ jest.mock("src/api/authentication/helpers.ts", () => ({
   getTokenFromExecutionContext: jest.fn(() => adminUserToken),
 }));
 
-// Anonymous students joining a lesson are recorded (AnonymousStudent), but the
-// teacher's progress view derived its participant list from solutions and
+// The teacher's progress view derived its participant list from solutions and
 // analyses alone, so a student who joined without starting a task was
-// invisible (CRT-454). The lesson detail now exposes the joined anonymous
-// participants so the view can list them immediately.
-describe("Session anonymous participants (e2e)", () => {
+// invisible (CRT-454). The lesson detail now exposes its students uniformly,
+// like the class does: for an anonymous lesson everyone who joined (with no
+// pseudonym - anonymous participants are never resolved to an identity,
+// CRT-439), and for a class-roster lesson the enrolled students.
+describe("Session students (e2e)", () => {
   let app: INestApplication;
 
   const classId = 2201;
@@ -53,10 +54,12 @@ describe("Session anonymous participants (e2e)", () => {
 
     const response = await getSession();
 
-    expect(response.body.anonymousStudentIds).toEqual([student.id]);
+    expect(response.body.students).toEqual([
+      { studentId: student.id, pseudonym: null, keyPairId: null },
+    ]);
   });
 
-  it("returns no anonymous participants for a lesson nobody joined", async () => {
+  it("lists no students for a lesson nobody joined", async () => {
     await createSessionWithId(app, {
       id: sessionId,
       classId,
@@ -65,10 +68,10 @@ describe("Session anonymous participants (e2e)", () => {
 
     const response = await getSession();
 
-    expect(response.body.anonymousStudentIds).toEqual([]);
+    expect(response.body.students).toEqual([]);
   });
 
-  it("returns no anonymous participants for a class-roster lesson", async () => {
+  it("lists the enrolled students of a class-roster lesson", async () => {
     await createSessionWithId(app, {
       id: sessionId,
       classId,
@@ -79,7 +82,32 @@ describe("Session anonymous participants (e2e)", () => {
 
     const response = await getSession();
 
-    expect(response.body.anonymousStudentIds).toEqual([]);
+    expect(response.body.students).toEqual([
+      {
+        studentId: student.id,
+        pseudonym: Buffer.from(`pseudonym-${student.id}`).toString("base64"),
+        keyPairId: null,
+      },
+    ]);
+  });
+
+  it("never resolves anonymous participants against the roster", async () => {
+    // CRT-439: a registered class member participating in an anonymous lesson
+    // must still appear without an identity
+    await createSessionWithId(app, {
+      id: sessionId,
+      classId,
+      isAnonymous: true,
+    });
+    const student = await createStudent(app, { id: 2503 });
+    await createAuthenticatedStudent(app, { studentId: student.id, classId });
+    await createAnonymousStudent(app, { studentId: student.id, sessionId });
+
+    const response = await getSession();
+
+    expect(response.body.students).toEqual([
+      { studentId: student.id, pseudonym: null, keyPairId: null },
+    ]);
   });
 
   it("omits an anonymous student who left (soft-deleted)", async () => {
@@ -88,9 +116,9 @@ describe("Session anonymous participants (e2e)", () => {
       classId,
       isAnonymous: true,
     });
-    const staying = await createStudent(app, { id: 2503 });
+    const staying = await createStudent(app, { id: 2504 });
     await createAnonymousStudent(app, { studentId: staying.id, sessionId });
-    const leaving = await createStudent(app, { id: 2504 });
+    const leaving = await createStudent(app, { id: 2505 });
     await createAnonymousStudent(app, { studentId: leaving.id, sessionId });
 
     const prisma = app.get(PrismaService);
@@ -101,6 +129,8 @@ describe("Session anonymous participants (e2e)", () => {
 
     const response = await getSession();
 
-    expect(response.body.anonymousStudentIds).toEqual([staying.id]);
+    expect(response.body.students).toEqual([
+      { studentId: staying.id, pseudonym: null, keyPairId: null },
+    ]);
   });
 });
