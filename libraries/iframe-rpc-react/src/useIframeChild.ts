@@ -36,7 +36,9 @@ export const useIframeChild = (
   iframeRef: (node: HTMLIFrameElement | null) => void;
 } => {
   const [iframe, setIframe] = useState<HTMLIFrameElement | null>(null);
-  const isIFrameLoaded = useRef<boolean>(false);
+  // track which iframe loaded because a replaced iframe may emit a late load event, which must not mark the new iframe as ready
+  const currentIframe = useRef<HTMLIFrameElement | null>(null);
+  const loadedIframe = useRef<HTMLIFrameElement | null>(null);
 
   const crtPlatform = useRef<PlatformCrtIframeApi>(
     new PlatformCrtIframeApi(handleRequest),
@@ -63,6 +65,10 @@ export const useIframeChild = (
   useEffect(() => {
     if (iframe) {
       const callback = async (): Promise<void> => {
+        if (currentIframe.current !== iframe) {
+          return;
+        }
+
         if (!iframe.contentWindow) {
           throw new Error(
             `After iframe load, contentWindow is not available: ${iframe.src}`,
@@ -72,14 +78,22 @@ export const useIframeChild = (
         // finish configuring the API
         const targetOrigin = new URL(iframe.src).origin;
         crtPlatform.current.setOrigin(targetOrigin);
-        crtPlatform.current.setTarget(iframe.contentWindow);
+        // a load event represents a new document
+        // reject requests owned by the old document
+        crtPlatform.current.replaceTarget(iframe.contentWindow);
 
-        isIFrameLoaded.current = true;
+        loadedIframe.current = iframe;
 
-        await onAppAvailable(iframe, crtPlatform.current, true);
+        try {
+          await onAppAvailable(iframe, crtPlatform.current, true);
+        } catch (error) {
+          // DOM event dispatch does not observe a returned promise.
+          // handle the rejection here so failures do not become unhandled rejections
+          console.error("Failed to initialize embedded app", error);
+        }
       };
 
-      if (isIFrameLoaded.current) {
+      if (loadedIframe.current === iframe) {
         // If the iframe has already been loaded, call immediately.
         // This is necessary when switching content in the embedded app, as
         // the load event may have already fired when the iframe was loaded.
@@ -104,12 +118,9 @@ export const useIframeChild = (
   // this is only called once when the iframe is mounted
   // and once when it is unmounted due to the empty dependency array
   const getIframeRef = useCallback((node: HTMLIFrameElement | null) => {
-    if (node !== null) {
-      // A new node (e.g. EmbeddedApp keys the iframe by src, so a src change
-      // remounts it) has not loaded its document yet. Reset the flag so the
-      // already-loaded branch above cannot fire against the new node - and
-      // through the still-old RPC target - before its own load event.
-      isIFrameLoaded.current = false;
+    if (currentIframe.current !== node) {
+      currentIframe.current = node;
+      loadedIframe.current = null;
       setIframe(node);
     }
 

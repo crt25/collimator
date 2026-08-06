@@ -1,4 +1,7 @@
-import { PlatformCrtIframeApi } from "iframe-rpc/src";
+import {
+  IframeDocumentReplacedError,
+  PlatformCrtIframeApi,
+} from "iframe-rpc/src";
 
 // Across embedded-app reloads and remounts, a response can arrive for a
 // request id that has no pending resolver anymore: the app replays buffered
@@ -66,5 +69,39 @@ describe("IframeRpcApi late responses", () => {
       method: "getHeight",
       result: 42,
     });
+  });
+
+  it("rejects requests owned by a replaced iframe document", async () => {
+    const api = new PlatformCrtIframeApi(null);
+    const windowProxy = { postMessage: jest.fn() };
+
+    api.setOrigin("https://example.com");
+    api.setTarget(windowProxy as unknown as Window);
+
+    const pending = api.sendRequest("getHeight", undefined);
+
+    // contentWindow keeps the same WindowProxy across iframe navigation. The
+    // explicit replacement must still invalidate the old document's request.
+    api.replaceTarget(windowProxy as unknown as Window);
+
+    await expect(pending).rejects.toBeInstanceOf(IframeDocumentReplacedError);
+
+    const nextPending = api.sendRequest("getHeight", undefined);
+    const nextRequest = windowProxy.postMessage.mock.calls[1][0] as {
+      id: number;
+    };
+
+    await api.handleWindowMessage({
+      source: windowProxy,
+      origin: "https://example.com",
+      data: {
+        jsonrpc: "2.0",
+        id: nextRequest.id,
+        method: "getHeight",
+        result: 84,
+      },
+    } as unknown as MessageEvent);
+
+    await expect(nextPending).resolves.toMatchObject({ result: 84 });
   });
 });

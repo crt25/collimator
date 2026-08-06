@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import {
+  IframeDocumentReplacedError,
   useIframeChild,
   PlatformCrtIframeApi,
   Submission,
@@ -118,16 +119,27 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       api: PlatformCrtIframeApi,
       justLoaded: boolean,
     ) => {
-      const response = await api.sendRequest("getHeight", undefined);
+      try {
+        const response = await api.sendRequest("getHeight", undefined);
 
-      iframe.style.height = `${response.result}px`;
+        iframe.style.height = `${response.result}px`;
 
-      setLoadingState(LoadingState.available);
-      // await so a rejection from an async consumer callback surfaces here
-      // instead of becoming an unhandled rejection
-      await onAppAvailable?.(justLoaded);
+        setLoadingState(LoadingState.available);
+        await onAppAvailable?.(justLoaded);
+      } catch (error) {
+        // A subsequent load deliberately cancels initialization against the
+        // previous document. The new load callback owns recovery in that case.
+        if (error instanceof IframeDocumentReplacedError) {
+          return;
+        }
+
+        const appError =
+          error instanceof Error ? error : new Error(String(error));
+        setLoadingState(LoadingState.error);
+        onAppError?.(appError);
+      }
     },
-    [onAppAvailable],
+    [onAppAvailable, onAppError],
   );
 
   const { sendRequest, iframeRef } = useIframeChild(

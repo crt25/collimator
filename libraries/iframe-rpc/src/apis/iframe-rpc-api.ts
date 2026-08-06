@@ -35,6 +35,18 @@ export type HandleRequestMap<
 
 export type MessageTarget = Window | MessagePort | ServiceWorker;
 
+/**
+ * Raised when an iframe navigates before a request to its previous document
+ * can answer. Consumers may use this to distinguish an expected reload from
+ * an application/RPC failure.
+ */
+export class IframeDocumentReplacedError extends Error {
+  constructor() {
+    super("The iframe document was replaced before the request completed");
+    this.name = "IframeDocumentReplacedError";
+  }
+}
+
 export abstract class IframeRpcApi<
   /**
    * The methods this instance can call on the iframe.
@@ -63,13 +75,13 @@ export abstract class IframeRpcApi<
   /**
    * The error response this instance may send to the iframe as the response to a request.
    */
-  TOutgoingErrorResponse extends IframeRpcError<TIncomingMethods> =
-    IframeRpcError<TIncomingMethods>,
+  TOutgoingErrorResponse extends
+    IframeRpcError<TIncomingMethods> = IframeRpcError<TIncomingMethods>,
 > {
   private readonly pendingRequests: {
     [key: number]: {
       resolve: (response: TIncomingResult) => void;
-      reject: (error?: string) => void;
+      reject: (error: Error) => void;
     };
   } = {};
 
@@ -118,6 +130,22 @@ export abstract class IframeRpcApi<
   }
 
   setTarget(target: MessageTarget): void {
+    this.requestTarget = target;
+  }
+
+  replaceTarget(target: MessageTarget): void {
+    const pendingRequests = Object.entries(this.pendingRequests);
+
+    // clear first so a rejection handler cannot observe or settle stale state
+    for (const [id] of pendingRequests) {
+      delete this.pendingRequests[Number(id)];
+    }
+
+    const error = new IframeDocumentReplacedError();
+    for (const [, request] of pendingRequests) {
+      request.reject(error);
+    }
+
     this.requestTarget = target;
   }
 
@@ -191,9 +219,8 @@ export abstract class IframeRpcApi<
             },
           );
         },
-        reject: (error?: string): void => {
-          console.error("Error in response", error, request);
-          reject(new Error(error));
+        reject: (error: Error): void => {
+          reject(error);
         },
       };
 
@@ -215,7 +242,9 @@ export abstract class IframeRpcApi<
     }
 
     const message = event.data as
-      TIncomingRequests | TIncomingResult | TOutgoingErrorResponse;
+      | TIncomingRequests
+      | TIncomingResult
+      | TOutgoingErrorResponse;
 
     return this.isResponse(message)
       ? this.handleReponse(message)
@@ -243,7 +272,8 @@ export abstract class IframeRpcApi<
       const errorMessage =
         ("error" in response ? response.error : undefined) ?? "Unknown error";
 
-      handleResponse.reject(errorMessage);
+      console.error("Error in response", errorMessage, response);
+      handleResponse.reject(new Error(errorMessage));
     } else {
       handleResponse.resolve(response);
     }

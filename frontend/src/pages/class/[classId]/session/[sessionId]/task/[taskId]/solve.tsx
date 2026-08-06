@@ -1,7 +1,13 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Language, Submission, Test, ToastType } from "iframe-rpc-react/src";
+import {
+  IframeDocumentReplacedError,
+  Language,
+  Submission,
+  Test,
+  ToastType,
+} from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -95,13 +101,10 @@ const SolveTaskPage = () => {
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
-  const isScratchMutexAvailable = useRef(true);
-  // Bumped whenever a fresh iframe load supersedes any initialization still in
-  // flight. The mutex is only acquired after an await, so a pre-reload run can
-  // still be fetching when a reload re-opens the mutex and starts a newer run;
-  // each run captures the generation at entry and bails before sending if a
-  // newer one has started, so a stale (older) solution cannot overwrite the
-  // fresher reload (CRT-464 quick switches).
+  const activeInitialization = useRef<number | null>(null);
+  const isSubmitting = useRef(false);
+  // Each initialization supersedes the previous one. This prevents an older
+  // backend fetch from loading stale data after a reload started a newer run.
   const initializationGeneration = useRef(0);
   // The freshest solution the embedded app has pushed up (e.g. the auto-save
   // triggered right before a language change reloads the iframe).
@@ -184,11 +187,15 @@ const SolveTaskPage = () => {
   );
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
+    if (
+      !embeddedApp.current ||
+      activeInitialization.current !== null ||
+      isSubmitting.current
+    ) {
       return;
     }
 
-    isScratchMutexAvailable.current = false;
+    isSubmitting.current = true;
 
     try {
       if (!session || !task) {
@@ -209,55 +216,51 @@ const SolveTaskPage = () => {
 
       setSaveError(false);
     } catch (error) {
+      if (error instanceof IframeDocumentReplacedError) {
+        return;
+      }
+
       console.error("Failed to submit solution with", error);
       setSaveError(true);
     } finally {
-      isScratchMutexAvailable.current = true;
+      isSubmitting.current = false;
     }
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
     if (embeddedApp.current && wasInitialized.current) {
-      embeddedApp.current.sendRequest("setLocale", intl.locale as Language);
+      void embeddedApp.current
+        .sendRequest("setLocale", intl.locale as Language)
+        .catch((error: unknown) => {
+          // jupyter applies the locale by navigating itself
+          // the following load cancels this request because the old document cannot reply
+          if (!(error instanceof IframeDocumentReplacedError)) {
+            console.error("Failed to set embedded app locale", error);
+          }
+        });
     }
   }, [intl.locale]);
 
   const onAppAvailable = useCallback(
-    async (justLoaded: boolean = false) => {
-      // When the iframe just (re)loaded - e.g. the Jupyter app navigates itself
-      // to apply a locale - any request still in flight went to a document that
-      // no longer exists and can never settle, so the mutex it holds must not
-      // stay locked: it would block every future load (CRT-464).
-      if (justLoaded) {
-        isScratchMutexAvailable.current = true;
-        // this reload supersedes any initialization still in flight
-        initializationGeneration.current += 1;
-      }
-
-      // captured at entry; if a newer reload bumps the generation while we are
-      // awaiting below, this run must not send its (now stale) solution
-      const generation = initializationGeneration.current;
-
-      if (
-        embeddedApp.current &&
-        taskFile &&
-        session &&
-        task &&
-        isScratchMutexAvailable.current
-      ) {
+    async () => {
+      if (embeddedApp.current && taskFile && session && task) {
+        const generation = ++initializationGeneration.current;
+        activeInitialization.current = generation;
         wasInitialized.current = true;
 
         const intl = intlRef.current;
 
         // Prefer a solution stashed just before a reload (it includes changes
         // that may not have reached the backend yet); otherwise load the latest
-        // persisted solution. Consume the stash synchronously so a solution
-        // arriving while the load below is in flight is not clobbered, and only
-        // accept it for the task it was stashed for.
+        // persisted solution. Keep the stash until this exact initialization
+        // succeeds so a newer initialization can still consume it.
         const stashed = pendingSolution.current;
-        pendingSolution.current = null;
         const stashedSolution =
           stashed?.taskId === task.id ? stashed.solution : null;
+
+        if (stashed !== null && stashedSolution === null) {
+          pendingSolution.current = null;
+        }
 
         try {
           const solutionFile =
@@ -268,17 +271,11 @@ const SolveTaskPage = () => {
               task.id,
             ));
 
-          // a newer reload started while we were fetching: its solution is
-          // fresher, so abandon this run rather than clobbering it. Restore the
-          // stash we consumed so the newer run can still pick it up.
+          // A newer initialization started while we were fetching. It owns the
+          // iframe now, so this run must not load its older solution.
           if (generation !== initializationGeneration.current) {
-            if (stashedSolution !== null) {
-              pendingSolution.current ??= stashed;
-            }
             return;
           }
-
-          isScratchMutexAvailable.current = false;
 
           await executeAsyncWithToasts(
             () =>
@@ -289,9 +286,12 @@ const SolveTaskPage = () => {
               }),
             { intl, descriptor: taskMessages.cannotLoadSubmission },
           );
+
+          if (pendingSolution.current === stashed) {
+            pendingSolution.current = null;
+          }
         } catch {
           if (stashedSolution !== null) {
-            pendingSolution.current ??= stashed;
             return;
           }
 
@@ -306,7 +306,11 @@ const SolveTaskPage = () => {
             language: intl.locale as Language,
           });
         } finally {
-          isScratchMutexAvailable.current = true;
+          // An older initialization may finish after a newer one has started.
+          // Only the newest initialization may clear the active marker.
+          if (activeInitialization.current === generation) {
+            activeInitialization.current = null;
+          }
         }
       }
     },
