@@ -243,8 +243,11 @@ export class SessionsService {
       where: {
         id: sessionId,
         deletedAt: includeSoftDelete ? undefined : null,
+        // an anonymous lesson is joined anonymously, a regular one through the
+        // class roster
         OR: [
           {
+            isAnonymous: true,
             anonymousStudents: {
               some: {
                 deletedAt: includeSoftDelete ? undefined : null,
@@ -252,6 +255,7 @@ export class SessionsService {
             },
           },
           {
+            isAnonymous: false,
             class: {
               students: {
                 some: {

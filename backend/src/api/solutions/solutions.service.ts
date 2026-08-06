@@ -22,6 +22,7 @@ import { TaskId } from "../tasks/dto";
 import { TasksService } from "../tasks/tasks.service";
 import { SessionId } from "../sessions/dto";
 import { SolutionAnalysisService } from "./solution-analysis.service";
+import { maximumNumberOfAnalysisRetries } from "./solution-analysis.constants";
 import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
 
@@ -99,8 +100,6 @@ export type ReferenceAnalysis = AnalysisWithoutId & {
 };
 
 type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
-
-const maximumNumberOfAnalysisRetries = 3;
 
 const omitData = { data: true };
 
@@ -701,8 +700,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map((solution) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }
@@ -756,8 +756,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map(({ solution }) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }
