@@ -96,6 +96,13 @@ const SolveTaskPage = () => {
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
   const isScratchMutexAvailable = useRef(true);
+  // Bumped whenever a fresh iframe load supersedes any initialization still in
+  // flight. The mutex is only acquired after an await, so a pre-reload run can
+  // still be fetching when a reload re-opens the mutex and starts a newer run;
+  // each run captures the generation at entry and bails before sending if a
+  // newer one has started, so a stale (older) solution cannot overwrite the
+  // fresher reload (CRT-464 quick switches).
+  const initializationGeneration = useRef(0);
   // The freshest solution the embedded app has pushed up (e.g. the auto-save
   // triggered right before a language change reloads the iframe).
   // This allows data persistency after app iframe reloads (e.g. locale change).
@@ -223,7 +230,13 @@ const SolveTaskPage = () => {
       // stay locked: it would block every future load (CRT-464).
       if (justLoaded) {
         isScratchMutexAvailable.current = true;
+        // this reload supersedes any initialization still in flight
+        initializationGeneration.current += 1;
       }
+
+      // captured at entry; if a newer reload bumps the generation while we are
+      // awaiting below, this run must not send its (now stale) solution
+      const generation = initializationGeneration.current;
 
       if (
         embeddedApp.current &&
@@ -255,6 +268,16 @@ const SolveTaskPage = () => {
               task.id,
             ));
 
+          // a newer reload started while we were fetching: its solution is
+          // fresher, so abandon this run rather than clobbering it. Restore the
+          // stash we consumed so the newer run can still pick it up.
+          if (generation !== initializationGeneration.current) {
+            if (stashedSolution !== null) {
+              pendingSolution.current ??= stashed;
+            }
+            return;
+          }
+
           isScratchMutexAvailable.current = false;
 
           await executeAsyncWithToasts(
@@ -269,6 +292,11 @@ const SolveTaskPage = () => {
         } catch {
           if (stashedSolution !== null) {
             pendingSolution.current ??= stashed;
+            return;
+          }
+
+          // a newer reload superseded this run while the fetch was failing
+          if (generation !== initializationGeneration.current) {
             return;
           }
 

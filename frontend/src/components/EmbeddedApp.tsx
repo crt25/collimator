@@ -76,7 +76,7 @@ export interface Props {
    * justLoaded is true when the iframe just fired a load event, meaning its
    * previous document - and any request still in flight to it - is gone.
    */
-  onAppAvailable?: (justLoaded: boolean) => void;
+  onAppAvailable?: (justLoaded: boolean) => void | Promise<void>;
   onAppError?: (error: Error) => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
@@ -123,7 +123,9 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
       iframe.style.height = `${response.result}px`;
 
       setLoadingState(LoadingState.available);
-      onAppAvailable?.(justLoaded);
+      // await so a rejection from an async consumer callback surfaces here
+      // instead of becoming an unhandled rejection
+      await onAppAvailable?.(justLoaded);
     },
     [onAppAvailable],
   );

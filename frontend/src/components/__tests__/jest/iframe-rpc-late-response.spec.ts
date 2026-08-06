@@ -29,9 +29,42 @@ describe("IframeRpcApi late responses", () => {
       ).resolves.toBeUndefined();
 
       expect(warn).toHaveBeenCalled();
+      // the late response must be dropped quietly, not surfaced as an error
+      // (the pre-fix code threw from the handler)
+      expect(error).not.toHaveBeenCalled();
     } finally {
       warn.mockRestore();
       error.mockRestore();
     }
+  });
+
+  // companion to the above: dropping unknown-id responses must not regress the
+  // normal path where a response resolves its pending request.
+  it("still resolves a response its request is waiting for", async () => {
+    const api = new PlatformCrtIframeApi(null);
+    const target = { postMessage: jest.fn() };
+
+    api.setOrigin("https://example.com");
+    api.setTarget(target as unknown as Window);
+
+    const pending = api.sendRequest("getHeight", undefined);
+
+    const sentRequest = target.postMessage.mock.calls[0][0] as { id: number };
+
+    await api.handleWindowMessage({
+      source: target,
+      origin: "https://example.com",
+      data: {
+        jsonrpc: "2.0",
+        id: sentRequest.id,
+        method: "getHeight",
+        result: 42,
+      },
+    } as unknown as MessageEvent);
+
+    await expect(pending).resolves.toMatchObject({
+      method: "getHeight",
+      result: 42,
+    });
   });
 });
