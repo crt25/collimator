@@ -19,6 +19,7 @@ import {
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
+import { waitForKernelSpecs } from "./kernel/wait-for-kernel-specs";
 import { blockUserInterface } from "./ui-blocker";
 import { Mode } from "./mode";
 import {
@@ -103,10 +104,6 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
-  // kernelspec registration happens during startup (local JS, no downloads),
-  // so this is generous; it only matters when the kernel extension is broken
-  private static readonly kernelSpecWaitTimeoutMs = 15_000;
-
   private readonly beforeReloadCallbacks: Array<() => Promise<void>> = [];
 
   constructor(
@@ -131,66 +128,12 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   /**
-   * Resolves once at least one kernelspec (the Pyodide kernel) is registered,
-   * or after a bounded wait. The wait is bounded so that a broken kernel
-   * extension degrades to the pre-existing behavior (the notebook opens and
-   * JupyterLab may prompt for a kernel) instead of hanging the task-opening
-   * RPC — and with it the embedded app — forever.
-   */
-  private async waitForKernelSpecs(): Promise<void> {
-    const kernelSpecs = this.app.serviceManager.kernelspecs;
-    await kernelSpecs.ready;
-
-    const hasSpec = (specs = kernelSpecs.specs): boolean =>
-      !!specs && Object.keys(specs.kernelspecs).length > 0;
-
-    if (hasSpec()) {
-      return;
-    }
-
-    await new Promise<void>((resolve) => {
-      // specsChanged emits the freshly fetched specs, so use the emitted
-      // payload instead of re-reading the manager's mutable specs property
-      function onChange(
-        _sender: unknown,
-        specs: typeof kernelSpecs.specs,
-      ): void {
-        if (hasSpec(specs)) {
-          clearTimeout(timeout);
-          kernelSpecs.specsChanged.disconnect(onChange);
-          resolve();
-        }
-      }
-
-      const timeout = setTimeout(() => {
-        kernelSpecs.specsChanged.disconnect(onChange);
-        console.warn(
-          `${logModule} No kernelspec registered after ${EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs}ms; opening the notebook anyway (the kernel selection dialog may appear)`,
-        );
-        resolve();
-      }, EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs);
-
-      kernelSpecs.specsChanged.connect(onChange);
-
-      // Re-check after connecting so that a spec registered between the check
-      // above and the connect cannot be missed. This makes the wait correct by
-      // inspection instead of relying on the surrounding block staying free of
-      // awaits between the check and the connect.
-      if (hasSpec()) {
-        clearTimeout(timeout);
-        kernelSpecs.specsChanged.disconnect(onChange);
-        resolve();
-      }
-    });
-  }
-
-  /**
    * Open the visible task notebook only after a kernel is available, so
    * JupyterLab auto-selects the Pyodide kernel instead of prompting the user to
    * pick one.
    */
   private async openTaskNotebook(path: string): Promise<void> {
-    await this.waitForKernelSpecs();
+    await waitForKernelSpecs(this.app.serviceManager.kernelspecs);
     // eslint-disable-next-line no-restricted-syntax -- this wrapper is the one sanctioned call site
     this.documentManager.openOrReveal(path);
   }

@@ -1,6 +1,5 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
-import { ISessionContext } from "@jupyterlab/apputils";
-import { INotebookTracker } from "@jupyterlab/notebook";
+import { INotebookTracker, NotebookPanel } from "@jupyterlab/notebook";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { Contents, ContentsManager, KernelMessage } from "@jupyterlab/services";
 import {
@@ -115,17 +114,27 @@ const autoInstallPackages =
 
 const trackSession = (
   contentsManager: ContentsManager,
-  sessionContext: ISessionContext,
-  notebookPath: string,
+  panel: NotebookPanel,
 ): Promise<void> => {
-  // start the kernel so the install runs in the background, instead of waiting for something else to trigger it.
-  sessionContext.initialize().catch((error) => {
-    console.error(
-      `${logModule} Failed to initialize session for`,
-      notebookPath,
-      error,
-    );
-  });
+  const notebookPath = panel.context.path;
+  const sessionContext = panel.sessionContext;
+
+  // Start the kernel so the install runs in the background, instead of
+  // waiting for something else to trigger it - but only once the document
+  // context is fully populated. Initializing earlier races the context's
+  // own initialization (Context._populate): when this call wins, the session
+  // resolves its kernel before the notebook's kernelspec metadata is applied
+  // to the kernel preference, and JupyterLab asks the user to pick a kernel
+  // instead of auto-selecting Pyodide (CRT-399).
+  void panel.context.ready.then(() =>
+    sessionContext.initialize().catch((error) => {
+      console.error(
+        `${logModule} Failed to initialize session for`,
+        notebookPath,
+        error,
+      );
+    }),
+  );
 
   return setupKernel(
     sessionContext,
@@ -138,15 +147,10 @@ export const preInstallPackages = async (
   contentsManager: ContentsManager,
   notebookTracker: INotebookTracker,
 ): Promise<void> => {
-  notebookTracker.forEach((panel) =>
-    trackSession(contentsManager, panel.sessionContext, panel.context.path),
-  );
+  notebookTracker.forEach((panel) => trackSession(contentsManager, panel));
 
   notebookTracker.widgetAdded.connect((_, panel) => {
-    // get path of notebook
-    const notebookPath = panel.context.path;
-
-    trackSession(contentsManager, panel.sessionContext, notebookPath);
+    trackSession(contentsManager, panel);
   });
 };
 
