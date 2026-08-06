@@ -6,11 +6,15 @@ import {
 import { SolveTaskPage } from "./page-objects/solve-task";
 import { TestTaskPage } from "./page-objects/test-task";
 import { TestFailingTaskPage } from "./page-objects/test-failing-task";
-import { getExpectedBlockConfigButtonLabel } from "./helpers";
+import {
+  findPostedMessage,
+  getExpectedBlockConfigButtonLabel,
+  getPostedMessageMethods,
+  waitForPostedMessage,
+} from "./helpers";
 import { AssertionTaskPage } from "./page-objects/assertion-task";
 import tasks from "./tasks/index";
 import { ScratchEditorPage } from "./page-objects/scratch-editor";
-import type { RpcMethodName } from "../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 declare global {
   interface Window {
@@ -100,21 +104,11 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await page.waitForFunction(() =>
-      window.postedMessages.some(
-        (m) =>
-          (m.message as { method?: RpcMethodName }).method === "getSubmission",
-      ),
-    );
+    await waitForPostedMessage(page, "getSubmission");
 
-    const messages = await page.evaluate(() => window.postedMessages);
+    const submissionMessage = await findPostedMessage(page, "getSubmission");
 
-    const submissionMessage = messages.find(
-      (m) =>
-        (m.message as { method?: RpcMethodName }).method === "getSubmission",
-    );
-
-    expect(submissionMessage!.message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 1,
       method: "getSubmission",
@@ -465,21 +459,11 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() =>
-      window.postedMessages.some(
-        (m) =>
-          (m.message as { method?: RpcMethodName }).method === "getSubmission",
-      ),
-    );
+    await waitForPostedMessage(pwPage, "getSubmission");
 
-    const messages = await pwPage.evaluate(() => window.postedMessages);
+    const submissionMessage = await findPostedMessage(pwPage, "getSubmission");
 
-    const submissionMessage = messages.find(
-      (m) =>
-        (m.message as { method?: RpcMethodName }).method === "getSubmission",
-    );
-
-    expect(submissionMessage!.message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",
@@ -504,19 +488,16 @@ test.describe("/solve", () => {
 
     // loading the task for a solving student pushes postTaskStarted to the
     // platform, carrying the project as it was opened (CRT-454)
-    await pwPage.waitForFunction(() =>
-      window.postedMessages.some((m) => {
-        const message = m.message as {
-          method?: string;
-          params?: { solution?: unknown };
-        };
+    await waitForPostedMessage(pwPage, "postTaskStarted");
 
-        return (
-          message.method === "postTaskStarted" &&
-          message.params?.solution !== undefined
-        );
-      }),
-    );
+    const taskStarted = (await findPostedMessage(
+      pwPage,
+      "postTaskStarted",
+    )) as {
+      params?: { solution?: unknown };
+    };
+
+    expect(taskStarted?.params?.solution).toBeDefined();
   });
 
   test("records a stop-all student activity when the stop button is pressed", async ({
@@ -573,25 +554,13 @@ test.describe("/solve", () => {
       window.dispatchEvent(event);
     });
 
-    await pwPage.waitForFunction(() => window.postedMessages.length > 2);
+    await waitForPostedMessage(pwPage, "getSubmission");
 
-    await pwPage.waitForFunction(() =>
-      window.postedMessages.some(
-        (m) =>
-          (m.message as { method?: RpcMethodName }).method === "getSubmission",
-      ),
-    );
-
-    const messages = await pwPage.evaluate(() => window.postedMessages);
-
-    const submissionMessage = messages.find(
-      (m) =>
-        (m.message as { method?: RpcMethodName }).method === "getSubmission",
-    );
+    const submissionMessage = await findPostedMessage(pwPage, "getSubmission");
 
     expect(submissionMessage).toBeDefined();
 
-    expect(submissionMessage!.message).toEqual({
+    expect(submissionMessage).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "getSubmission",
@@ -614,10 +583,7 @@ test.describe("/solve", () => {
 
     // nothing beyond the load has been reported before the student acts: the
     // loadTask response and the postTaskStarted activity it triggers
-    const initialMessages = await pwPage.evaluate(() => window.postedMessages);
-    const initialMethods = initialMessages.map(
-      (m) => (m.message as { method?: RpcMethodName }).method,
-    );
+    const initialMethods = await getPostedMessageMethods(pwPage);
     expect(initialMethods.sort()).toEqual(["loadTask", "postTaskStarted"]);
 
     // solve task
