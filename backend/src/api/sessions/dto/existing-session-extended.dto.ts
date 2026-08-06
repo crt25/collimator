@@ -7,7 +7,10 @@ import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
 
 type TaskList = { task: { id: number; name: string } }[];
-export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
+export type SessionWithStudentIndicator = Session & {
+  hasStudents: boolean;
+  anonymousStudentIds: number[];
+};
 
 export class ExistingSessionExtendedDto implements Omit<Session, "classId"> {
   @ApiProperty({
@@ -82,6 +85,15 @@ export class ExistingSessionExtendedDto implements Omit<Session, "classId"> {
   })
   @Expose()
   readonly hasStudents!: boolean;
+
+  @ApiProperty({
+    description:
+      "The ids of the students that joined this session anonymously," +
+      " including those that have not started any task yet.",
+    type: [Number],
+  })
+  @Expose()
+  readonly anonymousStudentIds!: number[];
 
   static fromQueryResult(
     data: SessionWithStudentIndicator,

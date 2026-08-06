@@ -30,12 +30,14 @@ export const useStudentProgress = (
     // participant is shown with an ad-hoc identity instead, even if they
     // happen to also be a registered class member (CRT-439).
     if (session.isAnonymous) {
-      return [...new Set(activeStudentIds)].map<ResolvedStudent>(
-        (studentId) => ({
-          isAnonymous: true,
-          studentId,
-        }),
-      );
+      // seed with everyone who joined the lesson, so a student is visible
+      // before they start their first task (CRT-454)
+      return [
+        ...new Set([...session.anonymousStudentIds, ...activeStudentIds]),
+      ].map<ResolvedStudent>((studentId) => ({
+        isAnonymous: true,
+        studentId,
+      }));
     }
 
     const studentsById = new Map(

@@ -26,4 +26,6 @@ export interface ExistingSessionExtendedDto {
   tasks: SessionTaskDto[];
   /** Indicates whether the session has any students. */
   hasStudents: boolean;
+  /** The ids of the students that joined this session anonymously, including those that have not started any task yet. */
+  anonymousStudentIds: number[];
 }

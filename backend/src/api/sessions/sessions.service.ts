@@ -267,6 +267,21 @@ export class SessionsService {
     return sessionWithStudents !== null;
   }
 
+  /**
+   * The students that joined this lesson anonymously. This is what makes a
+   * participant of an anonymous lesson visible to the teacher before they
+   * have started a task - solutions and analyses only exist afterwards.
+   */
+  async getAnonymousStudentIds(sessionId: SessionId): Promise<number[]> {
+    const students = await this.prisma.anonymousStudent.findMany({
+      where: { sessionId, deletedAt: null },
+      select: { studentId: true },
+      orderBy: { studentId: "asc" },
+    });
+
+    return students.map(({ studentId }) => studentId);
+  }
+
   async changeStatusByIdAndClass(
     id: SessionId,
     status: SessionStatus,
