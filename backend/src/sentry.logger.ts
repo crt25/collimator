@@ -61,7 +61,7 @@ export class SentryLogger extends ConsoleLogger {
     // parameters may carry a stack trace: ConsoleLogger prints fatal() and
     // every other level through getContextAndMessagesToPrint, which treats
     // extra parameters as further messages, never as a stack
-    const { context, stack } =
+    const { context, stack, rest } =
       level === "error"
         ? this.splitErrorParams(optionalParams)
         : this.splitParams(optionalParams);
@@ -73,19 +73,26 @@ export class SentryLogger extends ConsoleLogger {
       attributes.stack = stack;
     }
 
-    let text: string;
-    if (typeof message === "string") {
-      text = message;
-    } else if (message instanceof Error) {
-      text = message.message;
-      if (message.stack !== undefined) {
-        attributes.stack = message.stack;
-      }
-    } else {
-      text = inspect(message);
-    }
+    for (const currentMessage of [message, ...rest]) {
+      const messageAttributes = { ...attributes };
 
-    Sentry.logger[level](text, attributes);
+      let text: string;
+      if (typeof currentMessage === "string") {
+        text = currentMessage;
+      } else if (currentMessage instanceof Error) {
+        text = currentMessage.message;
+        if (
+          currentMessage.stack !== undefined &&
+          messageAttributes.stack === undefined
+        ) {
+          messageAttributes.stack = currentMessage.stack;
+        }
+      } else {
+        text = inspect(currentMessage);
+      }
+
+      Sentry.logger[level](text, messageAttributes);
+    }
   }
 
   /**
@@ -116,20 +123,28 @@ export class SentryLogger extends ConsoleLogger {
   private splitErrorParams(optionalParams: unknown[]): {
     context?: string;
     stack?: string;
+    rest: unknown[];
   } {
     if (optionalParams.length === 1) {
       const param = optionalParams[0];
 
       if (typeof param === "string" && stackFormat.test(param)) {
-        return { context: this.context, stack: param };
+        return { context: this.context, stack: param, rest: [] };
       }
 
-      return { context: typeof param === "string" ? param : this.context };
+      return {
+        context: typeof param === "string" ? param : this.context,
+        rest: [],
+      };
     }
 
     const { context, rest } = this.splitParams(optionalParams);
     const last = rest[rest.length - 1];
 
-    return { context, stack: typeof last === "string" ? last : undefined };
+    if (typeof last === "string" || last === undefined) {
+      return { context, stack: last, rest: rest.slice(0, -1) };
+    }
+
+    return { context, rest };
   }
 }

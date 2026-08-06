@@ -138,20 +138,42 @@ describe("SentryLogger", () => {
 
     logger.error("it broke", "a", "b", "Ctx");
 
-    expect(sentryLogger.error).toHaveBeenCalledWith("it broke", {
+    expect(sentryLogger.error).toHaveBeenNthCalledWith(1, "it broke", {
+      context: "Ctx",
+      stack: "b",
+    });
+    expect(sentryLogger.error).toHaveBeenNthCalledWith(2, "a", {
       context: "Ctx",
       stack: "b",
     });
   });
 
-  it("never attaches a stack for non-error levels", () => {
+  it("forwards every non-error message without treating one as a stack", () => {
     const logger = new SentryLogger();
 
     logger.log("something happened", "extra", "SomeContext");
 
-    expect(sentryLogger.info).toHaveBeenCalledWith("something happened", {
+    expect(sentryLogger.info).toHaveBeenNthCalledWith(1, "something happened", {
       context: "SomeContext",
     });
+    expect(sentryLogger.info).toHaveBeenNthCalledWith(2, "extra", {
+      context: "SomeContext",
+    });
+  });
+
+  it("forwards non-string messages after the first", () => {
+    const logger = new SentryLogger();
+
+    logger.log("something happened", { code: 42 }, "SomeContext");
+
+    expect(sentryLogger.info).toHaveBeenNthCalledWith(1, "something happened", {
+      context: "SomeContext",
+    });
+    expect(sentryLogger.info).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining("42"),
+      { context: "SomeContext" },
+    );
   });
 
   it("falls back to the logger's configured context", () => {
@@ -183,6 +205,19 @@ describe("SentryLogger", () => {
     expect(sentryLogger.error).toHaveBeenCalledWith("kaboom", {
       context: "SomeContext",
       stack: error.stack,
+    });
+  });
+
+  it("preserves an explicit stack when the message is an Error", () => {
+    const logger = new SentryLogger();
+    const error = new Error("kaboom");
+    const explicitStack = "Error: explicit\n    at explicit.ts:1:1";
+
+    logger.error(error, explicitStack, "SomeContext");
+
+    expect(sentryLogger.error).toHaveBeenCalledWith("kaboom", {
+      context: "SomeContext",
+      stack: explicitStack,
     });
   });
 
