@@ -206,6 +206,31 @@ test.describe("/solve", () => {
     );
   });
 
+  test("dragging a block onto another sprite reduces the limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
+
+    const { moveSteps } = page.enabledBlockConfigButtons;
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
+
+    // drag the added block onto another sprite in the sprite pane: the VM
+    // copies it into that target after the drag ends, without any block
+    // event on the active workspace (CRT-388)
+    const addedBlock = page.blocksOfCurrentTarget.last();
+    await page.dragBlockToSprite(addedBlock, "Sprite2");
+
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 2).toString());
+  });
+
   test("cannot paste a stack containing a block at its usage limit", async ({
     page: pwPage,
   }) => {
