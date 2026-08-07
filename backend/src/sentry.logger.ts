@@ -1,12 +1,19 @@
 import { inspect } from "util";
-import { ConsoleLogger } from "@nestjs/common";
+import { ConsoleLogger, LogLevel } from "@nestjs/common";
 import * as Sentry from "@sentry/nestjs";
 
 type SentryLogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 
-// duplicates ConsoleLogger's private isStackFormat regex
-// (@nestjs/common/services/console-logger.service.js)
-const stackFormat = /^(.)+\n\s+at .+:\d+:\d+/;
+// Nest log level -> Sentry Logs level. Nest's verbose is Sentry's trace and
+// Nest's log is Sentry's info; the rest map by name.
+const sentryLevelByLogLevel: Record<LogLevel, SentryLogLevel> = {
+  verbose: "trace",
+  debug: "debug",
+  log: "info",
+  warn: "warn",
+  error: "error",
+  fatal: "fatal",
+};
 
 /**
  * The application logger: Nest's ConsoleLogger, with every call additionally
@@ -15,65 +22,65 @@ const stackFormat = /^(.)+\n\s+at .+:\d+:\d+/;
  * the LOG_LEVEL filtering behave exactly as before - but Sentry receives all
  * levels on purpose, regardless of what the console suppresses.
  *
- * The variadic parameters are classified into context and stack exactly the
- * way ConsoleLogger classifies them for printing, so what Sentry shows always
- * matches what the console prints.
+ * The variadic parameters are classified into context and stack with the very
+ * same helpers ConsoleLogger uses to decide what it prints, so what Sentry
+ * shows always matches what the console prints.
  */
 export class SentryLogger extends ConsoleLogger {
   log(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("info", message, optionalParams);
+    this.forwardToSentry("log", [message, ...optionalParams]);
     super.log(message, ...optionalParams);
   }
 
   error(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("error", message, optionalParams);
+    this.forwardToSentry("error", [message, ...optionalParams]);
     super.error(message, ...optionalParams);
   }
 
   warn(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("warn", message, optionalParams);
+    this.forwardToSentry("warn", [message, ...optionalParams]);
     super.warn(message, ...optionalParams);
   }
 
   debug(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("debug", message, optionalParams);
+    this.forwardToSentry("debug", [message, ...optionalParams]);
     super.debug(message, ...optionalParams);
   }
 
   verbose(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("trace", message, optionalParams);
+    this.forwardToSentry("verbose", [message, ...optionalParams]);
     super.verbose(message, ...optionalParams);
   }
 
   fatal(message: unknown, ...optionalParams: unknown[]): void {
-    this.forwardToSentry("fatal", message, optionalParams);
+    this.forwardToSentry("fatal", [message, ...optionalParams]);
     super.fatal(message, ...optionalParams);
   }
 
-  private forwardToSentry(
-    level: SentryLogLevel,
-    message: unknown,
-    optionalParams: unknown[],
-  ): void {
+  private forwardToSentry(logLevel: LogLevel, args: unknown[]): void {
+    const level = sentryLevelByLogLevel[logLevel];
+
+    // Nest's error() is the only level whose parameters may carry a stack
+    // trace; every other level classifies its parameters as context + messages.
+    const classified =
+      logLevel === "error"
+        ? this.splitContextStackAndMessages(args)
+        : this.splitContextAndMessages(args);
+
+    const context = classified.context;
+    const stack = "stack" in classified ? classified.stack : undefined;
+
     const attributes: Record<string, string> = {};
-
-    // only Nest's error() maps to "error", and it is the only level whose
-    // parameters may carry a stack trace: ConsoleLogger prints fatal() and
-    // every other level through getContextAndMessagesToPrint, which treats
-    // extra parameters as further messages, never as a stack
-    const { context, stack, rest } =
-      level === "error"
-        ? this.splitErrorParams(optionalParams)
-        : this.splitParams(optionalParams);
-
-    if (context !== undefined) {
+    if (typeof context === "string") {
       attributes.context = context;
     }
-    if (stack !== undefined) {
+    if (typeof stack === "string") {
       attributes.stack = stack;
     }
 
-    for (const currentMessage of [message, ...rest]) {
+    // ConsoleLogger prints each message separately, so we forward each one as
+    // its own Sentry log entry to match.
+    for (const currentMessage of classified.messages) {
       const messageAttributes = { ...attributes };
 
       let text: string;
@@ -95,56 +102,87 @@ export class SentryLogger extends ConsoleLogger {
     }
   }
 
-  /**
-   * The context is the trailing string parameter when there is one, and the
-   * logger's own configured context otherwise - the classification of
-   * ConsoleLogger.getContextAndMessagesToPrint.
-   */
-  private splitParams(optionalParams: unknown[]): {
+  // ---------------------------------------------------------------------------
+  // The three helpers below are copied verbatim from NestJS's ConsoleLogger so
+  // that the context and stack we forward to Sentry are split exactly the way
+  // the console splits them for printing (respectively its
+  // getContextAndMessagesToPrint, getContextAndStackAndMessagesToPrint and
+  // isStackFormat). They are renamed here only because those originals are
+  // `private` members of the base class, which a subclass may not redeclare.
+  //
+  // Source: @nestjs/common v11.1.11,
+  //   packages/common/services/console-logger.service.ts
+  //   https://github.com/nestjs/nest/blob/master/packages/common/services/console-logger.service.ts
+  // Copyright (c) Kamil Myśliwiec, licensed under the MIT License
+  //   (https://github.com/nestjs/nest/blob/master/LICENSE).
+  // Nest's isString/isUndefined helpers are inlined as typeof checks to keep
+  // the copy free of @nestjs/common internal imports.
+  //
+  // FIXME: these are `private` in @nestjs/common v11.1.11; they are `protected`
+  // on NestJS master. Once we upgrade to a release that exposes them, delete
+  // these copies and call the inherited methods directly instead.
+  // ---------------------------------------------------------------------------
+
+  /** Copy of ConsoleLogger#getContextAndMessagesToPrint. */
+  private splitContextAndMessages(args: unknown[]): {
+    messages: unknown[];
     context?: string;
-    stack?: string;
-    rest: unknown[];
   } {
-    const last = optionalParams[optionalParams.length - 1];
-
-    if (typeof last !== "string") {
-      return { context: this.context, rest: optionalParams };
+    if (args?.length <= 1) {
+      return { messages: args, context: this.context };
     }
-
-    return { context: last, rest: optionalParams.slice(0, -1) };
+    const lastElement = args[args.length - 1];
+    const isContext = typeof lastElement === "string";
+    if (!isContext) {
+      return { messages: args, context: this.context };
+    }
+    return {
+      context: lastElement,
+      messages: args.slice(0, args.length - 1),
+    };
   }
 
-  /**
-   * Mirrors ConsoleLogger.getContextAndStackAndMessagesToPrint: a single
-   * string parameter is the stack when it looks like one and the context
-   * otherwise; with more parameters the trailing string is the context and
-   * the last remaining parameter, if it is a string, the stack.
-   */
-  private splitErrorParams(optionalParams: unknown[]): {
+  /** Copy of ConsoleLogger#getContextAndStackAndMessagesToPrint. */
+  private splitContextStackAndMessages(args: unknown[]): {
+    messages: unknown[];
     context?: string;
     stack?: string;
-    rest: unknown[];
   } {
-    if (optionalParams.length === 1) {
-      const param = optionalParams[0];
-
-      if (typeof param === "string" && stackFormat.test(param)) {
-        return { context: this.context, stack: param, rest: [] };
-      }
-
-      return {
-        context: typeof param === "string" ? param : this.context,
-        rest: [],
-      };
+    if (args.length === 2) {
+      return this.looksLikeStack(args[1])
+        ? {
+            messages: [args[0]],
+            stack: args[1] as string,
+            context: this.context,
+          }
+        : {
+            messages: [args[0]],
+            context: args[1] as string,
+          };
     }
 
-    const { context, rest } = this.splitParams(optionalParams);
-    const last = rest[rest.length - 1];
-
-    if (typeof last === "string" || last === undefined) {
-      return { context, stack: last, rest: rest.slice(0, -1) };
+    const { messages, context } = this.splitContextAndMessages(args);
+    if (messages?.length <= 1) {
+      return { messages, context };
     }
+    const lastElement = messages[messages.length - 1];
+    const isStack = typeof lastElement === "string";
+    // https://github.com/nestjs/nest/issues/11074#issuecomment-1421680060
+    if (!isStack && lastElement !== undefined) {
+      return { messages, context };
+    }
+    return {
+      stack: lastElement as string,
+      messages: messages.slice(0, messages.length - 1),
+      context,
+    };
+  }
 
-    return { context, rest };
+  /** Copy of ConsoleLogger#isStackFormat. */
+  private looksLikeStack(stack: unknown): boolean {
+    if (typeof stack !== "string" && stack !== undefined) {
+      return false;
+    }
+    return /^(.)+\n\s+at .+:\d+:\d+/.test(stack as string);
   }
 }
