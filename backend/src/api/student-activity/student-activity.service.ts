@@ -1,4 +1,5 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { isDeepStrictEqual } from "node:util";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { AstVersion, Prisma, Student, StudentActivity } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
@@ -8,7 +9,7 @@ const latestAstVersion = AstVersion.v1;
 const activityCreateAttempts = 2;
 
 export type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
-  include: { solution: true };
+  include: { appActivity: true; solution: true };
 }>;
 
 export type SolutionInput = Pick<
@@ -62,7 +63,13 @@ export class StudentActivityService {
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    const data = this.buildActivityInput(student, activity, solution);
+    const solutionHash = this.tasksService.computeSolutionHash(solution.data);
+    const data = this.buildActivityInput(
+      student,
+      activity,
+      solution,
+      solutionHash,
+    );
 
     for (let attempt = 1; ; attempt++) {
       try {
@@ -104,12 +111,23 @@ export class StudentActivityService {
               happenedAtCounter: activity.happenedAtCounter,
             },
           },
-          include: { solution: true },
+          include: { appActivity: true, solution: true },
         });
 
         if (existingActivity) {
-          // A replay may contain different solution data, but comparing or replacing it would complicate replay
-          // handling and could trigger analysis more than once
+          if (
+            !this.isExactReplay(
+              existingActivity,
+              activity,
+              solution,
+              solutionHash,
+            )
+          ) {
+            throw new ConflictException(
+              "The activity idempotency key is already used by a different activity",
+            );
+          }
+
           return existingActivity;
         }
 
@@ -126,6 +144,7 @@ export class StudentActivityService {
     student: Student,
     activity: StudentActivityInput,
     solution: SolutionInput,
+    solutionHash: Uint8Array,
   ): Prisma.StudentActivityCreateInput {
     const appActivityInput:
       | Prisma.StudentActivityAppCreateNestedOneWithoutStudentActivityInput
@@ -137,8 +156,6 @@ export class StudentActivityService {
           },
         }
       : undefined;
-
-    const solutionHash = this.tasksService.computeSolutionHash(solution.data);
 
     return {
       type: activity.type,
@@ -179,5 +196,31 @@ export class StudentActivityService {
         },
       },
     } satisfies Prisma.StudentActivityCreateInput;
+  }
+
+  private isExactReplay(
+    existing: StudentActivityWithSolution,
+    activity: StudentActivityInput,
+    solution: SolutionInput,
+    solutionHash: Uint8Array,
+  ): boolean {
+    const appActivityMatches =
+      existing.appActivity === null && activity.appActivity === null
+        ? true
+        : existing.appActivity !== null && activity.appActivity !== null
+          ? existing.appActivity.type === activity.appActivity.type &&
+            isDeepStrictEqual(
+              existing.appActivity.data,
+              activity.appActivity.data,
+            )
+          : false;
+
+    return (
+      existing.sessionId === activity.sessionId &&
+      existing.taskId === activity.taskId &&
+      Buffer.from(existing.solutionHash).equals(Buffer.from(solutionHash)) &&
+      existing.solution.mimeType === solution.mimeType &&
+      appActivityMatches
+    );
   }
 }

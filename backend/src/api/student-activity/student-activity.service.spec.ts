@@ -5,7 +5,7 @@ import {
   Student,
   StudentActivityType,
 } from "@prisma/client";
-import { Logger } from "@nestjs/common";
+import { ConflictException, Logger } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
@@ -55,6 +55,7 @@ describe("StudentActivityService", () => {
     taskId: activity.taskId,
     solutionHash,
     solution: storedSolution,
+    appActivity: null,
   };
 
   const uniqueConstraintError = (): Prisma.PrismaClientKnownRequestError =>
@@ -66,12 +67,14 @@ describe("StudentActivityService", () => {
   let createActivity: jest.Mock;
   let findActivity: jest.Mock;
   let performAnalysis: jest.Mock;
+  let computeSolutionHash: jest.Mock;
   let service: StudentActivityService;
 
   beforeEach(() => {
     createActivity = jest.fn();
     findActivity = jest.fn();
-    performAnalysis = jest.fn().mockResolvedValue(null);
+    performAnalysis = jest.fn().mockResolvedValue(undefined);
+    computeSolutionHash = jest.fn().mockReturnValue(solutionHash);
 
     const prisma = {
       studentActivity: {
@@ -81,7 +84,7 @@ describe("StudentActivityService", () => {
     } as unknown as PrismaService;
 
     const tasksService = {
-      computeSolutionHash: jest.fn().mockReturnValue(solutionHash),
+      computeSolutionHash,
     } as unknown as TasksService;
 
     const analysisService = {
@@ -112,9 +115,66 @@ describe("StudentActivityService", () => {
           happenedAtCounter: activity.happenedAtCounter,
         },
       },
-      include: { solution: true },
+      include: { appActivity: true, solution: true },
     });
 
+    expect(performAnalysis).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    {
+      name: "session",
+      replayActivity: { ...activity, sessionId: activity.sessionId + 1 },
+      replaySolution: solutionInput,
+      replayHash: solutionHash,
+      existingActivity: storedActivity,
+    },
+    {
+      name: "task",
+      replayActivity: { ...activity, taskId: activity.taskId + 1 },
+      replaySolution: solutionInput,
+      replayHash: solutionHash,
+      existingActivity: storedActivity,
+    },
+    {
+      name: "solution",
+      replayActivity: activity,
+      replaySolution: {
+        ...solutionInput,
+        data: Buffer.from("different solution"),
+      },
+      replayHash: Buffer.from("different-solution-hash"),
+      existingActivity: storedActivity,
+    },
+    {
+      name: "app activity payload",
+      replayActivity: {
+        ...activity,
+        type: StudentActivityType.TASK_APP_ACTIVITY,
+        appActivity: { type: "stopAll", data: { source: "button" } },
+      },
+      replaySolution: solutionInput,
+      replayHash: solutionHash,
+      existingActivity: {
+        ...storedActivity,
+        type: StudentActivityType.TASK_APP_ACTIVITY,
+        appActivity: {
+          id: storedActivity.id,
+          type: "greenFlag",
+          data: { source: "button" },
+        },
+      },
+    },
+  ])("rejects a replay whose $name differs", async (testCase) => {
+    createActivity.mockRejectedValue(uniqueConstraintError());
+    findActivity.mockResolvedValue(testCase.existingActivity);
+    computeSolutionHash.mockReturnValue(testCase.replayHash);
+
+    await expect(
+      service.create(student, testCase.replayActivity, testCase.replaySolution),
+    ).rejects.toBeInstanceOf(ConflictException);
+
+    expect(createActivity).toHaveBeenCalledTimes(1);
     expect(performAnalysis).not.toHaveBeenCalled();
   });
 
