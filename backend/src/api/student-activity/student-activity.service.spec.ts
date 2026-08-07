@@ -73,7 +73,7 @@ describe("StudentActivityService", () => {
   beforeEach(() => {
     createActivity = jest.fn();
     findActivity = jest.fn();
-    performAnalysis = jest.fn();
+    performAnalysis = jest.fn().mockResolvedValue(undefined);
     computeSolutionHash = jest.fn().mockReturnValue(solutionHash);
 
     const prisma = {
