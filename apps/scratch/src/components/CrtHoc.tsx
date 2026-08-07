@@ -39,7 +39,16 @@ const InternalCrtHoc = <T extends {}>(Component: React.ComponentType<T>) => {
 
     const dispatch = useDispatch();
 
-    const { hasLoaded, sendRequest } = useEmbeddedScratch(vm, props.intl);
+    const { isStudentSolving = false } = props as T & {
+      intl: IntlShape;
+      isStudentSolving?: boolean;
+    };
+
+    const { hasLoaded, sendRequest } = useEmbeddedScratch(
+      vm,
+      props.intl,
+      isStudentSolving,
+    );
 
     useEffect(() => {
       // merge our own locales with scratch's
