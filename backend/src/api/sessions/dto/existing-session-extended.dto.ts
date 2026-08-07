@@ -2,17 +2,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Session, SessionStatus } from "@prisma/client";
 import { Expose, plainToInstance, Transform, Type } from "class-transformer";
 import { IsDate, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
-import { SessionStudent } from "../sessions.service";
 import { SessionClassDto } from "./session-class.dto";
-import { SessionStudentDto } from "./session-student.dto";
 import { SessionTaskDto } from "./session-task.dto";
 import { SessionId } from "./existing-session.dto";
 
 type TaskList = { task: { id: number; name: string } }[];
-export type SessionWithStudentIndicator = Session & {
-  hasStudents: boolean;
-  students: SessionStudent[];
-};
+export type SessionWithStudentIndicator = Session & { hasStudents: boolean };
 
 export class ExistingSessionExtendedDto implements Omit<Session, "classId"> {
   @ApiProperty({
@@ -87,18 +82,6 @@ export class ExistingSessionExtendedDto implements Omit<Session, "classId"> {
   })
   @Expose()
   readonly hasStudents!: boolean;
-
-  @ApiProperty({
-    description:
-      "The students taking part in this session, including those that have" +
-      " not started any task yet: for an anonymous session everyone who" +
-      " joined it (without a pseudonym), for a class-roster session the" +
-      " enrolled students.",
-    type: [SessionStudentDto],
-  })
-  @Type(() => SessionStudentDto)
-  @Expose()
-  readonly students!: SessionStudentDto[];
 
   static fromQueryResult(
     data: SessionWithStudentIndicator,

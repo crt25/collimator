@@ -58,7 +58,6 @@ export * from "./referenceAnalysisDto";
 export * from "./registrationTokenDto";
 export * from "./sessionClassDto";
 export * from "./sessionStatus";
-export * from "./sessionStudentDto";
 export * from "./sessionTaskDto";
 export * from "./sessionsControllerCopyV0Params";
 export * from "./sessionsControllerFindAllV0Params";

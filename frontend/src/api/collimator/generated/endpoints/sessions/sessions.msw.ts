@@ -138,24 +138,6 @@ export const getSessionsControllerFindOneV0ResponseMock = (
     ]),
   })),
   hasStudents: faker.datatype.boolean(),
-  students: Array.from(
-    { length: faker.number.int({ min: 1, max: 10 }) },
-    (_, i) => i + 1,
-  ).map(() => ({
-    studentId: faker.number.float({
-      min: undefined,
-      max: undefined,
-      fractionDigits: 2,
-    }),
-    keyPairId: faker.helpers.arrayElement([
-      faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-      null,
-    ]),
-    pseudonym: faker.helpers.arrayElement([
-      faker.string.alpha({ length: { min: 10, max: 20 } }),
-      null,
-    ]),
-  })),
   ...overrideResponse,
 });
 
