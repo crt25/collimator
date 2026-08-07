@@ -1,6 +1,5 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
-import { ISessionContext } from "@jupyterlab/apputils";
-import { INotebookTracker } from "@jupyterlab/notebook";
+import { INotebookTracker, NotebookPanel } from "@jupyterlab/notebook";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { Contents, ContentsManager, KernelMessage } from "@jupyterlab/services";
 import {
@@ -113,12 +112,27 @@ const autoInstallPackages =
     }
   };
 
-const trackSession = (
+const trackSession = async (
   contentsManager: ContentsManager,
-  sessionContext: ISessionContext,
-  notebookPath: string,
+  panel: NotebookPanel,
 ): Promise<void> => {
-  // start the kernel so the install runs in the background, instead of waiting for something else to trigger it.
+  const notebookPath = panel.context.path;
+  const sessionContext = panel.sessionContext;
+
+  // Start the kernel only after the context has applied the notebook's
+  // kernelspec, so Pyodide is auto-selected rather than prompted for (CRT-399).
+  try {
+    await panel.context.ready;
+  } catch (error) {
+    console.error(
+      `${logModule} Failed to load notebook context for`,
+      notebookPath,
+      error,
+    );
+
+    return;
+  }
+
   sessionContext.initialize().catch((error) => {
     console.error(
       `${logModule} Failed to initialize session for`,
@@ -138,15 +152,10 @@ export const preInstallPackages = async (
   contentsManager: ContentsManager,
   notebookTracker: INotebookTracker,
 ): Promise<void> => {
-  notebookTracker.forEach((panel) =>
-    trackSession(contentsManager, panel.sessionContext, panel.context.path),
-  );
+  notebookTracker.forEach((panel) => trackSession(contentsManager, panel));
 
   notebookTracker.widgetAdded.connect((_, panel) => {
-    // get path of notebook
-    const notebookPath = panel.context.path;
-
-    trackSession(contentsManager, panel.sessionContext, notebookPath);
+    trackSession(contentsManager, panel);
   });
 };
 

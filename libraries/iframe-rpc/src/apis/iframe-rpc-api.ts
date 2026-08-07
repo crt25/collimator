@@ -35,6 +35,18 @@ export type HandleRequestMap<
 
 export type MessageTarget = Window | MessagePort | ServiceWorker;
 
+/**
+ * Raised when an iframe navigates before a request to its previous document
+ * can answer. Consumers may use this to distinguish an expected reload from
+ * an application/RPC failure.
+ */
+export class IframeDocumentReplacedError extends Error {
+  constructor() {
+    super("The iframe document was replaced before the request completed");
+    this.name = "IframeDocumentReplacedError";
+  }
+}
+
 export abstract class IframeRpcApi<
   /**
    * The methods this instance can call on the iframe.
@@ -69,7 +81,7 @@ export abstract class IframeRpcApi<
   private readonly pendingRequests: {
     [key: number]: {
       resolve: (response: TIncomingResult) => void;
-      reject: (error?: string) => void;
+      reject: (error: Error) => void;
     };
   } = {};
 
@@ -80,7 +92,10 @@ export abstract class IframeRpcApi<
   /**
    * Buffer for incoming requests received before onRequest handler is set.
    */
-  private bufferedRequests: {request: TIncomingRequests; event: MessageEvent}[] = [];
+  private bufferedRequests: {
+    request: TIncomingRequests;
+    event: MessageEvent;
+  }[] = [];
 
   constructor(
     private onRequest: HandleRequestMap<
@@ -99,12 +114,12 @@ export abstract class IframeRpcApi<
   ): void {
     this.onRequest = onRequest;
 
-    if(this.onRequest !== null){
+    if (this.onRequest !== null) {
       // Process buffered requests
       const bufferedRequests = this.bufferedRequests;
       this.bufferedRequests = [];
 
-      for (const {request, event} of bufferedRequests) {
+      for (const { request, event } of bufferedRequests) {
         this.handleRequest(request, event);
       }
     }
@@ -115,6 +130,22 @@ export abstract class IframeRpcApi<
   }
 
   setTarget(target: MessageTarget): void {
+    this.requestTarget = target;
+  }
+
+  replaceTarget(target: MessageTarget): void {
+    const pendingRequests = Object.entries(this.pendingRequests);
+
+    // clear first so a rejection handler cannot observe or settle stale state
+    for (const [id] of pendingRequests) {
+      delete this.pendingRequests[Number(id)];
+    }
+
+    const error = new IframeDocumentReplacedError();
+    for (const [, request] of pendingRequests) {
+      request.reject(error);
+    }
+
     this.requestTarget = target;
   }
 
@@ -188,9 +219,8 @@ export abstract class IframeRpcApi<
             },
           );
         },
-        reject: (error?: string): void => {
-          console.error("Error in response", error, request);
-          reject(new Error(error));
+        reject: (error: Error): void => {
+          reject(error);
         },
       };
 
@@ -229,8 +259,12 @@ export abstract class IframeRpcApi<
     // get the resolve function from the pendingRequests object
     const handleResponse = this.pendingRequests[response.id];
     if (!handleResponse) {
-      console.error("No resolve function found for message", response);
-      throw new Error("No resolve function found for message");
+      // Expected across embedded-app reloads and remounts: a remounted app
+      // replays buffered requests and answers them a second time, and a
+      // document that navigated away can be answered after a fresh RPC
+      // instance took over. Drop the response instead of throwing (CRT-464).
+      console.warn("No resolve function found for message", response);
+      return;
     }
 
     // call the resolve function with the message
@@ -238,7 +272,8 @@ export abstract class IframeRpcApi<
       const errorMessage =
         ("error" in response ? response.error : undefined) ?? "Unknown error";
 
-      handleResponse.reject(errorMessage);
+      console.error("Error in response", errorMessage, response);
+      handleResponse.reject(new Error(errorMessage));
     } else {
       handleResponse.resolve(response);
     }
@@ -250,8 +285,8 @@ export abstract class IframeRpcApi<
     request: TIncomingRequests,
     event: MessageEvent,
   ): Promise<void> {
-    if(this.onRequest === null){
-      this.bufferedRequests.push({request, event});
+    if (this.onRequest === null) {
+      this.bufferedRequests.push({ request, event });
       return;
     }
 

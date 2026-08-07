@@ -151,6 +151,40 @@ test.describe("/solve", () => {
     );
   });
 
+  test("keeps the loaded task when the language changes", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    await pwPage.evaluate(() => {
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 50,
+        method: "setLocale",
+        params: "fr",
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    // the locale switch applied to the UI...
+    await expect(page.stage).toContainText("Scène");
+
+    // ...and the loaded task survived: the locale-keyed remount of the GUI
+    // used to load the default project over it (CRT-464)
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    const { moveSteps } = page.enabledBlockConfigButtons;
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+  });
+
   test("cannot open block config menu", async ({ page: pwPage }) => {
     const { page } = await TestTaskPage.load(pwPage);
 
@@ -204,6 +238,31 @@ test.describe("/solve", () => {
     await expect(page.blocksOfCurrentTarget).toHaveCount(
       task.blocksOfMainTarget + moveStepsAllowedCount,
     );
+  });
+
+  test("dragging a block onto another sprite reduces the limit", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+    const moveStepsAllowedCount =
+      task.crtConfig.allowedBlocks["motion_movesteps"]!;
+
+    const { moveSteps } = page.enabledBlockConfigButtons;
+
+    await page.appendNewBlockTo(
+      "motion_movesteps",
+      page.taskBlocks.catActor.editableBlock,
+    );
+
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 1).toString());
+
+    // drag the added block onto another sprite in the sprite pane: the VM
+    // copies it into that target after the drag ends, without any block
+    // event on the active workspace (CRT-388)
+    const addedBlock = page.blocksOfCurrentTarget.last();
+    await page.dragBlockToSprite(addedBlock, "Sprite2");
+
+    await expect(moveSteps).toHaveText((moveStepsAllowedCount - 2).toString());
   });
 
   test("cannot paste a stack containing a block at its usage limit", async ({

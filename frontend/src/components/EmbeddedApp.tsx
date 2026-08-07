@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import {
+  IframeDocumentReplacedError,
   useIframeChild,
   PlatformCrtIframeApi,
   Submission,
@@ -72,7 +73,11 @@ export interface EmbeddedAppRef {
 
 export interface Props {
   src: string;
-  onAppAvailable?: () => void;
+  /**
+   * justLoaded is true when the iframe just fired a load event, meaning its
+   * previous document - and any request still in flight to it - is gone.
+   */
+  onAppAvailable?: (justLoaded: boolean) => void | Promise<void>;
   onAppError?: (error: Error) => void;
   onReceiveSubmission?: (submission: Submission) => void;
   onSolutionRun?: (solution: Blob) => void;
@@ -109,15 +114,32 @@ const EmbeddedApp = forwardRef<EmbeddedAppRef, Props>(function EmbeddedApp(
   }
 
   const onAvailable = useCallback(
-    async (iframe: HTMLIFrameElement, api: PlatformCrtIframeApi) => {
-      const response = await api.sendRequest("getHeight", undefined);
+    async (
+      iframe: HTMLIFrameElement,
+      api: PlatformCrtIframeApi,
+      justLoaded: boolean,
+    ) => {
+      try {
+        const response = await api.sendRequest("getHeight", undefined);
 
-      iframe.style.height = `${response.result}px`;
+        iframe.style.height = `${response.result}px`;
 
-      setLoadingState(LoadingState.available);
-      onAppAvailable?.();
+        setLoadingState(LoadingState.available);
+        await onAppAvailable?.(justLoaded);
+      } catch (error) {
+        // A subsequent load deliberately cancels initialization against the
+        // previous document. The new load callback owns recovery in that case.
+        if (error instanceof IframeDocumentReplacedError) {
+          return;
+        }
+
+        const appError =
+          error instanceof Error ? error : new Error(String(error));
+        setLoadingState(LoadingState.error);
+        onAppError?.(appError);
+      }
     },
-    [onAppAvailable],
+    [onAppAvailable, onAppError],
   );
 
   const { sendRequest, iframeRef } = useIframeChild(

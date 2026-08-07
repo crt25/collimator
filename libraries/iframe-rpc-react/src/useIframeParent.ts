@@ -96,7 +96,11 @@ export const useIframeParent = (
       window.addEventListener("message", eventHandler);
 
       if (initialMessages) {
-        for (const msg of initialMessages) {
+        // Consume the buffer: a remount (e.g. a locale change remounting the
+        // app) must not replay already-answered requests - the platform has
+        // no resolver left for them, so every replay would produce a
+        // duplicate response (CRT-464).
+        for (const msg of initialMessages.splice(0)) {
           eventHandler(msg);
         }
       }

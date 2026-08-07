@@ -3,6 +3,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { NotebookActions, NotebookPanel } from "@jupyterlab/notebook";
 import { Contents, ContentsManager } from "@jupyterlab/services";
 import { NotebookRunnerState } from "./notebook-runner-state";
+import { waitForKernelSpecs } from "./kernel/wait-for-kernel-specs";
 import { executePythonInKernel, writeJsonToVirtualFilesystem } from "./utils";
 
 const logModule = "[Jupyter][command]";
@@ -26,7 +27,12 @@ export const executeRunNotebookCommand = async (
 ): Promise<void> => {
   console.debug(`${logModule} Opening notebook at path:`, notebookPath);
 
+  // Opening before any kernelspec is registered would pop the kernel
+  // selection dialog over the hidden grading run (CRT-399)
+  await waitForKernelSpecs(app.serviceManager.kernelspecs);
+
   state.allowNextNotebookInParallel = true;
+  // eslint-disable-next-line no-restricted-syntax -- guarded by the kernelspec wait above
   const newNotebookPanel = documentManager.open(
     notebookPath,
     "Notebook",

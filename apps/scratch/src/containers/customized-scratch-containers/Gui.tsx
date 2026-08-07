@@ -198,6 +198,15 @@ class GUI extends React.Component<Props> {
     if (storage.setTranslatorFunction) {
       storage.setTranslatorFunction(this.props.intl.formatMessage);
     }
+
+    // A locale change remounts the whole GUI (the intl providers key their
+    // subtree by the locale) while the VM in the redux store keeps its
+    // loaded project. Only an empty VM gets the default project: loading it
+    // here again would wipe the task the platform already loaded (CRT-464).
+    if (this.props.vm.runtime.targets.length > 0) {
+      return;
+    }
+
     storage.scratchStorage
       .load(
         storage.scratchStorage.AssetType.Project,

@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { AstVersion, Prisma, Student, StudentActivity } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
@@ -34,6 +34,8 @@ export type StudentActivityInput = Omit<
 
 @Injectable()
 export class StudentActivityService {
+  private readonly logger = new Logger(StudentActivityService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
@@ -76,9 +78,15 @@ export class StudentActivityService {
           include: { solution: true },
         });
 
-        // do not wait for the promise to resolve
-        // this will happen in the background
-        this.analysisService.performAnalysis(result.solution, latestAstVersion);
+        // analysis runs in the background, but its rejection must be consumed
+        void this.analysisService
+          .performAnalysis(result.solution, latestAstVersion)
+          .catch((error: unknown) => {
+            this.logger.error(
+              `Failed to analyze solution for student activity (activity id: ${result.id})`,
+              error instanceof Error ? error.stack : String(error),
+            );
+          });
 
         return result;
       } catch (error) {
