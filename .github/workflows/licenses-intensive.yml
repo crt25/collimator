@@ -1,7 +1,9 @@
-name: Licenses refresh
+name: Licenses intensive
 
 on:
-  pull_request:
+  schedule:
+    - cron: "17 4 1 * *" # monthly: the burn-down set is small and changes slowly
+  pull_request: # to be removed after this runs for the first time
     types: [opened, edited, synchronize]
 
 permissions:
@@ -13,7 +15,27 @@ jobs:
     # Never gate refresh PRs themselves, or a failed refresh would recurse.
     if: startsWith(github.head_ref, 'licenses-refresh/') == false
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 480 # the intensive scan can take a long time for large repos
+
+    # Postgres is required because `task setup` runs `db:migrate:deploy`.
+    services: &services
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5433 on the host to Postgres
+          - 5433:5432
+
+    env: &job_env
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
 
     steps:
       - name: Check out repository code
@@ -27,26 +49,19 @@ jobs:
       - name: Setup CI environment
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2
 
-      - name: Check third-party licence inventory
-        id: check
-        continue-on-error: true
-        uses: Anansi-Solutions/SBOMlet@f2ac28672a5113b9d57552efd0c06e6ce225181c
-        with:
-          mode: check
-          policy: .sbomlet.policy.toml
-          docker: true
+      - name: Setup dependencies
+        run: task setup # required before SBOMlet's intensive analysis
 
       - name: Regenerate licenses
-        if: steps.check.outcome == 'failure'
-        uses: Anansi-Solutions/SBOMlet@f2ac28672a5113b9d57552efd0c06e6ce225181c
+        uses: Anansi-Solutions/SBOMlet@main # until the definitive version is set
         with:
           mode: generate
           policy: .sbomlet.policy.toml
           docker: true
+          intensive: true
 
       - name: Check for changes
         id: git-check
-        if: steps.check.outcome == 'failure'
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "modified=true" >> "$GITHUB_OUTPUT"
@@ -72,21 +87,3 @@ jobs:
             licenses
             automated pr
           delete-branch: true
-
-      - name: Comment with the refresh PR link
-        if: steps.cpr.outputs.pull-request-url
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🟠 The third-party licence inventory is out of date. Merge ${{ steps.cpr.outputs.pull-request-url }} into this branch to refresh it.`,
-            })
-
-      - name: Fail if the gate did not pass
-        if: steps.check.outcome == 'failure'
-        run: |
-          echo "::error::Licence gate failed. If a refresh PR was opened, merge it; otherwise a dependency's licence needs a policy decision in .sbomlet.policy.toml."
-          exit 1
