@@ -151,6 +151,40 @@ test.describe("/solve", () => {
     );
   });
 
+  test("keeps the loaded task when the language changes", async ({
+    page: pwPage,
+  }) => {
+    const { page, task } = await TestTaskPage.load(pwPage);
+
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    await pwPage.evaluate(() => {
+      const event = new window.MockMessageEvent(window.parent, {
+        id: 50,
+        method: "setLocale",
+        params: "fr",
+      });
+
+      window.dispatchEvent(event);
+    });
+
+    // the locale switch applied to the UI...
+    await expect(page.stage).toContainText("Scène");
+
+    // ...and the loaded task survived: the locale-keyed remount of the GUI
+    // used to load the default project over it (CRT-464)
+    await expect(page.blocksOfCurrentTarget).toHaveCount(
+      task.blocksOfMainTarget,
+    );
+
+    const { moveSteps } = page.enabledBlockConfigButtons;
+    await expect(moveSteps).toHaveText(
+      getExpectedBlockConfigButtonLabel(task.crtConfig, "motion_movesteps"),
+    );
+  });
+
   test("cannot open block config menu", async ({ page: pwPage }) => {
     const { page } = await TestTaskPage.load(pwPage);
 
