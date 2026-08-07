@@ -27,35 +27,56 @@ const sentryLevelByLogLevel: Record<LogLevel, SentryLogLevel> = {
  * shows always matches what the console prints.
  */
 export class SentryLogger extends ConsoleLogger {
-  log(message: unknown, ...optionalParams: unknown[]): void {
+  /*
+   * The public overloads below mirror ConsoleLogger's exactly, down to the
+   * `any` parameters, so SentryLogger is a drop-in with the identical call
+   * surface. `any` is required to match the base signatures (a subclass method
+   * must be assignable to them), hence the scoped disable.
+   */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  log(message: any, context?: string): void;
+  log(message: any, ...optionalParams: [...any, string?]): void;
+  log(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("log", [message, ...optionalParams]);
     super.log(message, ...optionalParams);
   }
 
-  error(message: unknown, ...optionalParams: unknown[]): void {
+  error(message: any, stackOrContext?: string): void;
+  error(message: any, stack?: string, context?: string): void;
+  error(message: any, ...optionalParams: [...any, string?, string?]): void;
+  error(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("error", [message, ...optionalParams]);
     super.error(message, ...optionalParams);
   }
 
-  warn(message: unknown, ...optionalParams: unknown[]): void {
+  warn(message: any, context?: string): void;
+  warn(message: any, ...optionalParams: [...any, string?]): void;
+  warn(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("warn", [message, ...optionalParams]);
     super.warn(message, ...optionalParams);
   }
 
-  debug(message: unknown, ...optionalParams: unknown[]): void {
+  debug(message: any, context?: string): void;
+  debug(message: any, ...optionalParams: [...any, string?]): void;
+  debug(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("debug", [message, ...optionalParams]);
     super.debug(message, ...optionalParams);
   }
 
-  verbose(message: unknown, ...optionalParams: unknown[]): void {
+  verbose(message: any, context?: string): void;
+  verbose(message: any, ...optionalParams: [...any, string?]): void;
+  verbose(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("verbose", [message, ...optionalParams]);
     super.verbose(message, ...optionalParams);
   }
 
-  fatal(message: unknown, ...optionalParams: unknown[]): void {
+  fatal(message: any, context?: string): void;
+  fatal(message: any, ...optionalParams: [...any, string?]): void;
+  fatal(message: any, ...optionalParams: any[]): void {
     this.forwardToSentry("fatal", [message, ...optionalParams]);
     super.fatal(message, ...optionalParams);
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   private forwardToSentry(logLevel: LogLevel, args: unknown[]): void {
     const level = sentryLevelByLogLevel[logLevel];
