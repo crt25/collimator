@@ -5,6 +5,7 @@ import {
   Student,
   StudentActivityType,
 } from "@prisma/client";
+import { Logger } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
@@ -70,7 +71,7 @@ describe("StudentActivityService", () => {
   beforeEach(() => {
     createActivity = jest.fn();
     findActivity = jest.fn();
-    performAnalysis = jest.fn();
+    performAnalysis = jest.fn().mockResolvedValue(null);
 
     const prisma = {
       studentActivity: {
@@ -89,6 +90,8 @@ describe("StudentActivityService", () => {
 
     service = new StudentActivityService(prisma, tasksService, analysisService);
   });
+
+  afterEach(() => jest.restoreAllMocks());
 
   it("returns an existing replay without triggering analysis again", async () => {
     createActivity.mockRejectedValue(uniqueConstraintError());
@@ -129,6 +132,22 @@ describe("StudentActivityService", () => {
     expect(createActivity).toHaveBeenCalledTimes(2);
     expect(findActivity).toHaveBeenCalledTimes(1);
     expect(performAnalysis).toHaveBeenCalledWith(storedSolution, AstVersion.v1);
+  });
+
+  it("logs and consumes a background analysis rejection", async () => {
+    const analysisError = new Error("conversion failed");
+    const logError = jest.spyOn(Logger.prototype, "error").mockImplementation();
+    createActivity.mockResolvedValue(storedActivity);
+    performAnalysis.mockRejectedValue(analysisError);
+
+    await expect(
+      service.create(student, activity, solutionInput),
+    ).resolves.toBe(storedActivity);
+
+    expect(logError).toHaveBeenCalledWith(
+      expect.stringContaining(`activity id: ${storedActivity.id}`),
+      analysisError.stack,
+    );
   });
 
   it("rethrows a persistent unrelated unique conflict after one retry", async () => {
