@@ -59,6 +59,12 @@ export default defineConfig([
           message:
             "Use openTaskNotebook() instead — it awaits kernelspecs.ready so JupyterLab auto-selects the Pyodide kernel instead of prompting the user.",
         },
+        {
+          selector:
+            "CallExpression > MemberExpression.callee[object.name='documentManager'][property.name='open']",
+          message:
+            "Await waitForKernelSpecs() before opening a notebook — opening without a registered kernelspec makes JupyterLab prompt the user to pick a kernel.",
+        },
       ],
 
       "@typescript-eslint/no-unused-vars": [
