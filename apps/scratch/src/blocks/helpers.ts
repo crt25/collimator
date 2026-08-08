@@ -62,12 +62,10 @@ const shouldPreventBlockCreation = (
 
   const eventBlockId = event.blockId ?? "";
 
-  const excludeBlockId =
-    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId
-      ? event.blockId
-      : undefined;
+  const excludeStackBlocksInRuntime =
+    isBlockDraggedToSprite && blockCreatedInCurrentGesture === eventBlockId;
 
-  if (!wouldExceedLimits(vm, block, excludeBlockId)) {
+  if (!wouldExceedLimits(vm, block, excludeStackBlocksInRuntime)) {
     if (isBlockCreated) {
       blockCreatedInCurrentGesture = eventBlockId;
     } else if (isBlockDraggedToSprite) {
@@ -190,6 +188,24 @@ const getAllowedBlockCount = (
   return config.allowedBlocks[blockType] || 0;
 };
 
+const countBlocksByType = (
+  blocks: ScratchBlocksExtended.Block[],
+): Record<string, number> => {
+  const counts: Record<string, number> = {};
+
+  for (const block of blocks) {
+    counts[block.type] = (counts[block.type] ?? 0) + 1;
+  }
+
+  return counts;
+};
+
+const countStackBlocksInRuntimeByType = (
+  vm: VMExtended,
+  blocks: ScratchBlocksExtended.Block[],
+): Record<string, number> =>
+  countBlocksByType(blocks.filter((block) => findBlockInRuntime(vm, block.id)));
+
 /**
  * Check if adding blocks from the flyout would exceed the limits set in the config.
  * It checks the number of blocks currently used in the workspace and the number of blocks being added, and compares it to the limits set in the config.
@@ -197,8 +213,7 @@ const getAllowedBlockCount = (
 export const wouldExceedLimits = (
   vm: VMExtended,
   block: ScratchBlocksExtended.Block,
-  // id of a block that is already included in the VM counts but should not be counted against the limit
-  excludeBlockId?: string,
+  excludeStackBlocksInRuntime = false,
 ): boolean => {
   const config = vm.crtConfig;
   if (!config) {
@@ -211,33 +226,39 @@ export const wouldExceedLimits = (
   // using the workspace count would always include the new block, this causes the flyout drags to be blocked
   const usedBlocks = countUsedBlocks(vm);
 
-  const allowed = getAllowedBlockCount(config, block.type);
-  let count = usedBlocks[block.type];
+  const blocksInStack = block.getDescendants(false, true);
+  const pastedBlockCounts = countBlocksByType(blocksInStack);
 
-  if (excludeBlockId && findBlockInRuntime(vm, excludeBlockId)) {
-    count -= 1;
-  }
+  // record temporary blocks added during flyout-to-sprite drag so we can subtract
+  // them from usedBlocks and avoid counting the dragged stack twice
+  const stackBlockCountsInRuntime = excludeStackBlocksInRuntime
+    ? countStackBlocksInRuntimeByType(vm, blocksInStack)
+    : {};
 
-  const isPreventedEntirely = allowed === 0;
+  for (const [blockType, pastedCount] of Object.entries(pastedBlockCounts)) {
+    const allowed = getAllowedBlockCount(config, blockType);
 
-  if (isPreventedEntirely) {
-    console.debug(
-      `${logModule} Block ${block.type} is not allowed, blocking addition of blocks`,
-    );
-    return true;
-  }
+    const currentlyUsed =
+      (usedBlocks[blockType] ?? 0) -
+      (stackBlockCountsInRuntime[blockType] ?? 0);
 
-  // if allowed is a number, the block has a limit, it doesn't for every other type
-  const hasLimit = typeof allowed === "number" && allowed >= 0;
+    const countAfterPaste = currentlyUsed + pastedCount;
 
-  // the create event fires on the main workspace before vm.blockListener updates target.blocks._blocks, so
-  // countUsedBlocks does not yet include the new block.
-  // we use >= to prevent going over the limit by one.
-  if (hasLimit && count >= allowed) {
-    console.debug(
-      `${logModule} Block limit reached for ${block.type}: ${count} >= ${allowed}`,
-    );
-    return true;
+    if (allowed === 0) {
+      console.debug(
+        `${logModule} Block ${blockType} is not allowed, blocking addition of stack`,
+      );
+      return true;
+    }
+
+    // if allowed is a number, the block has a limit, it doesn't for every other type
+    const hasLimit = typeof allowed === "number" && allowed >= 0;
+    if (hasLimit && countAfterPaste > allowed) {
+      console.debug(
+        `${logModule} Block limit reached for ${blockType}: ${currentlyUsed} + ${pastedCount} > ${allowed}`,
+      );
+      return true;
+    }
   }
 
   return false;

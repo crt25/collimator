@@ -47,6 +47,9 @@ export const useIframeParent = (
               // cache the parent origin and set it in state
               cachedParentOrigin = args[1].origin;
               setTaskOrigin(args[1].origin);
+              // the load handler may start a new request from the app to the platform such as postTaskStarted
+              // react only applies the taskOrigin in a later effect, so we set the origin synchronously before invoking the handler
+              crtPlatform.current.setOrigin(args[1].origin);
 
               return handleRequest.loadSubmission(...args);
             },
@@ -55,6 +58,7 @@ export const useIframeParent = (
             ): ReturnType<typeof handleRequest.loadTask> => {
               cachedParentOrigin = args[1].origin;
               setTaskOrigin(args[1].origin);
+              crtPlatform.current.setOrigin(args[1].origin);
 
               return handleRequest.loadTask(...args);
             },
@@ -96,7 +100,11 @@ export const useIframeParent = (
       window.addEventListener("message", eventHandler);
 
       if (initialMessages) {
-        for (const msg of initialMessages) {
+        // Consume the buffer: a remount (e.g. a locale change remounting the
+        // app) must not replay already-answered requests - the platform has
+        // no resolver left for them, so every replay would produce a
+        // duplicate response (CRT-464).
+        for (const msg of initialMessages.splice(0)) {
           eventHandler(msg);
         }
       }

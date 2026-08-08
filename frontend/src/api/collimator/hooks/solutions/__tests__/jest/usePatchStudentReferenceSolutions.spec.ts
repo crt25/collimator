@@ -91,6 +91,9 @@ describe("usePatchStudentReferenceSolutions", () => {
       expect.any(Array),
       { revalidate: false },
     );
+    expect(mutate.mock.invocationCallOrder[0]).toBeLessThan(
+      revalidate.mock.invocationCallOrder[0],
+    );
 
     const updatedData = mutate.mock.calls[0][1] as CurrentStudentAnalysis[];
     expect(

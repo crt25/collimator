@@ -1,4 +1,7 @@
-export { type MessageTarget } from "./iframe-rpc-api";
+export {
+  IframeDocumentReplacedError,
+  type MessageTarget,
+} from "./iframe-rpc-api";
 
 export {
   AppIframeRpcApi as AppCrtIframeApi,

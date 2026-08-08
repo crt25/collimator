@@ -57,7 +57,12 @@ export const handleBlockLifecycle = ({
           return;
         }
 
-        refreshBlockConfigButtonsFromXml(vm, xml, blocks, canEditTask);
+        // Clone the blocks so we can check them asynchronously
+        const clonedXml = xml.cloneNode(true) as Element;
+
+        setTimeout(() => {
+          refreshBlockConfigButtonsFromXml(vm, clonedXml, blocks, canEditTask);
+        });
       }
       break;
   }

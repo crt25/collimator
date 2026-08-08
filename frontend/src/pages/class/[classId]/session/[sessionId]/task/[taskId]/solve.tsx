@@ -1,7 +1,13 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { defineMessages, FormattedMessage, useIntl } from "react-intl";
-import { Language, Submission, Test, ToastType } from "iframe-rpc-react/src";
+import {
+  IframeDocumentReplacedError,
+  Language,
+  Submission,
+  Test,
+  ToastType,
+} from "iframe-rpc-react/src";
 import { Alert, Box, Breadcrumb, Text } from "@chakra-ui/react";
 import { LuListTodo, LuSignpost } from "react-icons/lu";
 import { useClassSession } from "@/api/collimator/hooks/sessions/useClassSession";
@@ -95,7 +101,11 @@ const SolveTaskPage = () => {
   const [showSessionMenu, setShowSessionMenu] = useState(false);
   const embeddedApp = useRef<EmbeddedAppRef | null>(null);
   const wasInitialized = useRef(false);
-  const isScratchMutexAvailable = useRef(true);
+  const activeInitialization = useRef<number | null>(null);
+  const isSubmitting = useRef(false);
+  // Each initialization supersedes the previous one. This prevents an older
+  // backend fetch from loading stale data after a reload started a newer run.
+  const initializationGeneration = useRef(0);
   // The freshest solution the embedded app has pushed up (e.g. the auto-save
   // triggered right before a language change reloads the iframe).
   // This allows data persistency after app iframe reloads (e.g. locale change).
@@ -177,11 +187,15 @@ const SolveTaskPage = () => {
   );
 
   const onSubmitSolution = useCallback(async () => {
-    if (!embeddedApp.current || !isScratchMutexAvailable.current) {
+    if (
+      !embeddedApp.current ||
+      activeInitialization.current !== null ||
+      isSubmitting.current
+    ) {
       return;
     }
 
-    isScratchMutexAvailable.current = false;
+    isSubmitting.current = true;
 
     try {
       if (!session || !task) {
@@ -202,81 +216,110 @@ const SolveTaskPage = () => {
 
       setSaveError(false);
     } catch (error) {
+      if (error instanceof IframeDocumentReplacedError) {
+        return;
+      }
+
       console.error("Failed to submit solution with", error);
       setSaveError(true);
     } finally {
-      isScratchMutexAvailable.current = true;
+      isSubmitting.current = false;
     }
   }, [session, task, saveSubmission]);
 
   useEffect(() => {
     if (embeddedApp.current && wasInitialized.current) {
-      embeddedApp.current.sendRequest("setLocale", intl.locale as Language);
+      void embeddedApp.current
+        .sendRequest("setLocale", intl.locale as Language)
+        .catch((error: unknown) => {
+          // jupyter applies the locale by navigating itself
+          // the following load cancels this request because the old document cannot reply
+          if (!(error instanceof IframeDocumentReplacedError)) {
+            console.error("Failed to set embedded app locale", error);
+          }
+        });
     }
   }, [intl.locale]);
 
-  const onAppAvailable = useCallback(async () => {
-    if (
-      embeddedApp.current &&
-      taskFile &&
-      session &&
-      task &&
-      isScratchMutexAvailable.current
-    ) {
-      wasInitialized.current = true;
+  const onAppAvailable = useCallback(
+    async () => {
+      if (embeddedApp.current && taskFile && session && task) {
+        const generation = ++initializationGeneration.current;
+        activeInitialization.current = generation;
+        wasInitialized.current = true;
 
-      const intl = intlRef.current;
+        const intl = intlRef.current;
 
-      // Prefer a solution stashed just before a reload (it includes changes
-      // that may not have reached the backend yet); otherwise load the latest
-      // persisted solution. Consume the stash synchronously so a solution
-      // arriving while the load below is in flight is not clobbered, and only
-      // accept it for the task it was stashed for.
-      const stashed = pendingSolution.current;
-      pendingSolution.current = null;
-      const stashedSolution =
-        stashed?.taskId === task.id ? stashed.solution : null;
+        // Prefer a solution stashed just before a reload (it includes changes
+        // that may not have reached the backend yet); otherwise load the latest
+        // persisted solution. Keep the stash until this exact initialization
+        // succeeds so a newer initialization can still consume it.
+        const stashed = pendingSolution.current;
+        const stashedSolution =
+          stashed?.taskId === task.id ? stashed.solution : null;
 
-      try {
-        const solutionFile =
-          stashedSolution ??
-          (await fetchLatestSolutionFile(
-            session.klass.id,
-            session.id,
-            task.id,
-          ));
-
-        isScratchMutexAvailable.current = false;
-
-        await executeAsyncWithToasts(
-          () =>
-            embeddedApp.current!.sendRequest("loadSubmission", {
-              task: taskFile,
-              submission: solutionFile,
-              language: intl.locale as Language,
-            }),
-          { intl, descriptor: taskMessages.cannotLoadSubmission },
-        );
-      } catch {
-        if (stashedSolution !== null) {
-          pendingSolution.current ??= stashed;
-          return;
+        if (stashed !== null && stashedSolution === null) {
+          pendingSolution.current = null;
         }
 
-        // if we cannot fetch the latest solution file we load the task from scratch
-        await embeddedApp.current.sendRequest("loadTask", {
-          task: taskFile,
-          language: intl.locale as Language,
-        });
-      } finally {
-        isScratchMutexAvailable.current = true;
+        try {
+          const solutionFile =
+            stashedSolution ??
+            (await fetchLatestSolutionFile(
+              session.klass.id,
+              session.id,
+              task.id,
+            ));
+
+          // A newer initialization started while we were fetching. It owns the
+          // iframe now, so this run must not load its older solution.
+          if (generation !== initializationGeneration.current) {
+            return;
+          }
+
+          await executeAsyncWithToasts(
+            () =>
+              embeddedApp.current!.sendRequest("loadSubmission", {
+                task: taskFile,
+                submission: solutionFile,
+                language: intl.locale as Language,
+              }),
+            { intl, descriptor: taskMessages.cannotLoadSubmission },
+          );
+
+          if (pendingSolution.current === stashed) {
+            pendingSolution.current = null;
+          }
+        } catch {
+          if (stashedSolution !== null) {
+            return;
+          }
+
+          // a newer reload superseded this run while the fetch was failing
+          if (generation !== initializationGeneration.current) {
+            return;
+          }
+
+          // if we cannot fetch the latest solution file we load the task from scratch
+          await embeddedApp.current.sendRequest("loadTask", {
+            task: taskFile,
+            language: intl.locale as Language,
+          });
+        } finally {
+          // An older initialization may finish after a newer one has started.
+          // Only the newest initialization may clear the active marker.
+          if (activeInitialization.current === generation) {
+            activeInitialization.current = null;
+          }
+        }
       }
-    }
+    },
     // since taskFile is a blob, use its hash as a proxy for its content.
     // intl is intentionally read through intlRef (not listed as a dep): see the
     // comment on intlRef — a locale change must not rotate this callback.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [embeddedApp, taskFileHash, session, task]);
+    [embeddedApp, taskFileHash, session, task],
+  );
 
   const onReceiveTaskSolution = useCallback(
     async (solutionBlob: Blob) => {

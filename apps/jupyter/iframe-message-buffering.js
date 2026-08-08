@@ -4,6 +4,15 @@
 const logModule = "[Iframe Message Buffer]";
 
 const bufferIncomingMessages = (e) => {
+  // Only buffer RPC messages (JSON-RPC objects). Non-object payloads are foreign
+  // traffic on the shared message channel - most notably the setImmediate
+  // polyfill's "setImmediate$<rand>$<handle>" strings, which fire in huge volume
+  // during JupyterLite/Pyodide boot. Buffering them would bloat the buffer and,
+  // on replay, spam the console with "unknown source".
+  if (typeof e.data !== "object" || e.data === null) {
+    return;
+  }
+
   console.debug(`${logModule} Buffering incoming message:`, e);
   window.bufferedMessages.push(e);
 };

@@ -98,11 +98,13 @@ describe("SessionsService.update — students already joined", () => {
           deletedAt: null,
           OR: [
             {
+              isAnonymous: true,
               anonymousStudents: {
                 some: { deletedAt: null },
               },
             },
             {
+              isAnonymous: false,
               class: {
                 students: {
                   some: { deletedAt: null },
