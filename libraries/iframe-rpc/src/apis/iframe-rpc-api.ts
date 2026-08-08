@@ -231,6 +231,17 @@ export abstract class IframeRpcApi<
   }
 
   public async handleWindowMessage(event: MessageEvent): Promise<void> {
+    // Ignore non-RPC messages. RPC messages are always JSON-RPC objects; a
+    // non-object payload can only be foreign traffic on the shared `message`
+    // channel. The most common source is the `setimmediate` polyfill (bundled
+    // into JupyterLab and Scratch), which schedules macrotasks by posting a
+    // `"setImmediate$<rand>$<handle>"` string to its own window. These fire in
+    // huge volume during app boot; without this guard every one is logged as an
+    // "unknown source" message.
+    if (typeof event.data !== "object" || event.data === null) {
+      return;
+    }
+
     if (event.source !== this.requestTarget) {
       console.debug(
         "Received message from unknown source",
