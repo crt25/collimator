@@ -8,4 +8,6 @@
 
 export type SolutionsControllerFindCurrentAnalysesV0Params = {
   includeSoftDelete?: boolean;
+  studentSolutionsOnly?: boolean;
+  ignoreStarredSolutions?: boolean;
 };

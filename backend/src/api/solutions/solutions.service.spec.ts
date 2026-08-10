@@ -114,15 +114,31 @@ describe("SolutionsService", () => {
     expect(service).toBeDefined();
   });
 
-  describe("findCurrentAnalysesWithActivities", () => {
+  describe("findCurrentAnalyses", () => {
     it("returns empty arrays when the query returns no rows", async () => {
       prismaMock.$queryRawTyped.mockResolvedValue([]);
 
       const [studentAnalyses, referenceAnalyses] =
-        await service.findCurrentAnalysesWithActivities(sessionId, taskId);
+        await service.findCurrentAnalyses(sessionId, taskId);
 
       expect(studentAnalyses).toEqual([]);
       expect(referenceAnalyses).toEqual([]);
+    });
+
+    it("runs the query when studentSolutionsOnly is requested", async () => {
+      prismaMock.$queryRawTyped.mockResolvedValue([]);
+
+      await service.findCurrentAnalyses(sessionId, taskId, false, true);
+
+      expect(prismaMock.$queryRawTyped).toHaveBeenCalledTimes(1);
+    });
+
+    it("runs the query when ignoreStarredSolutions is requested", async () => {
+      prismaMock.$queryRawTyped.mockResolvedValue([]);
+
+      await service.findCurrentAnalyses(sessionId, taskId, false, false, true);
+
+      expect(prismaMock.$queryRawTyped).toHaveBeenCalledTimes(1);
     });
 
     it("returns a single student analysis for one row without tests", async () => {
@@ -130,7 +146,7 @@ describe("SolutionsService", () => {
       prismaMock.$queryRawTyped.mockResolvedValue([row]);
 
       const [studentAnalyses, referenceAnalyses] =
-        await service.findCurrentAnalysesWithActivities(sessionId, taskId);
+        await service.findCurrentAnalyses(sessionId, taskId);
 
       const expected: Partial<CurrentStudentAnalysis> = {
         taskId: taskId,
@@ -167,7 +183,7 @@ describe("SolutionsService", () => {
         rowWithSecondTest,
       ]);
 
-      const [studentAnalyses] = await service.findCurrentAnalysesWithActivities(
+      const [studentAnalyses] = await service.findCurrentAnalyses(
         sessionId,
         taskId,
       );
@@ -193,7 +209,7 @@ describe("SolutionsService", () => {
       const activityRow = buildStudentAnalysisRow({ studentSolutionId: null });
       prismaMock.$queryRawTyped.mockResolvedValue([activityRow]);
 
-      const [studentAnalyses] = await service.findCurrentAnalysesWithActivities(
+      const [studentAnalyses] = await service.findCurrentAnalyses(
         sessionId,
         taskId,
       );
@@ -218,7 +234,7 @@ describe("SolutionsService", () => {
         secondStarred,
       ]);
 
-      const [studentAnalyses] = await service.findCurrentAnalysesWithActivities(
+      const [studentAnalyses] = await service.findCurrentAnalyses(
         sessionId,
         taskId,
       );
@@ -250,8 +266,10 @@ describe("SolutionsService", () => {
         rowWithSecondTest,
       ]);
 
-      const [, referenceAnalyses] =
-        await service.findCurrentAnalysesWithActivities(sessionId, taskId);
+      const [, referenceAnalyses] = await service.findCurrentAnalyses(
+        sessionId,
+        taskId,
+      );
 
       expect(referenceAnalyses).toHaveLength(1);
       expect(referenceAnalyses[0].tests).toEqual([
@@ -271,7 +289,7 @@ describe("SolutionsService", () => {
       prismaMock.$queryRawTyped.mockResolvedValue([studentRow, referenceRow]);
 
       const [studentAnalyses, referenceAnalyses] =
-        await service.findCurrentAnalysesWithActivities(sessionId, taskId);
+        await service.findCurrentAnalyses(sessionId, taskId);
 
       expect(studentAnalyses).toHaveLength(1);
       expect(referenceAnalyses).toHaveLength(1);

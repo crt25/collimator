@@ -70,7 +70,16 @@ const Analyzer = ({
     data: analyses,
     isLoading: isLoadingAnalyses,
     error: analysesErrors,
-  } = useCurrentSessionTaskSolutions(session.klass.id, session.id, task.id);
+  } = useCurrentSessionTaskSolutions(
+    session.klass.id,
+    session.id,
+    task.id,
+    undefined,
+    // the analysis dashboard shows current submitted solutions only: a newer
+    // testless student activity or a past starred solution must not hide a
+    // graded submission's tests (CRT-339)
+    { studentSolutionsOnly: true, ignoreStarredSolutions: true },
+  );
 
   const subtasks = useSubtasks(analyses);
   const subTaskAnalyses = useSubtaskAnalyses(analyses, state.selectedSubTaskId);

@@ -140,7 +140,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, hash, new Date());
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     expect(
@@ -180,7 +180,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, activityHash, later, later);
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     const studentRows = rows.filter((r) => r.studentId === student.id);
@@ -207,7 +207,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, activityHash, later, later);
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     expect(
@@ -237,7 +237,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, hash, new Date());
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     expect(rows.find((r) => r.studentId === student.id)).toBeUndefined();
@@ -259,7 +259,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     });
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     expect(
@@ -292,7 +292,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, hash, new Date(), undefined, true);
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     expect(
@@ -330,7 +330,7 @@ describe("getCurrentAnalysesWithActivities", () => {
     await createStudentActivity(student.id, latestHash, later, later);
 
     const rows = await prisma.$queryRawTyped(
-      getCurrentAnalysesWithActivities(sessionId, taskId),
+      getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
     );
 
     const studentRows = rows
@@ -359,5 +359,292 @@ describe("getCurrentAnalysesWithActivities", () => {
         studentSolutionId: null,
       },
     ]);
+  });
+
+  describe("getCurrentAnalysesWithActivities with studentSolutionsOnly = true", () => {
+    it("shows the latest submitted solution and its tests, ignoring a newer activity", async () => {
+      const student = await createStudent();
+      const submissionHash = Buffer.from("sso-sub");
+      const activityHash = Buffer.from("sso-act");
+      const earlier = new Date("2026-05-26T13:33:00.000Z");
+      const later = new Date("2026-05-26T15:33:00.000Z");
+
+      await createSolution(submissionHash);
+      await createAnalysis(submissionHash);
+      const submission = await createStudentSolution(
+        student.id,
+        submissionHash,
+        earlier,
+      );
+      await prisma.solutionTest.create({
+        data: {
+          studentSolutionId: submission.id,
+          name: "test-a",
+          passed: true,
+        },
+      });
+
+      // a newer, analysed activity snapshot must NOT shadow the submission
+      await createSolution(activityHash);
+      await createAnalysis(activityHash);
+      await createStudentActivity(student.id, activityHash, later, later);
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+
+      const studentRows = rows.filter((row) => row.studentId === student.id);
+      expect(studentRows).toHaveLength(1);
+      expect(studentRows[0].studentSolutionId).toBe(submission.id);
+      expect(studentRows[0].isStudentSolution).toBe(true);
+      expect(Buffer.from(studentRows[0].solutionHash!).toString()).toBe(
+        "sso-sub",
+      );
+      expect(studentRows[0].testName).toBe("test-a");
+      expect(studentRows[0].testPassed).toBe(true);
+    });
+
+    it("shows a submitted solution even when it has no tests", async () => {
+      const student = await createStudent();
+      const hash = Buffer.from("sso-notest");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      const submission = await createStudentSolution(student.id, hash);
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+
+      const studentRows = rows.filter((row) => row.studentId === student.id);
+      expect(studentRows).toHaveLength(1);
+      expect(studentRows[0].studentSolutionId).toBe(submission.id);
+      expect(studentRows[0].testName).toBeNull();
+    });
+
+    it("does not return a student who only has activities", async () => {
+      const student = await createStudent();
+      const hash = Buffer.from("sso-onlyact");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      await createStudentActivity(student.id, hash, new Date());
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+
+      expect(rows.find((row) => row.studentId === student.id)).toBeUndefined();
+    });
+
+    it("returns a starred past submission alongside the latest submission", async () => {
+      const student = await createStudent();
+      const pastHash = Buffer.from("sso-past-starred");
+      const latestHash = Buffer.from("sso-latest");
+      const earlier = new Date("2026-05-26T13:33:00.000Z");
+      const later = new Date("2026-05-26T15:33:00.000Z");
+
+      await createSolution(pastHash);
+      await createAnalysis(pastHash);
+      const pastSubmission = await createStudentSolution(
+        student.id,
+        pastHash,
+        earlier,
+      );
+      await prisma.solutionActivityReference.create({
+        data: {
+          solutionHash: pastHash,
+          studentId: student.id,
+          sessionId,
+          taskId,
+        },
+      });
+
+      await createSolution(latestHash);
+      await createAnalysis(latestHash);
+      const latestSubmission = await createStudentSolution(
+        student.id,
+        latestHash,
+        later,
+      );
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+
+      const studentRows = rows
+        .filter((row) => row.studentId === student.id)
+        .map((row) => ({
+          solutionHash: Buffer.from(row.solutionHash!).toString(),
+          isLatest: row.isLatest,
+          isReference: row.isReference,
+          studentSolutionId: row.studentSolutionId,
+        }))
+        .sort((left, right) =>
+          left.solutionHash.localeCompare(right.solutionHash),
+        );
+
+      expect(studentRows).toEqual([
+        {
+          solutionHash: "sso-latest",
+          isLatest: true,
+          isReference: false,
+          studentSolutionId: latestSubmission.id,
+        },
+        {
+          solutionHash: "sso-past-starred",
+          isLatest: false,
+          isReference: true,
+          studentSolutionId: pastSubmission.id,
+        },
+      ]);
+    });
+
+    it("excludes a starred solution that is only an activity", async () => {
+      const student = await createStudent();
+      const hash = Buffer.from("sso-starred-act");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      // starred, but backed only by an activity (no StudentSolution)
+      await createStudentActivity(
+        student.id,
+        hash,
+        new Date(),
+        undefined,
+        true,
+      );
+
+      // it would show up in the activity-inclusive query...
+      const withActivities = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, false, false),
+      );
+      expect(
+        withActivities.find((row) => row.studentId === student.id),
+      ).toBeDefined();
+
+      // ...but not in submitted-only mode
+      const submittedOnly = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+      expect(
+        submittedOnly.find((row) => row.studentId === student.id),
+      ).toBeUndefined();
+    });
+
+    it("returns task reference solutions", async () => {
+      const hash = Buffer.from("sso-ref");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      await prisma.referenceSolution.create({
+        data: {
+          title: "Ref",
+          description: "Reference",
+          isInitial: false,
+          taskId,
+          solutionHash: hash,
+        },
+      });
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, false),
+      );
+
+      expect(
+        rows
+          .filter((row) => row.referenceSolutionId !== null)
+          .map((row) => row.referenceSolutionTitle),
+      ).toEqual(["Ref"]);
+    });
+  });
+
+  describe("getCurrentAnalysesWithActivities with ignoreStarredSolutions = true", () => {
+    it("drops a past starred submission but keeps the latest", async () => {
+      const student = await createStudent();
+      const pastHash = Buffer.from("igs-past-starred");
+      const latestHash = Buffer.from("igs-latest");
+      const earlier = new Date("2026-05-26T13:33:00.000Z");
+      const later = new Date("2026-05-26T15:33:00.000Z");
+
+      await createSolution(pastHash);
+      await createAnalysis(pastHash);
+      await createStudentSolution(student.id, pastHash, earlier);
+      await prisma.solutionActivityReference.create({
+        data: {
+          solutionHash: pastHash,
+          studentId: student.id,
+          sessionId,
+          taskId,
+        },
+      });
+
+      await createSolution(latestHash);
+      await createAnalysis(latestHash);
+      const latestSubmission = await createStudentSolution(
+        student.id,
+        latestHash,
+        later,
+      );
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, true),
+      );
+
+      const studentRows = rows.filter((row) => row.studentId === student.id);
+      expect(studentRows).toHaveLength(1);
+      expect(Buffer.from(studentRows[0].solutionHash!).toString()).toBe(
+        "igs-latest",
+      );
+      expect(studentRows[0].studentSolutionId).toBe(latestSubmission.id);
+      expect(studentRows[0].isLatest).toBe(true);
+    });
+
+    it("keeps the latest solution even when it is starred", async () => {
+      const student = await createStudent();
+      const hash = Buffer.from("igs-latest-starred");
+
+      await createSolution(hash);
+      await createAnalysis(hash);
+      const submission = await createStudentSolution(student.id, hash);
+      await prisma.solutionActivityReference.create({
+        data: { solutionHash: hash, studentId: student.id, sessionId, taskId },
+      });
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, true, true),
+      );
+
+      const studentRows = rows.filter((row) => row.studentId === student.id);
+      expect(studentRows).toHaveLength(1);
+      expect(studentRows[0].studentSolutionId).toBe(submission.id);
+      expect(studentRows[0].isLatest).toBe(true);
+      expect(studentRows[0].isReference).toBe(true);
+    });
+
+    it("drops a past starred solution independently of studentSolutionsOnly", async () => {
+      const student = await createStudent();
+      const pastHash = Buffer.from("igs-past-act");
+      const latestHash = Buffer.from("igs-latest-act");
+      const earlier = new Date("2026-05-26T13:33:00.000Z");
+      const later = new Date("2026-05-26T15:33:00.000Z");
+
+      await createSolution(pastHash);
+      await createAnalysis(pastHash);
+      await createStudentActivity(student.id, pastHash, earlier, earlier, true);
+
+      await createSolution(latestHash);
+      await createAnalysis(latestHash);
+      await createStudentActivity(student.id, latestHash, later, later);
+
+      const rows = await prisma.$queryRawTyped(
+        getCurrentAnalysesWithActivities(sessionId, taskId, false, true),
+      );
+
+      const studentRows = rows
+        .filter((row) => row.studentId === student.id)
+        .map((row) => Buffer.from(row.solutionHash!).toString());
+      expect(studentRows).toEqual(["igs-latest-act"]);
+    });
   });
 });

@@ -1,5 +1,7 @@
 -- @param {Int} $1:sessionId The id of the session for which the analysis are to be retrieved
 -- @param {Int} $2:taskId The id of the task for which the analysis are to be retrieved
+-- @param {Boolean} $3:studentSolutionsOnly When true, student activities are excluded so only submitted solutions are returned (used by the analysis dashboard, CRT-339)
+-- @param {Boolean} $4:ignoreStarredSolutions When true, past starred solutions are dropped; the latest solution is still returned even when it is starred (used by the analysis dashboard, CRT-339)
 WITH allStudentSolutions AS (
     -- Solutions submitted via the student solution endpoint
     SELECT
@@ -50,6 +52,8 @@ WITH allStudentSolutions AS (
     WHERE studentActivity."sessionId" = $1
     AND studentActivity."taskId" = $2
     AND studentActivity."deletedAt" IS NULL
+    -- the analysis dashboard passes true to drop activity snapshots (CRT-339)
+    AND NOT $3
 ),
 studentSolutions AS (
     -- Only consider solutions that already have an analysis, then pick the most
@@ -158,7 +162,12 @@ LEFT JOIN "SolutionTest" test
   AND test."deletedAt" IS NULL
 WHERE reference."sessionId" = $1
 AND reference."taskId" = $2
-AND (studentSolution."id" IS NOT NULL OR studentActivity."id" IS NOT NULL)
+-- the analysis dashboard ignores past starred solutions (CRT-339); a
+-- starred *latest* solution is still returned via the first branch
+AND NOT $4
+-- in submitted-only mode a starred solution must be backed by a real
+-- submission; a starred activity-only snapshot is dropped (CRT-339)
+AND (studentSolution."id" IS NOT NULL OR (NOT $3 AND studentActivity."id" IS NOT NULL))
 AND NOT EXISTS (
   SELECT 1 FROM studentSolutions
   WHERE studentSolutions."studentId" = reference."studentId"

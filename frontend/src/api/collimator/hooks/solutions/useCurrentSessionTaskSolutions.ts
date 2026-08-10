@@ -5,6 +5,7 @@ import {
   getSolutionsControllerFindCurrentAnalysesV0Url,
   solutionsControllerFindCurrentAnalysesV0,
 } from "../../generated/endpoints/solutions/solutions";
+import { SolutionsControllerFindCurrentAnalysesV0Params } from "../../generated/models";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { CurrentAnalysis } from "../../models/solutions/current-analysis";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
@@ -17,13 +18,14 @@ export const fetchSolutionsAndTransform = (
   classId: number,
   sessionId: number,
   taskId?: number,
+  params: SolutionsControllerFindCurrentAnalysesV0Params = {},
 ): Promise<GetCurrentAnalysisReturnType> =>
   taskId
     ? solutionsControllerFindCurrentAnalysesV0(
         classId,
         sessionId,
         taskId,
-        {},
+        params,
         options,
       ).then((data) => {
         const studentAnalyses: CurrentStudentAnalysis[] = fromDtos(
@@ -45,6 +47,11 @@ export const useCurrentSessionTaskSolutions = (
   sessionId: number,
   taskId?: number,
   config?: NetworkHookConfig,
+  // Extra query parameters. The analysis dashboard passes
+  // { studentSolutionsOnly: true, ignoreStarredSolutions: true } so that a
+  // newer, testless activity snapshot - or a past starred solution - cannot
+  // hide a graded submission's passed-test count (CRT-339).
+  params: SolutionsControllerFindCurrentAnalysesV0Params = {},
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 
@@ -54,10 +61,17 @@ export const useCurrentSessionTaskSolutions = (
           classId,
           sessionId,
           taskId,
-          {},
+          params,
         )
       : null,
-    () => fetchSolutionsAndTransform(authOptions, classId, sessionId, taskId),
+    () =>
+      fetchSolutionsAndTransform(
+        authOptions,
+        classId,
+        sessionId,
+        taskId,
+        params,
+      ),
     config,
   );
 };
