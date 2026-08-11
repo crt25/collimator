@@ -52,6 +52,13 @@ This document is intended for developers working on this project and who may nee
 
 This project modifies Scratch; the scope of the changes and their purpose are described below.
 
+### ClassMosaic embedding (`iframe-rpc`)
+
+To run embedded inside ClassMosaic, the Scratch app implements the [`iframe-rpc` API](../architecture/iframe-rpc.md).
+Incoming messages are buffered early (`apps/scratch/src/utilities/iframe-message-buffer.ts`) so none are missed before the app is ready, and the integration itself lives in `apps/scratch/src/hooks/useEmbeddedScratch.ts`.
+
+Besides responding to platform requests (e.g. `loadTask`, `getSubmission`), the app emits app-initiated events back to the platform. In particular, when a solving student opens a task it sends [`postTaskStarted`](../architecture/iframe-rpc.md#task-start-posttaskstarted) — re-emitting it if the task is re-presented in another language — which marks the replay starting point and makes the student visible in the progress view before their first submission. It also reports runs and student interactions via `postSolutionRun` and `postStudentAppActivity`. See the [`iframe-rpc` method list](../architecture/iframe-rpc.md#available-methods) for the full set of events.
+
 ### Edit and solve mode
 
 This project extends the Scratch GUI component to additionally accept a `canEditTask` property which, if disabled, deactivates the following built-in Scratch features:

@@ -73,9 +73,34 @@ Defined in `methods/index.ts`. Methods are organized by caller (who initiates th
 | `postSubmission`         | Sends a submission                                    |
 | `postSolutionRun`        | Sends a solution to execute                           |
 | `postTaskSolution`       | Sends a task solution                                 |
+| `postTaskStarted`        | Signals that a student has started (opened) a task    |
 | `postStudentAppActivity` | Reports student activity (action, data, and solution) |
+| `postMessage`            | Asks the frontend to show a toast notification        |
 
 Each method is strongly typed for parameters and return values.
+
+#### Task start (`postTaskStarted`)
+
+The embedded app emits `postTaskStarted` once it has loaded a task for a solving
+student. Its parameters are:
+
+- `solution`: a `Blob` carrying the solution the task was opened with, encoded in
+  the app's own format (not the platform's stored task/submission file).
+- `locale`: the `Language` the task was presented in.
+
+The platform records this as a `TASK_STARTED` student activity, which:
+
+- marks the starting point when replaying a student's interactions with the task, and
+- makes the student visible in the progress view before they submit anything.
+
+The app re-emits `postTaskStarted` when the task is re-presented in a different
+language, carrying the new locale so the platform stays in sync.
+
+#### Notifications (`postMessage`)
+
+The embedded app can ask the frontend to display a toast notification with
+`postMessage`. Its parameters are a `title`, a `message`, and a `type`
+(`ToastType.Success`, `ToastType.Error`, or `ToastType.Info`).
 
 ### Demo
 
