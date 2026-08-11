@@ -600,13 +600,20 @@ describe("getCurrentAnalysesWithActivities", () => {
       expect(studentRows[0].isLatest).toBe(true);
     });
 
-    it("keeps the latest solution even when it is starred", async () => {
+    it("keeps the latest solution, with its tests, even when it is starred", async () => {
       const student = await createStudent();
       const hash = Buffer.from("igs-latest-starred");
 
       await createSolution(hash);
       await createAnalysis(hash);
       const submission = await createStudentSolution(student.id, hash);
+      await prisma.solutionTest.create({
+        data: {
+          studentSolutionId: submission.id,
+          name: "starred-test",
+          passed: true,
+        },
+      });
       await prisma.solutionActivityReference.create({
         data: { solutionHash: hash, studentId: student.id, sessionId, taskId },
       });
@@ -620,6 +627,9 @@ describe("getCurrentAnalysesWithActivities", () => {
       expect(studentRows[0].studentSolutionId).toBe(submission.id);
       expect(studentRows[0].isLatest).toBe(true);
       expect(studentRows[0].isReference).toBe(true);
+      // the CRT-339 regression guard: the starred latest still carries its tests
+      expect(studentRows[0].testName).toBe("starred-test");
+      expect(studentRows[0].testPassed).toBe(true);
     });
 
     it("drops a past starred solution independently of studentSolutionsOnly", async () => {
