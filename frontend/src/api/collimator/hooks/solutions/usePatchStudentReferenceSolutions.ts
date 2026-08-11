@@ -1,13 +1,11 @@
 import { useCallback } from "react";
 import { useSWRConfig } from "swr";
-import {
-  getSolutionsControllerFindCurrentAnalysesV0Url,
-  solutionsControllerPatchStudentReferenceSolutionsV0,
-} from "../../generated/endpoints/solutions/solutions";
+import { solutionsControllerPatchStudentReferenceSolutionsV0 } from "../../generated/endpoints/solutions/solutions";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
 import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
+import { matchesCurrentAnalysesKey } from "./currentAnalysesKey";
 
 type PatchStudentReferenceSolutions = (
   classId: number,
@@ -35,19 +33,13 @@ export const usePatchStudentReferenceSolutions =
           undefined,
           authOptions,
         ).then(() => {
-          const base = getSolutionsControllerFindCurrentAnalysesV0Url(
-            classId,
-            sessionId,
-            taskId,
-            {},
-          );
           const solutionHashSet = new Set(solutionHashes);
 
           // Optimistically flag the starred solutions across every cached
           // variant of the current-analyses list (the analysis dashboard uses
           // a distinct query key), before the revalidation below.
           mutate(
-            (key: unknown) => typeof key === "string" && key.startsWith(base),
+            matchesCurrentAnalysesKey(classId, sessionId, taskId),
             (cachedData?: GetCurrentAnalysisReturnType) =>
               cachedData
                 ? cachedData.map((analysis) =>
