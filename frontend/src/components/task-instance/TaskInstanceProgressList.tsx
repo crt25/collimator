@@ -135,7 +135,7 @@ const TaskInstanceProgressList = ({
     classId,
     sessionId,
     taskId,
-    DefaultAutoRefreshingConfig,
+    { config: DefaultAutoRefreshingConfig },
   );
 
   const activeStudentIds = useMemo(

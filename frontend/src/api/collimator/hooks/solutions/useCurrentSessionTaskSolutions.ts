@@ -13,6 +13,11 @@ import { ReferenceAnalysis } from "../../models/solutions/reference-analysis";
 
 export type GetCurrentAnalysisReturnType = CurrentAnalysis[];
 
+interface CurrentSessionTaskSolutionsOptions {
+  config?: NetworkHookConfig;
+  params?: SolutionsControllerFindCurrentAnalysesV0Params;
+}
+
 export const fetchSolutionsAndTransform = (
   options: RequestInit,
   classId: number,
@@ -46,12 +51,7 @@ export const useCurrentSessionTaskSolutions = (
   classId: number,
   sessionId: number,
   taskId?: number,
-  config?: NetworkHookConfig,
-  // Extra query parameters. The analysis dashboard passes
-  // { studentSolutionsOnly: true, ignoreStarredSolutions: true } so that a
-  // newer, testless activity snapshot - or a past starred solution - cannot
-  // hide a graded submission's passed-test count (CRT-339).
-  params: SolutionsControllerFindCurrentAnalysesV0Params = {},
+  { config, params = {} }: CurrentSessionTaskSolutionsOptions = {},
 ): ApiResponse<GetCurrentAnalysisReturnType, Error> => {
   const authOptions = useAuthenticationOptions();
 

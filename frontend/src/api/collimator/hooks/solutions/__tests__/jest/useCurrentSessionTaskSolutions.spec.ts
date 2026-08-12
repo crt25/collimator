@@ -79,7 +79,7 @@ describe("useCurrentSessionTaskSolutions", () => {
       ignoreStarredSolutions: true,
     };
     renderHook(() =>
-      useCurrentSessionTaskSolutions(1, 2, 3, undefined, params),
+      useCurrentSessionTaskSolutions(1, 2, 3, { params }),
     );
 
     expect(urlMock).toHaveBeenCalledWith(1, 2, 3, params);

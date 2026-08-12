@@ -74,11 +74,14 @@ const Analyzer = ({
     session.klass.id,
     session.id,
     task.id,
-    undefined,
-    // the analysis dashboard shows current submitted solutions only: a newer
-    // testless student activity or a past starred solution must not hide a
-    // graded submission's tests (CRT-339)
-    { studentSolutionsOnly: true, ignoreStarredSolutions: true },
+    {
+      // A newer activity snapshot or a past starred solution must not hide the
+      // tests belonging to the student's current submitted solution.
+      params: {
+        studentSolutionsOnly: true,
+        ignoreStarredSolutions: true,
+      },
+    },
   );
 
   const subtasks = useSubtasks(analyses);
