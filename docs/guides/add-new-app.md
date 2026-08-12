@@ -30,6 +30,14 @@ This includes declaring the events exchanged between the app and the frontend (e
 
 As an example, to retrieve the height of the embedded iframe, you must implement the `GetHeight` event.
 
+Beyond responding to frontend requests, an app used by solving students is also
+expected to emit app-initiated events the platform relies on. In particular, it
+must send `postTaskStarted` once it has loaded a task for a student — this marks
+the replay starting point and makes the student visible in the progress view
+before their first submission. See the [method list](../architecture/iframe-rpc.md#available-methods)
+for the full set of events an app can send (e.g. `postSubmission`,
+`postStudentAppActivity`, `postMessage`).
+
 In a non-React environment, this can be implemented in a file named `iframe-api.ts`, for example:
 
 ```typescript
@@ -83,10 +91,10 @@ enum TaskType {
 }
 ```
 
-Then generate and apply a migration:
+Then generate and apply a migration (you will be prompted for a migration name):
 
 ```sh
-prisma migrate dev --name added_my_new_task_type
+task db:migrate:dev
 ```
 
 ### AST converter

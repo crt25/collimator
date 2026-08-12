@@ -14,6 +14,13 @@ To support the integration into ClassMosaic, we need to implement its `iframe-rp
 To ensure no messages are missed, we load custom JavaScript code (`iframe-message-buffering.js`) before the page finishes loading which immediately attaches a listener and starts buffering incoming `iframe-rpc` messages.
 The `notebook-runner` extension then later retrieves the buffered messages and stops the buffering process.
 
+Beyond handling incoming requests, the `notebook-runner` extension also emits
+app-initiated events back to the platform. In particular, when a solving student
+opens a task it sends [`postTaskStarted`](../architecture/iframe-rpc.md#task-start-posttaskstarted)
+(re-emitting it if the task is re-presented in another language); it also uses
+`postTaskSolution` to auto-save the current solution and `postMessage` to surface
+toast notifications. See the [`iframe-rpc` method list](../architecture/iframe-rpc.md#available-methods) for details.
+
 ## Mode detection
 
 Analogous to the Scratch application, the jupyter application supports three modes.

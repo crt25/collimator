@@ -61,7 +61,7 @@ To add a new AST-based criterion, you must:
 
 If your criterion is not related to the AST, you must:
 
-1. Add your criterion to `MetaCriterionType` in `frontend/src/data-analyzer/meta-criterion-type.ts`.
+1. Add your criterion to `MetaCriterionType` in `frontend/src/components/dashboard/criteria/meta-criterion-type.ts`.
 2. Define an axis or a filter, as described below.
 
 ### Axis
