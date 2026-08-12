@@ -78,9 +78,7 @@ describe("useCurrentSessionTaskSolutions", () => {
       studentSolutionsOnly: true,
       ignoreStarredSolutions: true,
     };
-    renderHook(() =>
-      useCurrentSessionTaskSolutions(1, 2, 3, { params }),
-    );
+    renderHook(() => useCurrentSessionTaskSolutions(1, 2, 3, { params }));
 
     expect(urlMock).toHaveBeenCalledWith(1, 2, 3, params);
     expect(endpointMock).toHaveBeenCalledWith(1, 2, 3, params, authOptions);

@@ -146,6 +146,10 @@ export class SolutionsService {
     taskId: number,
     {
       includeSoftDeleted = false,
+      // When true, student activities are excluded so only submitted solutions
+      // are returned. Used by the analysis dashboard (CRT-339), where a newer,
+      // testless activity snapshot must not shadow the graded submission and
+      // drop its passed-test count.
       studentSolutionsOnly = false,
       ignoreStarredSolutions = false,
     }: FindCurrentAnalysesOptions = {},

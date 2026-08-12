@@ -70,19 +70,14 @@ const Analyzer = ({
     data: analyses,
     isLoading: isLoadingAnalyses,
     error: analysesErrors,
-  } = useCurrentSessionTaskSolutions(
-    session.klass.id,
-    session.id,
-    task.id,
-    {
-      // A newer activity snapshot or a past starred solution must not hide the
-      // tests belonging to the student's current submitted solution.
-      params: {
-        studentSolutionsOnly: true,
-        ignoreStarredSolutions: true,
-      },
+  } = useCurrentSessionTaskSolutions(session.klass.id, session.id, task.id, {
+    // A newer activity snapshot or a past starred solution must not hide the
+    // tests belonging to the student's current submitted solution.
+    params: {
+      studentSolutionsOnly: true,
+      ignoreStarredSolutions: true,
     },
-  );
+  });
 
   const subtasks = useSubtasks(analyses);
   const subTaskAnalyses = useSubtaskAnalyses(analyses, state.selectedSubTaskId);
