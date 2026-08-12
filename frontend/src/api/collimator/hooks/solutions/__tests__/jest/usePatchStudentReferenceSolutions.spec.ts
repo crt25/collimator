@@ -63,10 +63,7 @@ describe("usePatchStudentReferenceSolutions", () => {
     const otherStudent = buildAnalysis(5, "first");
     const cachedData = [matchingFirst, matchingSecond, otherHash, otherStudent];
 
-    useSWRConfigMock.mockReturnValue({
-      mutate,
-      cache: { get: jest.fn(() => ({ data: cachedData })) },
-    } as never);
+    useSWRConfigMock.mockReturnValue({ mutate } as never);
     authenticationOptionsMock.mockReturnValue(authOptions);
     revalidateSolutionListMock.mockReturnValue(revalidate);
     currentAnalysesUrlMock.mockReturnValue("/current-analyses");
@@ -86,16 +83,37 @@ describe("usePatchStudentReferenceSolutions", () => {
       authOptions,
     );
     expect(revalidate).toHaveBeenCalledWith(1, 2, 3);
+
+    // the optimistic mutate targets every current-analyses key by prefix (so
+    // the analysis dashboard's param'd key is covered too), before revalidation
     expect(mutate).toHaveBeenCalledWith(
-      "/current-analyses",
-      expect.any(Array),
+      expect.any(Function),
+      expect.any(Function),
       { revalidate: false },
     );
     expect(mutate.mock.invocationCallOrder[0]).toBeLessThan(
       revalidate.mock.invocationCallOrder[0],
     );
 
-    const updatedData = mutate.mock.calls[0][1] as CurrentStudentAnalysis[];
+    const [matchKey, updater] = mutate.mock.calls[0] as [
+      (key: unknown) => boolean,
+      (data?: CurrentStudentAnalysis[]) => CurrentStudentAnalysis[] | undefined,
+    ];
+
+    // matches the default key and any query-param variant, but nothing else
+    expect(matchKey("/current-analyses")).toBe(true);
+    expect(
+      matchKey(
+        "/current-analyses?studentSolutionsOnly=true&ignoreStarredSolutions=true",
+      ),
+    ).toBe(true);
+    expect(matchKey("/other")).toBe(false);
+    expect(matchKey(42)).toBe(false);
+
+    // an uncached (undefined) entry is left untouched
+    expect(updater(undefined)).toBeUndefined();
+
+    const updatedData = updater(cachedData) as CurrentStudentAnalysis[];
     expect(
       updatedData.map((analysis) => ({
         studentId: analysis.studentId,

@@ -28,6 +28,11 @@ import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
 
 export type StudentId = number;
 type CurrentAnalysisRow = getCurrentAnalysesWithActivities.Result;
+export interface FindCurrentAnalysesOptions {
+  includeSoftDeleted?: boolean;
+  studentSolutionsOnly?: boolean;
+  ignoreStarredSolutions?: boolean;
+}
 export type SolutionCreateInput = Omit<
   Prisma.SolutionUncheckedCreateInput,
   "data" | "mimeType"
@@ -136,15 +141,33 @@ export class SolutionsService {
     });
   }
 
-  async findCurrentAnalysesWithActivities(
+  async findCurrentAnalyses(
     sessionId: number,
     taskId: number,
-    includeSoftDelete = false,
+    {
+      includeSoftDeleted = false,
+      // When true, student activities are excluded so only submitted solutions
+      // are returned. Used by the analysis dashboard (CRT-339), where a newer,
+      // testless activity snapshot must not shadow the graded submission and
+      // drop its passed-test count.
+      studentSolutionsOnly = false,
+      ignoreStarredSolutions = false,
+    }: FindCurrentAnalysesOptions = {},
   ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
     const analyses = await this.prisma.$queryRawTyped(
-      includeSoftDelete
-        ? getSoftDeletedCurrentAnalysesWithActivities(sessionId, taskId)
-        : getCurrentAnalysesWithActivities(sessionId, taskId),
+      includeSoftDeleted
+        ? getSoftDeletedCurrentAnalysesWithActivities(
+            sessionId,
+            taskId,
+            studentSolutionsOnly,
+            ignoreStarredSolutions,
+          )
+        : getCurrentAnalysesWithActivities(
+            sessionId,
+            taskId,
+            studentSolutionsOnly,
+            ignoreStarredSolutions,
+          ),
     );
 
     return this.groupAnalyses(analyses);
