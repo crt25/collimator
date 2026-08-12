@@ -128,7 +128,9 @@ describe("SolutionsService", () => {
     it("runs the query when studentSolutionsOnly is requested", async () => {
       prismaMock.$queryRawTyped.mockResolvedValue([]);
 
-      await service.findCurrentAnalyses(sessionId, taskId, false, true);
+      await service.findCurrentAnalyses(sessionId, taskId, {
+        studentSolutionsOnly: true,
+      });
 
       expect(prismaMock.$queryRawTyped).toHaveBeenCalledTimes(1);
     });
@@ -136,7 +138,9 @@ describe("SolutionsService", () => {
     it("runs the query when ignoreStarredSolutions is requested", async () => {
       prismaMock.$queryRawTyped.mockResolvedValue([]);
 
-      await service.findCurrentAnalyses(sessionId, taskId, false, false, true);
+      await service.findCurrentAnalyses(sessionId, taskId, {
+        ignoreStarredSolutions: true,
+      });
 
       expect(prismaMock.$queryRawTyped).toHaveBeenCalledTimes(1);
     });

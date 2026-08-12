@@ -182,9 +182,11 @@ export class SolutionsController {
     const solutions = await this.solutionsService.findCurrentAnalyses(
       sessionId,
       taskId,
-      includeSoftDelete,
-      studentSolutionsOnly,
-      ignoreStarredSolutions,
+      {
+        includeSoftDeleted: includeSoftDelete,
+        studentSolutionsOnly,
+        ignoreStarredSolutions,
+      },
     );
 
     const studentAnalyses: CurrentStudentAnalysisDto[] = fromQueryResults(
