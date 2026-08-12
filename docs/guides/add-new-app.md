@@ -91,10 +91,10 @@ enum TaskType {
 }
 ```
 
-Then generate and apply a migration:
+Then generate and apply a migration (you will be prompted for a migration name):
 
 ```sh
-prisma migrate dev --name added_my_new_task_type
+task db:migrate:dev
 ```
 
 ### AST converter

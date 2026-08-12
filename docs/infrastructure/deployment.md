@@ -18,9 +18,16 @@ Each key exists once per environment, prefixed with `DEV_` (used by `development
 | ----------- | ---------- |
 | ROLE_TO_ASSUME | Repository Variable |
 | AWS_REGION | Repository Variable |
-| BACKEND_ECR_REGISTRY_URI | Repository Variable |
 | DEPLOY_URL | Repository Variable |
 | ENTRA_ID_CLIENT_ID | Repository Variable |
+| BACKEND_ECR_REGISTRY_URI | Repository Variable |
+| BACKEND_IMAGE_NAME | Repository Variable |
+| BACKEND_CLUSTER_NAME | Repository Variable |
+| BACKEND_SERVICE_NAME | Repository Variable |
+| FRONTEND_BUCKET_ID | Repository Variable |
+| SCRATCH_APP_BUCKET_ID | Repository Variable |
+| JUPYTER_APP_BUCKET_ID | Repository Variable |
+| CLOUDFRONT_DISTRIBUTION_ID | Repository Variable |
 | FRONTEND_SENTRY_DSN | Repository Variable |
 | APP_SCRATCH_SENTRY_DSN | Repository Variable |
 | APP_JUPYTER_SENTRY_DSN | Repository Variable |

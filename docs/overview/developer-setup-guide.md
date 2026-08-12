@@ -126,6 +126,8 @@ See [apps/jupyter/README.md](../../apps/jupyter/README.md) for more information.
 
 #### Postgres Docker
 
+?> The recommended way to run PostgreSQL locally is `task db:run` (also invoked by `task setup:dev`), which starts the container for you. The manual Docker setup below is only needed if you prefer to manage the containers yourself.
+
 This process creates two Docker containers:  
 
 - one for the PostgreSQL server
@@ -164,7 +166,7 @@ This process creates two Docker containers:
     - Port: 5432 (default postgres port)
     - Username: postgres
     - Password: password (value from step 1)
-9. Save. Update the `backend/.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public`.
+9. Save. Update the `backend/.env.local` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public`.
 
 ## Infrastructure and deployment
 

@@ -34,12 +34,11 @@ It defines strict types for requests and responses, ensuring reliability and sec
 
 The library is installed with ClassMosaic.
 
-Only for development purposes, you can install it via yarn:
+Only for development purposes, you can set it up via `task`:
 
 ```sh
 # From: collimator/
-cd /libraries/iframe-rpc
-yarn install
+task libs:iframe-rpc:setup
 ```
 
 ### Public API
@@ -122,12 +121,11 @@ It encapsulates origin validation, lifecycle handling, and communication setup f
 
 The library is installed with ClassMosaic.
 
-Only for development purposes when working on the library, you can install it via yarn:
+Only for development purposes when working on the library, you can set it up via `task`:
 
 ```sh
 # From: collimator/
-cd /libraries/iframe-rpc-react
-yarn install
+task libs:iframe-rpc-react:setup
 ```
 
 ### Hooks
