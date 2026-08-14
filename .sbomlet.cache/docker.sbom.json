@@ -263,9 +263,9 @@
         }
       ],
       "name": "bsdutils",
-      "purl": "pkg:deb/debian/bsdutils@1%3A2.41-5?arch=amd64&distro=debian-13&upstream=util-linux%402.41-5",
+      "purl": "pkg:deb/debian/bsdutils@1%3A2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux%402.41.5-0%2Bdeb13u1",
       "type": "library",
-      "version": "1:2.41-5"
+      "version": "1:2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -997,9 +997,9 @@
         }
       ],
       "name": "libblkid1",
-      "purl": "pkg:deb/debian/libblkid1@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/libblkid1@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -1830,9 +1830,9 @@
         }
       ],
       "name": "liblastlog2-2",
-      "purl": "pkg:deb/debian/liblastlog2-2@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/liblastlog2-2@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -2084,9 +2084,9 @@
         }
       ],
       "name": "libmount1",
-      "purl": "pkg:deb/debian/libmount1@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/libmount1@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -2676,9 +2676,9 @@
         }
       ],
       "name": "libsmartcols1",
-      "purl": "pkg:deb/debian/libsmartcols1@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/libsmartcols1@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -2968,9 +2968,9 @@
         }
       ],
       "name": "libuuid1",
-      "purl": "pkg:deb/debian/libuuid1@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/libuuid1@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -3157,9 +3157,9 @@
         }
       ],
       "name": "login",
-      "purl": "pkg:deb/debian/login@1%3A4.16.0-2%2Breally2.41-5?arch=amd64&distro=debian-13&upstream=util-linux%402.41-5",
+      "purl": "pkg:deb/debian/login@1%3A4.16.0-2%2Breally2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux%402.41.5-0%2Bdeb13u1",
       "type": "library",
-      "version": "1:4.16.0-2+really2.41-5"
+      "version": "1:4.16.0-2+really2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -3284,9 +3284,9 @@
         }
       ],
       "name": "mount",
-      "purl": "pkg:deb/debian/mount@2.41-5?arch=amd64&distro=debian-13&upstream=util-linux",
+      "purl": "pkg:deb/debian/mount@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
@@ -3836,9 +3836,9 @@
         }
       ],
       "name": "util-linux",
-      "purl": "pkg:deb/debian/util-linux@2.41-5?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/util-linux@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "2.41-5"
+      "version": "2.41.5-0+deb13u1"
     },
     {
       "images": [
