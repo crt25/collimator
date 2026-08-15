@@ -2628,7 +2628,7 @@ License: MIT
 
 ### @fortawesome/fontawesome-free@5.15.4
 
-License: CC-BY-4.0 AND MIT AND OFL-1.1
+License: (CC-BY-4.0 AND (OFL-1.1 AND MIT)) AND (CC-BY-4.0 AND (MIT AND OFL-1.1))
 
 - Copyright (c) Font Awesome
 - Copyright (c) Font Awesome Font Awesome
@@ -4601,7 +4601,7 @@ License: MIT
 
 ### @sentry/babel-plugin-component-annotate@4.6.1
 
-License: BSD-3-Clause AND MIT
+License: MIT AND BSD-3-Clause
 
 - Copyright (c) 2024, Sentry
 
@@ -4625,7 +4625,7 @@ License: MIT
 
 ### @sentry/bundler-plugin-core@4.6.1
 
-License: BSD-3-Clause AND MIT
+License: MIT AND BSD-3-Clause
 
 - Copyright (c) 2022, Sentry
 
@@ -4764,7 +4764,7 @@ License: MIT
 
 ### @sentry/webpack-plugin@4.6.1
 
-License: BSD-3-Clause AND MIT
+License: MIT AND BSD-3-Clause
 
 - Copyright (c) 2022, Sentry
 
@@ -7426,7 +7426,7 @@ License: MIT
 
 ### atob@2.1.2
 
-License: Apache-2.0 OR MIT
+License: MIT OR Apache-2.0
 
 - Copyright (c) 2015 AJ ONeal
 - Copyright 2015 AJ ONeal
@@ -7466,6 +7466,31 @@ Author: Mikeal Rogers
 License: MIT
 
 - Copyright 2013 Michael Hart (michael.hart.au@gmail.com)
+
+### axe-core@4.13.0
+
+License: MPL-2.0
+
+- - colorjs.io; Copyright (c) 2021 Lea Verou, Chris Lilley
+- - core-js-pure; Copyright (c) 2014-2023 Denis Pushkarev
+- - css-selector-parser; Copyright (c) 2013 Dulin Marat
+- - doT.js; Copyright (c) 2011 Laura Doktorova
+- Software includes portions from jQote2 Copyright (c) 2010 aefxx,
+- - emoji-regex; Copyright (c) Mathias Bynens &lt;https://mathiasbynens.be/&gt;
+- - es6-iterator; Copyright (c) 2013-2017 Mariusz Nowak (www.medikoo.com)
+- Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors
+- - event-emitter; Copyright (C) 2012-2015 Mariusz Nowak (www.medikoo.com)
+- - is-promise; Copyright (c) 2014 Forbes Lindesay
+- - lru-queue; Copyright (C) 2014 Mariusz Nowak (www.medikoo.com)
+- Copyright (c) 2010, Linden Research, Inc.
+- Copyright (c) 2012, Joshua Bell
+- - weakmap-polyfill; Copyright (c) 2015-2021 polygonplanet
+- - d; Copyright (c) 2013-2019, Mariusz Nowak, @medikoo, medikoo.com
+- - es5-ext; Copyright (c) 2011-2022, Mariusz Nowak, @medikoo, medikoo.com
+- - es6-symbol; Copyright (c) 2013-2019, Mariusz Nowak, @medikoo, medikoo.com
+- - es6-weak-map; Copyright (c) 2013-2018, Mariusz Nowak, @medikoo, medikoo.com
+- - ext; Copyright (c) 2011-2022, Mariusz Nowak, @medikoo, medikoo.com
+- - memoizee; Copyright (c) 2012-2018, Mariusz Nowak, @medikoo, medikoo.com
 
 ### axobject-query@4.1.0
 
@@ -7757,7 +7782,7 @@ License: MIT
 
 ### bowser@2.11.0
 
-License: MIT
+License: MITNFA
 
 - Copyright 2015, Dustin Diaz (the "Original Author")
 
@@ -9420,13 +9445,13 @@ License: BSD-2-Clause
 
 ### dompurify@3.1.6
 
-License: Apache-2.0 OR MPL-2.0
+License: MPL-2.0 OR Apache-2.0
 
 - Copyright 2024 Dr.-Ing. Mario Heiderich, Cure53
 
 ### dompurify@3.3.1
 
-License: Apache-2.0 OR MPL-2.0
+License: MPL-2.0 OR Apache-2.0
 
 - Copyright 2025 Dr.-Ing. Mario Heiderich, Cure53
 
@@ -13176,7 +13201,7 @@ License: MIT
 
 ### json-schema@0.4.0
 
-License: AFL-3.0 OR BSD-3-Clause
+License: AFL-2.1 OR BSD-3-Clause
 
 - Copyright (c) 2005-2015, The Dojo Foundation
 - This license is Copyright (C) 2003-2004 Lawrence E. Rosen. All rights reserved.
@@ -13336,7 +13361,7 @@ License: MIT
 
 ### jszip@3.10.1
 
-License: GPL-3.0-or-later OR MIT
+License: MIT OR GPL-3.0-or-later
 
 - (c) 1995-2013 Jean-loup Gailly and Mark Adler
 - (c) 2009-2016 Stuart Knightley
@@ -14986,7 +15011,7 @@ License: MIT
 
 ### opener@1.5.2
 
-License: MIT OR WTFPL
+License: WTFPL OR MIT
 
 - Copyright © 2012–2020 Domenic Denicola &lt;d@domenic.me&gt;
 - Copyright (C) 2004 Sam Hocevar &lt;sam@hocevar.net&gt;
@@ -16455,7 +16480,7 @@ License: MIT
 
 ### rc@1.2.8
 
-License: Apache-2.0 OR BSD-2-Clause OR MIT
+License: (BSD-2-Clause OR MIT OR Apache-2.0)
 
 - Copyright (c) 2013, Dominic Tarr
 - Copyright (c) 2011 Dominic Tarr
@@ -18712,13 +18737,13 @@ Author: Holepunch
 
 ### text-encoding@0.7.0
 
-License: Apache-2.0 OR Unlicense
+License: Unlicense OR Apache-2.0
 
 Author: Joshua Bell
 
 ### through@2.3.8
 
-License: Apache-2.0 OR MIT
+License: MIT OR Apache-2.0
 
 - Copyright (c) 2011 Dominic Tarr
 
@@ -19174,19 +19199,19 @@ License: MIT
 
 ### type-fest@4.38.0
 
-License: CC0-1.0 OR MIT
+License: MIT OR CC0-1.0
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### type-fest@4.41.0
 
-License: CC0-1.0 OR MIT
+License: MIT OR CC0-1.0
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### type-fest@5.3.1
 
-License: CC0-1.0 OR MIT
+License: MIT OR CC0-1.0
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
@@ -20580,52 +20605,54 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 (canonical SPDX text — package-specific copyright not located)
 
-### AFL-3.0
+### AFL-2.1
 
 ```
-Academic Free License (“AFL”) v. 3.0
+The Academic Free License
+v.2.1
 
-This Academic Free License (the "License") applies to any original work of authorship (the "Original Work") whose owner (the "Licensor") has placed the following licensing notice adjacent to the copyright notice for the Original Work:
+This Academic Free License (the "License") applies to any original work of authorship (the "Original Work") whose owner (the "Licensor") has placed the following notice immediately following the copyright notice for the Original Work:
 
-     Licensed under the Academic Free License version 3.0
+     Licensed under the Academic Free License version 2.1
 
-1) Grant of Copyright License. Licensor grants You a worldwide, royalty-free, non-exclusive, sublicensable license, for the duration of the copyright, to do the following:
+1) Grant of Copyright License. Licensor hereby grants You a world-wide, royalty-free, non-exclusive, perpetual, sublicenseable license to do the following:
 
-     a) to reproduce the Original Work in copies, either alone or as part of a collective work;
-     b) to translate, adapt, alter, transform, modify, or arrange the Original Work, thereby creating derivative works ("Derivative Works") based upon the Original Work;
-     c) to distribute or communicate copies of the Original Work and Derivative Works to the public, under any license of your choice that does not contradict the terms and conditions, including Licensor’s reserved rights and remedies, in this Academic Free License;
+     a) to reproduce the Original Work in copies;
+     b) to prepare derivative works ("Derivative Works") based upon the Original Work;
+     c) to distribute copies of the Original Work and Derivative Works to the public;
      d) to perform the Original Work publicly; and
      e) to display the Original Work publicly.
 
-2) Grant of Patent License. Licensor grants You a worldwide, royalty-free, non-exclusive, sublicensable license, under patent claims owned or controlled by the Licensor that are embodied in the Original Work as furnished by the Licensor, for the duration of the patents, to make, use, sell, offer for sale, have made, and import the Original Work and Derivative Works.
+2) Grant of Patent License. Licensor hereby grants You a world-wide, royalty-free, non-exclusive, perpetual, sublicenseable license, under patent claims owned or controlled by the Licensor that are embodied in the Original Work as furnished by the Licensor, to make, use, sell and offer for sale the Original Work and Derivative Works.
 
-3) Grant of Source Code License. The term "Source Code" means the preferred form of the Original Work for making modifications to it and all available documentation describing how to modify the Original Work. Licensor agrees to provide a machine-readable copy of the Source Code of the Original Work along with each copy of the Original Work that Licensor distributes. Licensor reserves the right to satisfy this obligation by placing a machine-readable copy of the Source Code in an information repository reasonably calculated to permit inexpensive and convenient access by You for as long as Licensor continues to distribute the Original Work.
+3) Grant of Source Code License. The term "Source Code" means the preferred form of the Original Work for making modifications to it and all available documentation describing how to modify the Original Work. Licensor hereby agrees to provide a machine-readable copy of the Source Code of the Original Work along with each copy of the Original Work that Licensor distributes. Licensor reserves the right to satisfy this obligation by placing a machine-readable copy of the Source Code in an information repository reasonably calculated to permit inexpensive and convenient access by You for as long as Licensor continues to distribute the Original Work, and by publishing the address of that information repository in a notice immediately following the copyright notice that applies to the Original Work.
 
- 4) Exclusions From License Grant. Neither the names of Licensor, nor the names of any contributors to the Original Work, nor any of their trademarks or service marks, may be used to endorse or promote products derived from this Original Work without express prior permission of the Licensor. Except as expressly stated herein, nothing in this License grants any license to Licensor’s trademarks, copyrights, patents, trade secrets or any other intellectual property. No patent license is granted to make, use, sell, offer for sale, have made, or import embodiments of any patent claims other than the licensed claims defined in Section 2. No license is granted to the trademarks of Licensor even if such marks are included in the Original Work. Nothing in this License shall be interpreted to prohibit Licensor from licensing under terms different from this License any Original Work that Licensor otherwise would have a right to license.
+4) Exclusions From License Grant. Neither the names of Licensor, nor the names of any contributors to the Original Work, nor any of their trademarks or service marks, may be used to endorse or promote products derived from this Original Work without express prior written permission of the Licensor. Nothing in this License shall be deemed to grant any rights to trademarks, copyrights, patents, trade secrets or any other intellectual property of Licensor except as expressly stated herein. No patent license is granted to make, use, sell or offer to sell embodiments of any patent claims other than the licensed claims defined in Section 2. No right is granted to the trademarks of Licensor even if such marks are included in the Original Work. Nothing in this License shall be interpreted to prohibit Licensor from licensing under different terms from this License any Original Work that Licensor otherwise would have a right to license.
 
-5) External Deployment. The term "External Deployment" means the use, distribution, or communication of the Original Work or Derivative Works in any way such that the Original Work or Derivative Works may be used by anyone other than You, whether those works are distributed or communicated to those persons or made available as an application intended for use over a network. As an express condition for the grants of license hereunder, You must treat any External Deployment by You of the Original Work or a Derivative Work as a distribution under section 1(c).
+5) This section intentionally omitted.
 
-6) Attribution Rights. You must retain, in the Source Code of any Derivative Works that You create, all copyright, patent, or trademark notices from the Source Code of the Original Work, as well as any notices of licensing and any descriptive text identified therein as an "Attribution Notice." You must cause the Source Code for any Derivative Works that You create to carry a prominent Attribution Notice reasonably calculated to inform recipients that You have modified the Original Work.
+6) Attribution Rights. You must retain, in the Source Code of any Derivative Works that You create, all copyright, patent or trademark notices from the Source Code of the Original Work, as well as any notices of licensing and any descriptive text identified therein as an "Attribution Notice." You must cause the Source Code for any Derivative Works that You create to carry a prominent Attribution Notice reasonably calculated to inform recipients that You have modified the Original Work.
 
-7) Warranty of Provenance and Disclaimer of Warranty. Licensor warrants that the copyright in and to the Original Work and the patent rights granted herein by Licensor are owned by the Licensor or are sublicensed to You under the terms of this License with the permission of the contributor(s) of those copyrights and patent rights. Except as expressly stated in the immediately preceding sentence, the Original Work is provided under this License on an "AS IS" BASIS and WITHOUT WARRANTY, either express or implied, including, without limitation, the warranties of non-infringement, merchantability or fitness for a particular purpose. THE ENTIRE RISK AS TO THE QUALITY OF THE ORIGINAL WORK IS WITH YOU. This DISCLAIMER OF WARRANTY constitutes an essential part of this License. No license to the Original Work is granted by this License except under this disclaimer.
+7) Warranty of Provenance and Disclaimer of Warranty. Licensor warrants that the copyright in and to the Original Work and the patent rights granted herein by Licensor are owned by the Licensor or are sublicensed to You under the terms of this License with the permission of the contributor(s) of those copyrights and patent rights. Except as expressly stated in the immediately proceeding sentence, the Original Work is provided under this License on an "AS IS" BASIS and WITHOUT WARRANTY, either express or implied, including, without limitation, the warranties of NON-INFRINGEMENT, MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY OF THE ORIGINAL WORK IS WITH YOU. This DISCLAIMER OF WARRANTY constitutes an essential part of this License. No license to Original Work is granted hereunder except under this disclaimer.
 
-8) Limitation of Liability. Under no circumstances and under no legal theory, whether in tort (including negligence), contract, or otherwise, shall the Licensor be liable to anyone for any indirect, special, incidental, or consequential damages of any character arising as a result of this License or the use of the Original Work including, without limitation, damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses. This limitation of liability shall not apply to the extent applicable law prohibits such limitation.
+8) Limitation of Liability. Under no circumstances and under no legal theory, whether in tort (including negligence), contract, or otherwise, shall the Licensor be liable to any person for any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or the use of the Original Work including, without limitation, damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses. This limitation of liability shall not apply to liability for death or personal injury resulting from Licensor's negligence to the extent applicable law prohibits such limitation. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so this exclusion and limitation may not apply to You.
 
-9) Acceptance and Termination. If, at any time, You expressly assented to this License, that assent indicates your clear and irrevocable acceptance of this License and all of its terms and conditions. If You distribute or communicate copies of the Original Work or a Derivative Work, You must make a reasonable effort under the circumstances to obtain the express assent of recipients to the terms of this License. This License conditions your rights to undertake the activities listed in Section 1, including your right to create Derivative Works based upon the Original Work, and doing so without honoring these terms and conditions is prohibited by copyright law and international treaty. Nothing in this License is intended to affect copyright exceptions and limitations (including “fair use” or “fair dealing”). This License shall terminate immediately and You may no longer exercise any of the rights granted to You by this License upon your failure to honor the conditions in Section 1(c).
+ 9) Acceptance and Termination. If You distribute copies of the Original Work or a Derivative Work, You must make a reasonable effort under the circumstances to obtain the express assent of recipients to the terms of this License. Nothing else but this License (or another written agreement between Licensor and You) grants You permission to create Derivative Works based upon the Original Work or to exercise any of the rights granted in Section 1 herein, and any attempt to do so except under the terms of this License (or another written agreement between Licensor and You) is expressly prohibited by U.S. copyright law, the equivalent laws of other countries, and by international treaty. Therefore, by exercising any of the rights granted to You in Section 1 herein, You indicate Your acceptance of this License and all of its terms and conditions.
 
 10) Termination for Patent Action. This License shall terminate automatically and You may no longer exercise any of the rights granted to You by this License as of the date You commence an action, including a cross-claim or counterclaim, against Licensor or any licensee alleging that the Original Work infringes a patent. This termination provision shall not apply for an action alleging patent infringement by combinations of the Original Work with other software or hardware.
 
-11) Jurisdiction, Venue and Governing Law. Any action or suit relating to this License may be brought only in the courts of a jurisdiction wherein the Licensor resides or in which Licensor conducts its primary business, and under the laws of that jurisdiction excluding its conflict-of-law provisions. The application of the United Nations Convention on Contracts for the International Sale of Goods is expressly excluded. Any use of the Original Work outside the scope of this License or after its termination shall be subject to the requirements and penalties of copyright or patent law in the appropriate jurisdiction. This section shall survive the termination of this License.
+11) Jurisdiction, Venue and Governing Law. Any action or suit relating to this License may be brought only in the courts of a jurisdiction wherein the Licensor resides or in which Licensor conducts its primary business, and under the laws of that jurisdiction excluding its conflict-of-law provisions. The application of the United Nations Convention on Contracts for the International Sale of Goods is expressly excluded. Any use of the Original Work outside the scope of this License or after its termination shall be subject to the requirements and penalties of the U.S. Copyright Act, 17 U.S.C. § 101 et seq., the equivalent laws of other countries, and international treaty. This section shall survive the termination of this License.
 
-12) Attorneys’ Fees. In any action to enforce the terms of this License or seeking damages relating thereto, the prevailing party shall be entitled to recover its costs and expenses, including, without limitation, reasonable attorneys' fees and costs incurred in connection with such action, including any appeal of such action. This section shall survive the termination of this License.
+12) Attorneys Fees. In any action to enforce the terms of this License or seeking damages relating thereto, the prevailing party shall be entitled to recover its costs and expenses, including, without limitation, reasonable attorneys' fees and costs incurred in connection with such action, including any appeal of such action. This section shall survive the termination of this License.
 
-13) Miscellaneous. If any provision of this License is held to be unenforceable, such provision shall be reformed only to the extent necessary to make it enforceable.
+13) Miscellaneous. This License represents the complete agreement concerning the subject matter hereof. If any provision of this License is held to be unenforceable, such provision shall be reformed only to the extent necessary to make it enforceable.
 
 14) Definition of "You" in This License. "You" throughout this License, whether in upper or lower case, means an individual or a legal entity exercising rights under, and complying with all of the terms of, this License. For legal entities, "You" includes any entity that controls, is controlled by, or is under common control with you. For purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
 
 15) Right to Use. You may use the Original Work in all ways not otherwise restricted or conditioned by this License or by law, and Licensor promises not to interfere with or be responsible for such uses by You.
 
-16) Modification of This License. This License is Copyright © 2005 Lawrence Rosen. Permission is granted to copy, distribute, or communicate this License without modification. Nothing in this License permits You to modify this License as applied to the Original Work or to Derivative Works. However, You may modify the text of this License and copy, distribute or communicate your modified version (the "Modified License") and apply it to other original works of authorship subject to the following conditions: (i) You may not indicate in any way that your Modified License is the "Academic Free License" or "AFL" and you may not use those names in the name of your Modified License; (ii) You must replace the notice specified in the first paragraph above with the notice "Licensed under <insert your license name here>" or with a notice of your own that is not confusingly similar to the notice in this License; and (iii) You may not claim that your original works are open source software unless your Modified License has been approved by Open Source Initiative (OSI) and You comply with its license review and certification process.
+This license is Copyright (C) 2003-2004 Lawrence E. Rosen. All rights reserved.
+Permission is hereby granted to copy and distribute this license without modification. This license may not be modified without the express written permission of its copyright owner.
 ```
 
 (canonical SPDX text — package-specific copyright not located)
@@ -24675,6 +24702,20 @@ In addition, the following condition applies:
 
 All redistributions must retain an intact copy of this copyright notice
 and disclaimer.
+```
+
+(canonical SPDX text — package-specific copyright not located)
+
+### MITNFA
+
+```
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+Distributions of all or part of the Software intended to be used by the recipients as they would use the unmodified Software, containing modifications that substantially alter, remove, or disable functionality of the Software, outside of the documented configuration mechanisms provided by the Software, shall be modified such that the Original Author's bug reporting email addresses and urls are either replaced with the contact information of the parties responsible for the changes, or removed entirely.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 (canonical SPDX text — package-specific copyright not located)
