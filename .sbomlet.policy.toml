@@ -105,8 +105,8 @@ reason = "typing-extensions is licensed PSF-2.0 (Python Software Foundation Lice
 
 [[clarify]]
 package = { name = "json-schema", version = "0.4.0" }
-expression = "AFL-3.0 OR BSD-3-Clause"
-reason = "json-schema@0.4.0 is dual-licensed AFL-3.0 OR BSD-3-Clause (the New BSD License), a choice of either. The scan AND-joined AFL-2.1, AFL-3.0 and BSD-3-Clause; the registry flattened it to (AFL-2.1 OR BSD-3-Clause) with the wrong AFL version. I record the correct dual-license."
+expression = "AFL-2.1 OR BSD-3-Clause"
+reason = "json-schema@0.4.0 is dual-licensed AFL-2.1 OR BSD-3-Clause (the New BSD License), a choice of either. Its LICENSE text and package.json both state Academic Free License version 2.1; no AFL-3.0 text exists anywhere in the package. The scan AND-joined AFL-2.1, AFL-3.0 and BSD-3-Clause (the AFL-3.0 leaf is a scanner rule collision - AFL-2.1 and AFL-3.0 share most of their text). I record the declared dual-license with the AFL version the files actually carry (2.1), matching the registry."
 
 [[clarify]]
 package = { name = "jszip", version = "3.10.1" }
@@ -336,14 +336,16 @@ package = { name = "yallist", version = "5.0.0" }
 expression = "BlueOak-1.0.0"
 reason = "yallist v5 is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
 
-# evidence: apps/scratch/node_modules/bowser/LICENSE is plain MIT (Dustin
-# Diaz, 2015); grep for the no-false-attribs clause (misrepresent/false/
-# attrib) across the package finds nothing - MITNFA is an over-detection
-# (bowser v1 was MITNFA; v2 relicensed to MIT).
+# evidence: apps/scratch/node_modules/bowser/LICENSE is MIT No Attribution
+# (MITNFA): the MIT grant plus the distinctive clause requiring downstream to
+# strip or replace "the Original Author's bug reporting email addresses and
+# urls" on functionally-altering modification. That clause is genuinely present
+# in the installed 2.11.0 LICENSE, so ScanCode's MITNFA detection is correct;
+# package.json's bare "MIT" understates it.
 [[clarify]]
 package = { name = "bowser", version = "2.11.0" }
-expression = "MIT"
-reason = "bowser 2.x is MIT (LICENSE and package.json). The MITNFA variant the scan added belongs to bowser 1.x; the no-false-attribs clause appears nowhere in the installed 2.11.0 package (verified by grep). I record MIT."
+expression = "MITNFA"
+reason = "bowser 2.11.0's LICENSE is MIT No Attribution (MITNFA): the standard MIT grant followed by the no-false-attribution clause obliging distributors of functionally-modified copies to replace or remove the Original Author's bug-report addresses and urls. That clause is present verbatim in the shipped LICENSE file, so the scan's MITNFA reading is correct; the file governs over package.json's bare MIT. I record the precise MITNFA variant."
 
 # evidence: apps/jupyter/.venv/.../wcwidth-0.6.0.dist-info: METADATA
 # License-Expression: MIT and licenses/LICENSE is "The MIT License (MIT)".
@@ -427,23 +429,27 @@ package = { name = "normalize-package-data", version = "3.0.3" }
 expression = "BSD-2-Clause AND BSD-3-Clause"
 reason = "normalize-package-data's LICENSE notes it contains code originally written by Isaac Z. Schlueter (npm, BSD-3-Clause) alongside Meryn Stol's BSD-2-Clause grant for the package itself. I record both, as the scan found."
 
-# evidence: frontend/node_modules/@sentry/bundler-plugin-core/LICENSE is MIT,
-# but the dist/ bundle vendors BSD-3-Clause code (grep "Redistribution and
-# use" matches in dist). Same build for all three plugin packages.
+# evidence: frontend/node_modules/@sentry/{babel-plugin-component-annotate,
+# bundler-plugin-core,webpack-plugin}/LICENSE each open with the heading
+# "# MIT License" but the body is verbatim BSD-3-Clause text ("Redistribution
+# and use ...", plus the clause-3 "Neither the name ... may be used to
+# endorse"). package.json declares MIT. So both licenses are genuinely present
+# in the LICENSE file itself; the dist/ folders contain no BSD text. Same
+# mislabeled LICENSE ships in all three plugin packages.
 [[clarify]]
 package = { name = "@sentry/babel-plugin-component-annotate", version = "4.6.1" }
 expression = "MIT AND BSD-3-Clause"
-reason = "The Sentry bundler-plugin packages are MIT (LICENSE) but their dist bundles vendor BSD-3-Clause-licensed code (the BSD redistribution text appears inside dist). Both obligations attach to the shipped artifact. I record MIT AND BSD-3-Clause as the scan found."
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
 
 [[clarify]]
 package = { name = "@sentry/bundler-plugin-core", version = "4.6.1" }
 expression = "MIT AND BSD-3-Clause"
-reason = "The Sentry bundler-plugin packages are MIT (LICENSE) but their dist bundles vendor BSD-3-Clause-licensed code (the BSD redistribution text appears inside dist). Both obligations attach to the shipped artifact. I record MIT AND BSD-3-Clause as the scan found."
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
 
 [[clarify]]
 package = { name = "@sentry/webpack-plugin", version = "4.6.1" }
 expression = "MIT AND BSD-3-Clause"
-reason = "The Sentry bundler-plugin packages are MIT (LICENSE) but their dist bundles vendor BSD-3-Clause-licensed code (the BSD redistribution text appears inside dist). Both obligations attach to the shipped artifact. I record MIT AND BSD-3-Clause as the scan found."
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
 
 # evidence: backend/node_modules/encoding/LICENSE: the MIT grant text WITHOUT
 # the "above copyright notice shall be included" attribution condition -
