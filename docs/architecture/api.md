@@ -40,4 +40,4 @@ This configuration generates an OpenAPI specification that is available at:
 
 Orval generates type-safe JavaScript and TypeScript clients from any valid OpenAPI v3 specification.
 
-The command `yarn update:api` in the `frontend` folder reads the OpenAPI JSON specification and generates a client in `frontend/api/collimator/generated`. Note that the backend must be running for this command to work (`cd backend && yarn dev`).
+The command `task frontend:api:generate` regenerates the type-safe client in `frontend/src/api/collimator/generated`. It builds the backend, regenerates the committed `backend/docs/api.json` specification, installs the frontend dependencies, and finally runs Orval to generate the client — so you do not need to start the backend yourself.

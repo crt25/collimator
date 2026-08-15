@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { randomBytes } from "crypto";
-import { Locator, Page } from "playwright/test";
+import { expect, Locator, Page } from "playwright/test";
 import {
   getAllTargetBlocksSelector,
   getBlockCanvasSelector,
   getBlockConfigButtonSelector,
+  getBlockSelector,
   getBlockConfigFormSelector,
   getFlyoutSelector,
 } from "../locators";
@@ -113,6 +114,10 @@ export class ScratchEditorPage {
       .click();
   }
 
+  async pressStopButton() {
+    return this.page.getByTestId("stage-controls").getByTitle("Stop").click();
+  }
+
   async removeAllNonFrozenBlocks() {
     while ((await this.blocksOfCurrentTargetNonFrozen.count()) > 0) {
       await this.blocksOfCurrentTargetNonFrozen.first().dragTo(this.toolbox, {
@@ -156,6 +161,38 @@ export class ScratchEditorPage {
     return block.dragTo(this.toolbox, { force: true });
   }
 
+  getSpriteSelectorItem(spriteName: string) {
+    return this.page
+      .locator('[class*="sprite-selector-item"]')
+      .filter({ has: this.page.getByText(spriteName, { exact: true }) })
+      .first();
+  }
+
+  /**
+   * Drags a block from the current workspace onto another sprite in the
+   * sprite pane, which copies it into that sprite. A single mouse jump does
+   * not register as a scratch-blocks drag, so the pointer is moved in steps
+   * and rests on the sprite before dropping.
+   */
+  async dragBlockToSprite(block: Locator, spriteName: string) {
+    await this.scrollBlockIntoView(block);
+
+    const sprite = this.getSpriteSelectorItem(spriteName);
+    const blockPosition = (await block.boundingBox())!;
+
+    await this.page.mouse.move(
+      blockPosition.x + blockPosition.width / 2,
+      blockPosition.y + blockPosition.height / 2,
+    );
+    await this.page.mouse.down();
+    await this.page.mouse.move(blockPosition.x + 100, blockPosition.y + 100, {
+      steps: 5,
+    });
+    await sprite.hover({ force: true });
+    await this.page.waitForTimeout(500);
+    await this.page.mouse.up();
+  }
+
   async moveBlock(
     block: Locator,
     target: Locator,
@@ -197,6 +234,66 @@ export class ScratchEditorPage {
         y: 50,
       },
     });
+  }
+
+  async createNewStack(opcode: string) {
+    const stackDropMargin = 150;
+
+    const getStackDropCoordinate = (canvasSize: number) =>
+      canvasSize - Math.min(stackDropMargin, canvasSize / 2);
+
+    const topBlocks = this.page.locator(isVisualTopOfStack);
+    const existingTopBlockIds = await topBlocks.evaluateAll((blocks) =>
+      blocks.map((block) => block.getAttribute("data-id")),
+    );
+    const canvasBounds = await this.blockCanvas.boundingBox();
+
+    if (!canvasBounds) {
+      throw new Error("Failed to find the block canvas");
+    }
+
+    await this.getBlockInToolbox(opcode).dragTo(this.blockCanvas, {
+      force: true,
+      targetPosition: {
+        // keep the new stack away from the toolbox
+        // on a workspace thinner than twice the margin, fallback to its midpoint
+        x: getStackDropCoordinate(canvasBounds.width),
+        y: getStackDropCoordinate(canvasBounds.height),
+      },
+    });
+
+    const newTopBlockId = await topBlocks.evaluateAll(
+      (blocks, existingIds) =>
+        blocks
+          .map((block) => block.getAttribute("data-id"))
+          .find((id) => id !== null && !existingIds.includes(id)),
+      existingTopBlockIds,
+    );
+
+    if (!newTopBlockId) {
+      throw new Error(`Failed to create a new ${opcode} stack`);
+    }
+
+    return this.page.locator(getBlockSelector(newTopBlockId));
+  }
+
+  async copyStack(stack: Locator) {
+    const blockPath = stack.locator(".blocklyPath").first();
+
+    // blockly selects a block on mouse down. it is dispatched directly because an SVG
+    // stack can be outside of the mobile viewport even though it is present in the workspace
+    await blockPath.dispatchEvent("mousedown", { button: 0, buttons: 1 });
+    await this.page.locator("body").dispatchEvent("mouseup", {
+      button: 0,
+      buttons: 0,
+    });
+
+    await expect(stack).toHaveClass(/blocklySelected/);
+    await this.page.keyboard.press("ControlOrMeta+C");
+  }
+
+  async pasteStack() {
+    await this.page.keyboard.press("ControlOrMeta+V");
   }
 
   async appendNewBlockTo(opcode: string, block: Locator) {

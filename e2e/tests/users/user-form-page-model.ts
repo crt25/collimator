@@ -17,13 +17,17 @@ export class UserFormPageModel extends FormPageModel {
     return {
       name: this.form.locator('[data-testid="name"]'),
       email: this.form.locator('[data-testid="email"]'),
-      type: this.form.locator('[data-testid="type"]'),
+      type: this.form.locator('select[name="type"]'),
       oidcSub: this.form.locator('[data-testid="oidcSub"]'),
     };
   }
 
+  get typeTrigger() {
+    return this.form.locator('[data-testid="type"]');
+  }
+
   async setUserType(type: string) {
-    await this.selectChakraOption(this.inputs.type, type);
+    await this.selectChakraOption(this.typeTrigger, type);
   }
 
   get submitButton() {

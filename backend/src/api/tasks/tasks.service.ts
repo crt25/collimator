@@ -166,6 +166,7 @@ export class TasksService {
       include: {
         sessions: {
           where: {
+            deletedAt: deletedAtCondition,
             session: {
               deletedAt: deletedAtCondition,
               OR: [
@@ -489,6 +490,9 @@ export class TasksService {
     const sessionWithStudents = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
+        // removing a task from a lesson soft-deletes the association; such a
+        // lesson no longer uses the task and must not keep it locked
+        deletedAt: null,
         task: {
           deletedAt: null,
         },
@@ -530,6 +534,9 @@ export class TasksService {
     const sessionTask = await tx.sessionTask.findFirst({
       where: {
         taskId: id,
+        // a task the other teacher already removed from their lesson leaves a
+        // soft-deleted association behind; it must not lock the task forever
+        deletedAt: null,
         session: {
           deletedAt: null,
           class: {

@@ -206,9 +206,9 @@ sequenceDiagram
     "Piscina Worker Pool"->>"SolutionConversionWorker": Execute with solution data
     "SolutionConversionWorker"->>converter: convert decoded JSON
     converter->>"SolutionConversionWorker": GeneralAst
-    "SolutionConversionWorker"->>"Piscina Worker Pool": return GeneralAst
-    "Piscina Worker Pool"->>"AstConversionService": Promise<GeneralAst>
-    "AstConversionService"->>"API Controller": GeneralAst
+    "SolutionConversionWorker"->>"Piscina Worker Pool": return SolutionConversionResult
+    "Piscina Worker Pool"->>"AstConversionService": Promise<SolutionConversionResult>
+    "AstConversionService"->>"API Controller": SolutionConversionResult
     "API Controller"->>Client: Response (e.g., analysis results)
 ```
 

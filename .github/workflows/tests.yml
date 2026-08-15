@@ -229,7 +229,11 @@ jobs:
           name: coverage-e2e
 
       - name: SonarCloud Scan
+        # A pull_request from a fork cannot read repository secrets, so there is
+        # no token to scan with; skip rather than fail with an empty token.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          # SONAR_TOKEN may not be set if called in a pull_request or merge_group run
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || secrets.DEV_SONAR_TOKEN }}

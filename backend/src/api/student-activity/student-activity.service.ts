@@ -1,10 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { isDeepStrictEqual } from "node:util";
+import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { AstVersion, Prisma, Student, StudentActivity } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { TasksService } from "../tasks/tasks.service";
 import { SolutionAnalysisService } from "../solutions/solution-analysis.service";
 
 const latestAstVersion = AstVersion.v1;
+const activityCreateAttempts = 2;
+
+export type StudentActivityWithSolution = Prisma.StudentActivityGetPayload<{
+  include: { appActivity: true; solution: true };
+}>;
 
 export type SolutionInput = Pick<
   Prisma.SolutionUncheckedCreateInput,
@@ -20,13 +26,16 @@ export type AppActivityInput = Omit<
 
 export type StudentActivityInput = Omit<
   Prisma.StudentActivityUncheckedCreateInput,
-  "solutionHash" | "appActivity" | "studentId"
+  "solutionHash" | "appActivity" | "studentId" | "happenedAtCounter"
 > & {
+  happenedAtCounter: number;
   appActivity: AppActivityInput | null;
 };
 
 @Injectable()
 export class StudentActivityService {
+  private readonly logger = new Logger(StudentActivityService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly tasksService: TasksService,
@@ -40,20 +49,11 @@ export class StudentActivityService {
       solution: SolutionInput;
     }[],
   ): Promise<StudentActivity[]> {
-    const results = await this.prisma.$transaction(
-      activityWithSolution.map(({ activity, solution }) =>
-        this.prisma.studentActivity.create({
-          data: this.buildActivityInput(student, activity, solution),
-          include: { solution: true },
-        }),
-      ),
-    );
+    const results: StudentActivity[] = [];
 
-    results.forEach((result) =>
-      // do not wait for the promise to resolve
-      // this will happen in the background
-      this.analysisService.performAnalysis(result.solution, latestAstVersion),
-    );
+    for (const { activity, solution } of activityWithSolution) {
+      results.push(await this.create(student, activity, solution));
+    }
 
     return results;
   }
@@ -63,22 +63,88 @@ export class StudentActivityService {
     activity: StudentActivityInput,
     solution: SolutionInput,
   ): Promise<StudentActivity> {
-    const result = await this.prisma.studentActivity.create({
-      data: this.buildActivityInput(student, activity, solution),
-      include: { solution: true },
-    });
+    const solutionHash = this.tasksService.computeSolutionHash(solution.data);
+    const data = this.buildActivityInput(
+      student,
+      activity,
+      solution,
+      solutionHash,
+    );
 
-    // do not wait for the promise to resolve
-    // this will happen in the background
-    this.analysisService.performAnalysis(result.solution, latestAstVersion);
+    for (let attempt = 1; ; attempt++) {
+      try {
+        const result = await this.prisma.studentActivity.create({
+          data,
+          include: { solution: true },
+        });
 
-    return result;
+        // analysis runs in the background, but its rejection must be consumed
+        void this.analysisService
+          .performAnalysis(result.solution, latestAstVersion)
+          .catch((error: unknown) => {
+            this.logger.error(
+              `Failed to analyze solution for student activity (activity id: ${result.id})`,
+              error instanceof Error ? error.stack : String(error),
+            );
+          });
+
+        return result;
+      } catch (error) {
+        if (
+          !(
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            error.code === "P2002"
+          )
+        ) {
+          throw error;
+        }
+
+        // the client may replay an activity after a timeout, reload, or concurrent requests
+        // treat the activity's unique key as an idempotency key
+        // look it up to ensure that an unrelated unique violation is not suppressed
+        const existingActivity = await this.prisma.studentActivity.findUnique({
+          where: {
+            uniqueStudentActivityPerTypeAndTime: {
+              studentId: student.id,
+              type: activity.type,
+              happenedAt: activity.happenedAt,
+              happenedAtCounter: activity.happenedAtCounter,
+            },
+          },
+          include: { appActivity: true, solution: true },
+        });
+
+        if (existingActivity) {
+          if (
+            !this.isExactReplay(
+              existingActivity,
+              activity,
+              solution,
+              solutionHash,
+            )
+          ) {
+            throw new ConflictException(
+              "The activity idempotency key is already used by a different activity",
+            );
+          }
+
+          return existingActivity;
+        }
+
+        // connectOrCreate can race when another request creates the same solution
+        // once that request commits, one retry can connect to the solution instead
+        if (attempt === activityCreateAttempts) {
+          throw error;
+        }
+      }
+    }
   }
 
   private buildActivityInput(
     student: Student,
     activity: StudentActivityInput,
     solution: SolutionInput,
+    solutionHash: Uint8Array,
   ): Prisma.StudentActivityCreateInput {
     const appActivityInput:
       | Prisma.StudentActivityAppCreateNestedOneWithoutStudentActivityInput
@@ -90,8 +156,6 @@ export class StudentActivityService {
           },
         }
       : undefined;
-
-    const solutionHash = this.tasksService.computeSolutionHash(solution.data);
 
     return {
       type: activity.type,
@@ -132,5 +196,31 @@ export class StudentActivityService {
         },
       },
     } satisfies Prisma.StudentActivityCreateInput;
+  }
+
+  private isExactReplay(
+    existing: StudentActivityWithSolution,
+    activity: StudentActivityInput,
+    solution: SolutionInput,
+    solutionHash: Uint8Array,
+  ): boolean {
+    const appActivityMatches =
+      existing.appActivity === null && activity.appActivity === null
+        ? true
+        : existing.appActivity !== null && activity.appActivity !== null
+          ? existing.appActivity.type === activity.appActivity.type &&
+            isDeepStrictEqual(
+              existing.appActivity.data,
+              activity.appActivity.data,
+            )
+          : false;
+
+    return (
+      existing.sessionId === activity.sessionId &&
+      existing.taskId === activity.taskId &&
+      Buffer.from(existing.solutionHash).equals(Buffer.from(solutionHash)) &&
+      existing.solution.mimeType === solution.mimeType &&
+      appActivityMatches
+    );
   }
 }

@@ -22,11 +22,17 @@ import { TaskId } from "../tasks/dto";
 import { TasksService } from "../tasks/tasks.service";
 import { SessionId } from "../sessions/dto";
 import { SolutionAnalysisService } from "./solution-analysis.service";
+import { maximumNumberOfAnalysisRetries } from "./solution-analysis.constants";
 import { StudentSolutionId } from "./dto/existing-student-solution.dto";
 import { ReferenceSolutionId } from "./dto/existing-reference-solution.dto";
 
 export type StudentId = number;
 type CurrentAnalysisRow = getCurrentAnalysesWithActivities.Result;
+export interface FindCurrentAnalysesOptions {
+  includeSoftDeleted?: boolean;
+  studentSolutionsOnly?: boolean;
+  ignoreStarredSolutions?: boolean;
+}
 export type SolutionCreateInput = Omit<
   Prisma.SolutionUncheckedCreateInput,
   "data" | "mimeType"
@@ -100,8 +106,6 @@ export type ReferenceAnalysis = AnalysisWithoutId & {
 
 type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
 
-const maximumNumberOfAnalysisRetries = 3;
-
 const omitData = { data: true };
 
 const latestAstVersion = AstVersion.v1;
@@ -137,15 +141,33 @@ export class SolutionsService {
     });
   }
 
-  async findCurrentAnalysesWithActivities(
+  async findCurrentAnalyses(
     sessionId: number,
     taskId: number,
-    includeSoftDelete = false,
+    {
+      includeSoftDeleted = false,
+      // When true, student activities are excluded so only submitted solutions
+      // are returned. Used by the analysis dashboard (CRT-339), where a newer,
+      // testless activity snapshot must not shadow the graded submission and
+      // drop its passed-test count.
+      studentSolutionsOnly = false,
+      ignoreStarredSolutions = false,
+    }: FindCurrentAnalysesOptions = {},
   ): Promise<[CurrentStudentAnalysis[], ReferenceAnalysis[]]> {
     const analyses = await this.prisma.$queryRawTyped(
-      includeSoftDelete
-        ? getSoftDeletedCurrentAnalysesWithActivities(sessionId, taskId)
-        : getCurrentAnalysesWithActivities(sessionId, taskId),
+      includeSoftDeleted
+        ? getSoftDeletedCurrentAnalysesWithActivities(
+            sessionId,
+            taskId,
+            studentSolutionsOnly,
+            ignoreStarredSolutions,
+          )
+        : getCurrentAnalysesWithActivities(
+            sessionId,
+            taskId,
+            studentSolutionsOnly,
+            ignoreStarredSolutions,
+          ),
     );
 
     return this.groupAnalyses(analyses);
@@ -701,8 +723,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map((solution) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }
@@ -756,8 +779,9 @@ export class SolutionsService {
       solutionsWithoutAnalysis.map(({ solution }) =>
         this.analysisService
           .performAnalysis(solution, latestAstVersion)
-          // ignore exceptions, we'll just re-try
-          .catch(),
+          // consume the rejection so one failed analysis does not reject the
+          // entire Promise.all batch as it will be retried by the next run
+          .catch(() => undefined),
       ),
     );
   }

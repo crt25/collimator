@@ -12,24 +12,28 @@ import {
 } from "src/ast/types/general-ast/ast-nodes";
 import { match } from "ts-pattern";
 import { convertPythonToStatement } from "../python";
+import { ConversionError } from "../solution-conversion-result";
 import { StatementWithFunctions } from "../statement-with-functions";
 import { SupportedLanguage } from "./supported-languages";
 
 export const convertJupyterToGeneralAst = (input: JupyterInput): GeneralAst => {
   if (!input.metadata.language_info) {
-    throw new Error("Jupyter notebook is missing language info in metadata");
+    const message = "Jupyter notebook is missing language info in metadata";
+    throw new ConversionError(message, [{ message }]);
   }
 
   const language = input.metadata.language_info.name as SupportedLanguage;
 
   if (!Object.values(SupportedLanguage).includes(language)) {
-    throw new Error(`Language ${language} is not supported`);
+    const message = `Language ${language} is not supported`;
+    throw new ConversionError(message, [{ message }]);
   }
 
   const version = input.metadata.language_info.version;
 
   if (typeof version !== "string" && version !== undefined) {
-    throw new Error(`Language version ${version} is not supported`);
+    const message = `Language version ${version} is not supported`;
+    throw new ConversionError(message, [{ message }]);
   }
 
   const getCellSource = (cell: { source: string | string[] }): string =>

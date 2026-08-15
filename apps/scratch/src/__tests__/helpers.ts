@@ -2,6 +2,7 @@ import { Page } from "playwright/test";
 import { expect } from "playwright-test-coverage";
 import { ScratchCrtConfig } from "../types/scratch-vm-custom";
 import { TestTask } from "./tasks";
+import type { RpcMethodName } from "../../../../libraries/iframe-rpc/src/methods/rpc-method-names";
 
 export const getExpectedBlockConfigButtonLabel = (
   crtConfig: ScratchCrtConfig,
@@ -14,6 +15,47 @@ export const getExpectedBlockConfigButtonLabel = (
   }
 
   return count.toString();
+};
+
+const getPostedMessageMethod = (message: unknown): RpcMethodName | undefined =>
+  (message as { method?: RpcMethodName }).method;
+
+/**
+ * Waits until the app has posted a message for the given RPC method. A single
+ * page action can post several messages (e.g. a solving load posts both the
+ * loadTask response and a postTaskStarted activity), so callers match by
+ * method rather than by message count or position.
+ */
+export const waitForPostedMessage = (
+  pwPage: Page,
+  method: RpcMethodName,
+): Promise<unknown> =>
+  pwPage.waitForFunction(
+    (method) =>
+      window.postedMessages.some(
+        (m) => (m.message as { method?: string }).method === method,
+      ),
+    method,
+  );
+
+/** Returns the first posted message for the given RPC method, if any. */
+export const findPostedMessage = async (
+  pwPage: Page,
+  method: RpcMethodName,
+): Promise<unknown> => {
+  const messages = await pwPage.evaluate(() => window.postedMessages);
+
+  return messages.find((m) => getPostedMessageMethod(m.message) === method)
+    ?.message;
+};
+
+/** Returns the RPC method of every message posted so far. */
+export const getPostedMessageMethods = async (
+  pwPage: Page,
+): Promise<(RpcMethodName | undefined)[]> => {
+  const messages = await pwPage.evaluate(() => window.postedMessages);
+
+  return messages.map((m) => getPostedMessageMethod(m.message));
 };
 
 let idx = 0;
@@ -51,21 +93,19 @@ export const loadTask = async (
     window.dispatchEvent(event);
   }, url);
 
-  await pwPage.waitForFunction(() => window.postedMessages.length > 0);
+  await waitForPostedMessage(pwPage, "loadTask");
 
-  const messages = await pwPage.evaluate(() => window.postedMessages);
-
-  expect(messages).toHaveLength(1);
+  const loadTaskResponse = await findPostedMessage(pwPage, "loadTask");
 
   if (expectError) {
-    expect(messages[0].message).toMatchObject({
+    expect(loadTaskResponse).toMatchObject({
       jsonrpc: "2.0",
       id: 0,
       method: "loadTask",
       error: expect.any(String),
     });
   } else {
-    expect(messages[0].message).toEqual({
+    expect(loadTaskResponse).toEqual({
       jsonrpc: "2.0",
       id: 0,
       method: "loadTask",

@@ -19,6 +19,7 @@ import {
 import { stopBufferingIframeMessages } from "./iframe-message-buffer";
 import { OtterGradingResults } from "./grading-results";
 import { runAssignCommand, runGradingCommand } from "./command";
+import { waitForKernelSpecs } from "./kernel/wait-for-kernel-specs";
 import { blockUserInterface } from "./ui-blocker";
 import { Mode } from "./mode";
 import {
@@ -103,11 +104,15 @@ export class EmbeddedPythonCallbacks {
   public static readonly gradingSrcLocation: string = "/grading_src";
   public static readonly pluginId = "@jupyterlab/translation-extension:plugin";
 
-  // kernelspec registration happens during startup (local JS, no downloads),
-  // so this is generous; it only matters when the kernel extension is broken
-  private static readonly kernelSpecWaitTimeoutMs = 15_000;
-
   private readonly beforeReloadCallbacks: Array<() => Promise<void>> = [];
+
+  // set by setupIframeApi once the platform sender exists; the RPC handlers
+  // that use it only run after the platform's handshake
+  private sendRequest: AppCrtIframeApi["sendRequest"] | null = null;
+
+  // the language the task is currently presented in, reported alongside the
+  // task-started activity; kept in sync by setJupyterLocale
+  private currentLanguage: Language = Language.en;
 
   constructor(
     private readonly mode: Mode,
@@ -117,8 +122,36 @@ export class EmbeddedPythonCallbacks {
     private readonly settingRegistry: ISettingRegistry,
   ) {}
 
+  setSendRequest(sendRequest: AppCrtIframeApi["sendRequest"]): void {
+    this.sendRequest = sendRequest;
+  }
+
   addBeforeReloadCallback(callback: () => Promise<void>): void {
     this.beforeReloadCallbacks.push(callback);
+  }
+
+  /**
+   * Reports that a solving student opened the task, carrying the student
+   * notebook as it was opened (the raw file, without running otter grading -
+   * unlike getSubmission). The platform turns it into a TASK_STARTED activity.
+   */
+  private async emitTaskStarted(): Promise<void> {
+    if (this.mode !== Mode.solve || this.sendRequest === null) {
+      return;
+    }
+
+    try {
+      const solution = await this.getFileContents(
+        EmbeddedPythonCallbacks.studentTaskLocation,
+      );
+
+      await this.sendRequest("postTaskStarted", {
+        solution,
+        locale: this.currentLanguage,
+      });
+    } catch (error) {
+      console.warn(`${logModule} Failed to report the task start`, error);
+    }
   }
 
   async getHeight(): Promise<number> {
@@ -131,66 +164,12 @@ export class EmbeddedPythonCallbacks {
       : EmbeddedPythonCallbacks.studentTaskLocation;
 
   /**
-   * Resolves once at least one kernelspec (the Pyodide kernel) is registered,
-   * or after a bounded wait. The wait is bounded so that a broken kernel
-   * extension degrades to the pre-existing behavior (the notebook opens and
-   * JupyterLab may prompt for a kernel) instead of hanging the task-opening
-   * RPC — and with it the embedded app — forever.
-   */
-  private async waitForKernelSpecs(): Promise<void> {
-    const kernelSpecs = this.app.serviceManager.kernelspecs;
-    await kernelSpecs.ready;
-
-    const hasSpec = (specs = kernelSpecs.specs): boolean =>
-      !!specs && Object.keys(specs.kernelspecs).length > 0;
-
-    if (hasSpec()) {
-      return;
-    }
-
-    await new Promise<void>((resolve) => {
-      // specsChanged emits the freshly fetched specs, so use the emitted
-      // payload instead of re-reading the manager's mutable specs property
-      function onChange(
-        _sender: unknown,
-        specs: typeof kernelSpecs.specs,
-      ): void {
-        if (hasSpec(specs)) {
-          clearTimeout(timeout);
-          kernelSpecs.specsChanged.disconnect(onChange);
-          resolve();
-        }
-      }
-
-      const timeout = setTimeout(() => {
-        kernelSpecs.specsChanged.disconnect(onChange);
-        console.warn(
-          `${logModule} No kernelspec registered after ${EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs}ms; opening the notebook anyway (the kernel selection dialog may appear)`,
-        );
-        resolve();
-      }, EmbeddedPythonCallbacks.kernelSpecWaitTimeoutMs);
-
-      kernelSpecs.specsChanged.connect(onChange);
-
-      // Re-check after connecting so that a spec registered between the check
-      // above and the connect cannot be missed. This makes the wait correct by
-      // inspection instead of relying on the surrounding block staying free of
-      // awaits between the check and the connect.
-      if (hasSpec()) {
-        clearTimeout(timeout);
-        kernelSpecs.specsChanged.disconnect(onChange);
-        resolve();
-      }
-    });
-  }
-
-  /**
    * Open the visible task notebook only after a kernel is available, so
    * JupyterLab auto-selects the Pyodide kernel instead of prompting the user to
    * pick one.
    */
   private async openTaskNotebook(path: string): Promise<void> {
-    await this.waitForKernelSpecs();
+    await waitForKernelSpecs(this.app.serviceManager.kernelspecs);
     // eslint-disable-next-line no-restricted-syntax -- this wrapper is the one sanctioned call site
     this.documentManager.openOrReveal(path);
   }
@@ -283,6 +262,7 @@ export class EmbeddedPythonCallbacks {
 
       if (!isLoadTaskWithTask(request.params)) {
         await this.openTaskNotebook(this.notebookToOpen);
+        await this.emitTaskStarted();
         return undefined;
       }
 
@@ -292,6 +272,8 @@ export class EmbeddedPythonCallbacks {
       await this.closeAllDocuments();
 
       await this.writeCrtInternalTask(importedFiles);
+
+      await this.emitTaskStarted();
     } catch (e) {
       console.error(
         `${logModule} RPC: ${request.method} failed with error:`,
@@ -379,6 +361,8 @@ export class EmbeddedPythonCallbacks {
       );
 
       await this.openTaskNotebook(this.notebookToOpen);
+
+      await this.emitTaskStarted();
     } catch (e) {
       console.error(`${logModule} Project load failure: ${e}`);
 
@@ -391,10 +375,15 @@ export class EmbeddedPythonCallbacks {
   async setLocale(request: SetLocale["request"]): Promise<undefined> {
     await this.setJupyterLocale(request.params);
     await this.openTaskNotebook(this.notebookToOpen);
+
+    // the task is re-presented in the new language: record a fresh start
+    await this.emitTaskStarted();
     return undefined;
   }
 
   private async setJupyterLocale(locale: Language): Promise<void> {
+    this.currentLanguage = locale;
+
     const settings = await this.settingRegistry.load(
       EmbeddedPythonCallbacks.pluginId,
     );
@@ -758,7 +747,7 @@ export class EmbeddedPythonCallbacks {
 export const setupIframeApi = (
   callbacks: EmbeddedPythonCallbacks,
 ): AppCrtIframeApi => {
-  return initIframeApi({
+  const platform = initIframeApi({
     getHeight: callbacks.getHeight.bind(callbacks),
     getSubmission: callbacks.getSubmission.bind(callbacks),
     getTask: callbacks.getTask.bind(callbacks),
@@ -768,4 +757,8 @@ export const setupIframeApi = (
     importTask: callbacks.importTask.bind(callbacks),
     exportTask: callbacks.exportTask.bind(callbacks),
   });
+
+  callbacks.setSendRequest(platform.sendRequest.bind(platform));
+
+  return platform;
 };

@@ -57,6 +57,24 @@ test.describe("/show", () => {
     expect(page.unFullscreenButton).toHaveCount(0);
   });
 
+  test("does not record student activities from stage controls", async ({
+    page: pwPage,
+  }) => {
+    const page = await SolveTaskPage.load(pwPage);
+
+    await page.pressGreenFlag();
+    await page.pressStopButton();
+
+    const studentActivityMessages = await pwPage.evaluate(() =>
+      window.postedMessages.filter(
+        ({ message }) =>
+          (message as { method?: string }).method === "postStudentAppActivity",
+      ),
+    );
+
+    expect(studentActivityMessages).toHaveLength(0);
+  });
+
   test("can get height via window.postMessage", async ({ page }) => {
     await page.evaluate(() => {
       const event = new window.MockMessageEvent(window.parent, {
