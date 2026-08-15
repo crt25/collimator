@@ -3181,6 +3181,31 @@
       "scannedAt": "2026-08-11T13:57:43.409Z",
       "via": "scancode-toolkit@32.5.0/manifest"
     },
+    "pkg:npm/%40esbuild/linux-x64@0.23.1": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:09:01.318Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40esbuild/linux-x64@0.25.0": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:09:22.781Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40esbuild/linux-x64@0.25.1": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:09:44.276Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40esbuild/linux-x64@0.25.12": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:10:06.112Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40esbuild/linux-x64@0.27.2": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:10:29.744Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
     "pkg:npm/%40esbuild/win32-x64@0.23.1": {
       "license": "MIT",
       "scannedAt": "2026-08-11T13:58:04.361Z",
@@ -5231,6 +5256,11 @@
       "scannedAt": "2026-08-11T15:23:13.543Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40napi-rs/nice-linux-x64-gnu@1.1.1": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:10:38.375Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
     "pkg:npm/%40napi-rs/nice-win32-x64-msvc@1.1.1": {
       "license": "MIT",
       "scannedAt": "2026-08-11T15:23:33.961Z",
@@ -5402,6 +5432,11 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T15:32:25.898Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40next/swc-linux-x64-gnu@16.0.10": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:13:31.781Z",
       "via": "scancode-toolkit@32.5.0/manifest"
     },
     "pkg:npm/%40next/swc-win32-x64-msvc@16.0.10": {
@@ -5792,6 +5827,14 @@
       "scannedAt": "2026-08-11T15:56:23.525Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40parcel/watcher-linux-x64-glibc@2.5.1": {
+      "copyrights": [
+        "Copyright (c) 2017-present Devon Govett"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:13:40.081Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40parcel/watcher-win32-x64@2.5.1": {
       "copyrights": [
         "Copyright (c) 2017-present Devon Govett"
@@ -6180,6 +6223,11 @@
       "scannedAt": "2026-08-11T16:12:03.234Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40rollup/rollup-linux-x64-gnu@4.53.5": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:13:50.005Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
     "pkg:npm/%40rollup/rollup-win32-x64-gnu@4.53.5": {
       "license": "MIT",
       "scannedAt": "2026-08-11T16:12:13.459Z",
@@ -6473,6 +6521,21 @@
       "license": "BSD-3-Clause AND MIT",
       "scannedAt": "2026-08-11T16:27:29.122Z",
       "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40sentry/cli-linux-x64@2.43.0": {
+      "license": "BSD-3-Clause",
+      "scannedAt": "2026-08-14T21:14:31.149Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40sentry/cli-linux-x64@2.58.4": {
+      "license": null,
+      "scannedAt": "2026-08-14T21:15:17.998Z",
+      "via": "scancode-toolkit@32.5.0/no-answer"
+    },
+    "pkg:npm/%40sentry/cli-linux-x64@3.0.3": {
+      "license": null,
+      "scannedAt": "2026-08-14T21:16:02.949Z",
+      "via": "scancode-toolkit@32.5.0/no-answer"
     },
     "pkg:npm/%40sentry/cli-win32-x64@2.43.0": {
       "copyrights": [
@@ -8683,6 +8746,11 @@
       "license": "ISC",
       "scannedAt": "2026-08-11T17:59:25.565Z",
       "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40unrs/resolver-binding-linux-x64-gnu@1.11.1": {
+      "license": "MIT",
+      "scannedAt": "2026-08-14T21:16:13.054Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
     },
     "pkg:npm/%40unrs/resolver-binding-win32-x64-msvc@1.11.1": {
       "license": "MIT",
@@ -27782,6 +27850,15 @@
       "scannedAt": "2026-08-13T17:22:17.536Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:pypi/pexpect@4.9.0": {
+      "copyrights": [
+        "Copyright (c) 2012, Noah Spurrier <noah@noah.org>",
+        "Copyright (c) 2013-2014, Pexpect development team"
+      ],
+      "license": "ISC",
+      "scannedAt": "2026-08-14T21:16:21.299Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:pypi/pkginfo@1.12.1.2": {
       "copyrights": [
         "Copyright (c) 2009 Agendaless Consulting, Inc."
@@ -27828,6 +27905,15 @@
       ],
       "license": "BSD-3-Clause",
       "scannedAt": "2026-08-12T02:42:09.666Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:pypi/ptyprocess@0.7.0": {
+      "copyrights": [
+        "Copyright (c) 2012, Noah Spurrier <noah@noah.org>",
+        "Copyright (c) 2013-2014, Pexpect development team"
+      ],
+      "license": "ISC",
+      "scannedAt": "2026-08-14T21:16:29.473Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:pypi/pure-eval@0.2.3": {

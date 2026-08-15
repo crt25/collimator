@@ -4601,7 +4601,7 @@ License: MIT
 
 ### @sentry/babel-plugin-component-annotate@4.6.1
 
-License: MIT AND BSD-3-Clause
+License: BSD-3-Clause AND MIT
 
 - Copyright (c) 2024, Sentry
 
@@ -4625,7 +4625,7 @@ License: MIT
 
 ### @sentry/bundler-plugin-core@4.6.1
 
-License: MIT AND BSD-3-Clause
+License: BSD-3-Clause AND MIT
 
 - Copyright (c) 2022, Sentry
 
@@ -4764,7 +4764,7 @@ License: MIT
 
 ### @sentry/webpack-plugin@4.6.1
 
-License: MIT AND BSD-3-Clause
+License: BSD-3-Clause AND MIT
 
 - Copyright (c) 2022, Sentry
 
@@ -7426,7 +7426,7 @@ License: MIT
 
 ### atob@2.1.2
 
-License: MIT OR Apache-2.0
+License: Apache-2.0 OR MIT
 
 - Copyright (c) 2015 AJ ONeal
 - Copyright 2015 AJ ONeal
@@ -9420,13 +9420,13 @@ License: BSD-2-Clause
 
 ### dompurify@3.1.6
 
-License: MPL-2.0 OR Apache-2.0
+License: Apache-2.0 OR MPL-2.0
 
 - Copyright 2024 Dr.-Ing. Mario Heiderich, Cure53
 
 ### dompurify@3.3.1
 
-License: MPL-2.0 OR Apache-2.0
+License: Apache-2.0 OR MPL-2.0
 
 - Copyright 2025 Dr.-Ing. Mario Heiderich, Cure53
 
@@ -13336,7 +13336,7 @@ License: MIT
 
 ### jszip@3.10.1
 
-License: MIT OR GPL-3.0-or-later
+License: GPL-3.0-or-later OR MIT
 
 - (c) 1995-2013 Jean-loup Gailly and Mark Adler
 - (c) 2009-2016 Stuart Knightley
@@ -14986,7 +14986,7 @@ License: MIT
 
 ### opener@1.5.2
 
-License: WTFPL OR MIT
+License: MIT OR WTFPL
 
 - Copyright © 2012–2020 Domenic Denicola &lt;d@domenic.me&gt;
 - Copyright (C) 2004 Sam Hocevar &lt;sam@hocevar.net&gt;
@@ -15389,6 +15389,13 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2013 Braveg1rl
+
+### pexpect@4.9.0
+
+License: ISC
+
+- Copyright (c) 2012, Noah Spurrier &lt;noah@noah.org&gt;
+- Copyright (c) 2013-2014, Pexpect development team
 
 ### pg@8.13.1
 
@@ -16228,6 +16235,13 @@ License: BSD-3-Clause
 
 - Copyright (c) 2009, Jay Loden, Dave Daeschler, Giampaolo Rodola
 
+### ptyprocess@0.7.0
+
+License: ISC
+
+- Copyright (c) 2012, Noah Spurrier &lt;noah@noah.org&gt;
+- Copyright (c) 2013-2014, Pexpect development team
+
 ### pump@3.0.2
 
 License: MIT
@@ -16441,7 +16455,7 @@ License: MIT
 
 ### rc@1.2.8
 
-License: (BSD-2-Clause OR MIT OR Apache-2.0)
+License: Apache-2.0 OR BSD-2-Clause OR MIT
 
 - Copyright (c) 2013, Dominic Tarr
 - Copyright (c) 2011 Dominic Tarr
@@ -18698,13 +18712,13 @@ Author: Holepunch
 
 ### text-encoding@0.7.0
 
-License: Unlicense OR Apache-2.0
+License: Apache-2.0 OR Unlicense
 
 Author: Joshua Bell
 
 ### through@2.3.8
 
-License: MIT OR Apache-2.0
+License: Apache-2.0 OR MIT
 
 - Copyright (c) 2011 Dominic Tarr
 
@@ -19160,19 +19174,19 @@ License: MIT
 
 ### type-fest@4.38.0
 
-License: MIT OR CC0-1.0
+License: CC0-1.0 OR MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### type-fest@4.41.0
 
-License: MIT OR CC0-1.0
+License: CC0-1.0 OR MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### type-fest@5.3.1
 
-License: MIT OR CC0-1.0
+License: CC0-1.0 OR MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
