@@ -6,15 +6,15 @@ Copyleft notice rules are configured in .sbomlet.policy.toml.
 
 **Package counts:**
 
-- Total packages: 3813
+- Total packages: 3814
 - deb: 80
 - generic: 1
 - golang: 3
 - maven: 5
-- npm: 3610
+- npm: 3611
 - pypi: 114
 - Production packages: 2846
-- Development-only packages: 967
+- Development-only packages: 968
 - Container packages: 1365
 - Unknown license: 38
 
@@ -1109,7 +1109,7 @@ These packages report an ambiguous license family that was NOT guessed to a prec
 | body-parser                                                                   | npm       | 1.20.3                                            | MIT                                                          | e2e                                                                                                                                                              |
 | body-parser                                                                   | npm       | 2.2.2                                             | MIT                                                          | backend, docker:backend/Dockerfile                                                                                                                               |
 | bootstrap                                                                     | npm       | 5.3.3                                             | MIT                                                          | frontend                                                                                                                                                         |
-| bowser                                                                        | npm       | 2.11.0                                            | MIT                                                          | apps/scratch                                                                                                                                                     |
+| bowser                                                                        | npm       | 2.11.0                                            | MITNFA                                                       | apps/scratch                                                                                                                                                     |
 | brace-expansion                                                               | npm       | 1.1.11                                            | MIT                                                          | apps/scratch, backend, docker:backend/Dockerfile, e2e, frontend, libraries/iframe-rpc, libraries/iframe-rpc-react                                                |
 | brace-expansion                                                               | npm       | 1.1.12                                            | MIT                                                          | apps/jupyter/extensions/notebook-runner                                                                                                                          |
 | brace-expansion                                                               | npm       | 2.0.1                                             | MIT                                                          | apps/scratch, backend, docker:backend/Dockerfile, docs, e2e, frontend, libraries/iframe-rpc, libraries/iframe-rpc-react                                          |
@@ -1789,7 +1789,7 @@ These packages report an ambiguous license family that was NOT guessed to a prec
 | json-buffer                                                                   | npm       | 3.0.1                                             | MIT                                                          | apps/jupyter/extensions/notebook-runner, apps/scratch, backend, docker:backend/Dockerfile, e2e, frontend, libraries/iframe-rpc, libraries/iframe-rpc-react       |
 | json-parse-even-better-errors                                                 | npm       | 2.3.1                                             | MIT                                                          | apps/jupyter/extensions/notebook-runner, apps/scratch, backend, docker:backend/Dockerfile, frontend, libraries/iframe-rpc, libraries/iframe-rpc-react            |
 | json-parse-even-better-errors                                                 | npm       | 4.0.0                                             | MIT                                                          | apps/jupyter/extensions/notebook-runner, docker:backend/Dockerfile                                                                                               |
-| json-schema                                                                   | npm       | 0.4.0                                             | AFL-3.0 OR BSD-3-Clause                                      | apps/scratch                                                                                                                                                     |
+| json-schema                                                                   | npm       | 0.4.0                                             | AFL-2.1 OR BSD-3-Clause                                      | apps/scratch                                                                                                                                                     |
 | json-schema-compare                                                           | npm       | 0.2.2                                             | MIT                                                          | apps/jupyter/extensions/notebook-runner                                                                                                                          |
 | json-schema-merge-allof                                                       | npm       | 0.8.1                                             | MIT                                                          | apps/jupyter/extensions/notebook-runner                                                                                                                          |
 | json-schema-to-typescript                                                     | npm       | 15.0.4                                            | MIT                                                          | backend, docker:backend/Dockerfile                                                                                                                               |
@@ -4512,6 +4512,7 @@ These packages report an ambiguous license family that was NOT guessed to a prec
 | ast-v8-to-istanbul                                                            | npm       | 0.3.9         | MIT                                                     | frontend                                                                                            |
 | astral-regex                                                                  | npm       | 2.0.0         | MIT                                                     | apps/jupyter/extensions/notebook-runner                                                             |
 | astring                                                                       | npm       | 1.9.0         | MIT                                                     | frontend                                                                                            |
+| axe-core                                                                      | npm       | 4.13.0        | MPL-2.0                                                 | apps/scratch, frontend                                                                              |
 | axobject-query                                                                | npm       | 4.1.0         | Apache-2.0                                              | apps/scratch, frontend                                                                              |
 | b4a                                                                           | npm       | 1.6.7         | Apache-2.0                                              | apps/scratch                                                                                        |
 | babel-jest                                                                    | npm       | 30.2.0        | MIT                                                     | frontend                                                                                            |
