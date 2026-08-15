@@ -36,6 +36,21 @@ version = "1.3.2"
 where = ["apps/jupyter"]
 reason = "GPL-3.0-or-later Jinja filter library pulled in solely by copier, the build-time project-templating tool for the JupyterLite site in apps/jupyter. It executes during the site build only; none of its code is distributed in the built artifact, so the copyleft obligation does not extend to the shipped work."
 
+# evidence: axe-core (MPL-2.0) is pulled solely by eslint-plugin-jsx-a11y in
+# both the frontend and apps/scratch workspaces (the only package.json
+# declaring an axe-core dependency in either tree). It is a lint-time-only
+# tool - no shipped/runtime module imports it and it does not appear in any
+# distributed build - so the MPL-2.0 file-level copyleft does not attach to the
+# distributed work. Previously stubbed out via a package.json resolution
+# (npm:empty-npm-package); that redirect is removed so the real dependency is
+# inventoried and accepted here on its own merits.
+[[compatible]]
+match = "package"
+name = "axe-core"
+version = "4.13.0"
+where = ["frontend", "apps/scratch"]
+reason = "MPL-2.0 accessibility-testing engine pulled in only by eslint-plugin-jsx-a11y for linting in the frontend and apps/scratch workspaces. It runs at lint time only; no distributed runtime code imports it and it is absent from every shipped build, so the MPL-2.0 obligation does not extend to the distributed work."
+
 # --- ScanCode AND-vs-OR corrections ----------------------------------------
 # Each package below declares a dual-license (a choice of EITHER license) in its
 # registry metadata. The in-depth ScanCode pass finds both bundled license texts
