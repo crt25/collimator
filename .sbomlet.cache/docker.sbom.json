@@ -112,6 +112,27 @@
       "licenses": [
         {
           "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        }
+      ],
+      "name": "bash-completion",
+      "purl": "pkg:deb/debian/bash-completion@1%3A2.16.0-7?arch=all&distro=debian-13",
+      "type": "library",
+      "version": "1:2.16.0-7"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "BSD-4-Clause-UC"
           }
         },
@@ -274,6 +295,32 @@
       "licenses": [
         {
           "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MPL-2.0"
+          }
+        }
+      ],
+      "name": "ca-certificates",
+      "purl": "pkg:deb/debian/ca-certificates@20250419?arch=all&distro=debian-13",
+      "type": "library",
+      "version": "20250419"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "BSD-4-Clause-UC"
           }
         },
@@ -312,6 +359,67 @@
       "purl": "pkg:deb/debian/coreutils@9.7-3?arch=amd64&distro=debian-13",
       "type": "library",
       "version": "9.7-3"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-4-Clause-UC"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "OLDAP-2.8"
+          }
+        },
+        {
+          "license": {
+            "id": "X11"
+          }
+        },
+        {
+          "license": {
+            "id": "curl"
+          }
+        }
+      ],
+      "name": "curl",
+      "purl": "pkg:deb/debian/curl@8.14.1-2%2Bdeb13u4?arch=amd64&distro=debian-13",
+      "type": "library",
+      "version": "8.14.1-2+deb13u4"
     },
     {
       "images": [
@@ -757,6 +865,22 @@
       "licenses": [
         {
           "license": {
+            "name": "sha256:936728f4181718f42951b881c1e8f1386bf6b2723c4fbc533c374d6f42c71816"
+          }
+        }
+      ],
+      "name": "krb5-locales",
+      "purl": "pkg:deb/debian/krb5-locales@1.21.3-5%2Bdeb13u1?arch=all&distro=debian-13&upstream=krb5",
+      "type": "library",
+      "version": "1.21.3-5+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "GPL-2.0-only"
           }
         },
@@ -1000,6 +1124,22 @@
       "purl": "pkg:deb/debian/libblkid1@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
       "version": "2.41.5-0+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "libbrotli1",
+      "purl": "pkg:deb/debian/libbrotli1@1.1.0-2%2Bb7?arch=amd64&distro=debian-13&upstream=brotli%401.1.0-2",
+      "type": "library",
+      "version": "1.1.0-2+b7"
     },
     {
       "images": [
@@ -1509,6 +1649,82 @@
       "licenses": [
         {
           "license": {
+            "id": "0BSD"
+          }
+        },
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "Kazlib"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "Latex2e"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-Clause-Variant"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-4-Clause-CMU"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "GPL"
+          }
+        }
+      ],
+      "name": "libcom-err2",
+      "purl": "pkg:deb/debian/libcom-err2@1.47.2-3%2Bb11?arch=amd64&distro=debian-13&upstream=e2fsprogs%401.47.2-3",
+      "type": "library",
+      "version": "1.47.2-3+b11"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "name": "sha256:5a5e7ca0e9f3f9679977e3a3e9ede45ad92885a3297ea78e766979f9866c5a16"
           }
         }
@@ -1517,6 +1733,67 @@
       "purl": "pkg:deb/debian/libcrypt1@1%3A4.4.38-1?arch=amd64&distro=debian-13&upstream=libxcrypt",
       "type": "library",
       "version": "1:4.4.38-1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-4-Clause-UC"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "OLDAP-2.8"
+          }
+        },
+        {
+          "license": {
+            "id": "X11"
+          }
+        },
+        {
+          "license": {
+            "id": "curl"
+          }
+        }
+      ],
+      "name": "libcurl4t64",
+      "purl": "pkg:deb/debian/libcurl4t64@8.14.1-2%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=curl",
+      "type": "library",
+      "version": "8.14.1-2+deb13u4"
     },
     {
       "images": [
@@ -1617,6 +1894,52 @@
       "licenses": [
         {
           "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MPL-1.1"
+          }
+        },
+        {
+          "license": {
+            "id": "X11"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "GPL"
+          }
+        },
+        {
+          "license": {
+            "name": "public-domain"
+          }
+        }
+      ],
+      "name": "libffi8",
+      "purl": "pkg:deb/debian/libffi8@3.4.8-2?arch=amd64&distro=debian-13&upstream=libffi",
+      "type": "library",
+      "version": "3.4.8-2"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "name": "sha256:20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
           }
         }
@@ -1666,6 +1989,38 @@
       "purl": "pkg:deb/debian/libgmp10@2%3A6.3.0%2Bdfsg-3?arch=amd64&distro=debian-13&upstream=gmp",
       "type": "library",
       "version": "2:6.3.0+dfsg-3"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:a07e99815cf1998f1dabbc21fe199460bfa09b85ead0d56b49a32cac3d1791b5"
+          }
+        }
+      ],
+      "name": "libgnutls30t64",
+      "purl": "pkg:deb/debian/libgnutls30t64@3.8.9-3%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=gnutls28",
+      "type": "library",
+      "version": "3.8.9-3+deb13u4"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:936728f4181718f42951b881c1e8f1386bf6b2723c4fbc533c374d6f42c71816"
+          }
+        }
+      ],
+      "name": "libgssapi-krb5-2",
+      "purl": "pkg:deb/debian/libgssapi-krb5-2@1.21.3-5%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=krb5",
+      "type": "library",
+      "version": "1.21.3-5+deb13u1"
     },
     {
       "images": [
@@ -1732,6 +2087,136 @@
       "purl": "pkg:deb/debian/libhogweed6t64@3.10.1-1?arch=amd64&distro=debian-13&upstream=nettle",
       "type": "library",
       "version": "3.10.1-1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "Unicode"
+          }
+        }
+      ],
+      "name": "libidn2-0",
+      "purl": "pkg:deb/debian/libidn2-0@2.3.8-2?arch=amd64&distro=debian-13&upstream=libidn2",
+      "type": "library",
+      "version": "2.3.8-2"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:936728f4181718f42951b881c1e8f1386bf6b2723c4fbc533c374d6f42c71816"
+          }
+        }
+      ],
+      "name": "libk5crypto3",
+      "purl": "pkg:deb/debian/libk5crypto3@1.21.3-5%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=krb5",
+      "type": "library",
+      "version": "1.21.3-5+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.0-or-later"
+          }
+        }
+      ],
+      "name": "libkeyutils1",
+      "purl": "pkg:deb/debian/libkeyutils1@1.6.3-6?arch=amd64&distro=debian-13&upstream=keyutils",
+      "type": "library",
+      "version": "1.6.3-6"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:936728f4181718f42951b881c1e8f1386bf6b2723c4fbc533c374d6f42c71816"
+          }
+        }
+      ],
+      "name": "libkrb5-3",
+      "purl": "pkg:deb/debian/libkrb5-3@1.21.3-5%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=krb5",
+      "type": "library",
+      "version": "1.21.3-5+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:936728f4181718f42951b881c1e8f1386bf6b2723c4fbc533c374d6f42c71816"
+          }
+        }
+      ],
+      "name": "libkrb5support0",
+      "purl": "pkg:deb/debian/libkrb5support0@1.21.3-5%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=krb5",
+      "type": "library",
+      "version": "1.21.3-5+deb13u1"
     },
     {
       "images": [
@@ -1833,6 +2318,228 @@
       "purl": "pkg:deb/debian/liblastlog2-2@2.41.5-0%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=util-linux",
       "type": "library",
       "version": "2.41.5-0+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "Beerware"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-California"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-variant"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-4-clause-California"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat-ISC"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat-UNM"
+          }
+        },
+        {
+          "license": {
+            "name": "F5"
+          }
+        },
+        {
+          "license": {
+            "name": "FSF-unlimited"
+          }
+        },
+        {
+          "license": {
+            "name": "JCG"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-XC"
+          }
+        },
+        {
+          "license": {
+            "name": "NeoSoft-permissive"
+          }
+        },
+        {
+          "license": {
+            "name": "OpenLDAP-2.8"
+          }
+        },
+        {
+          "license": {
+            "name": "UMich"
+          }
+        },
+        {
+          "license": {
+            "name": "public-domain"
+          }
+        }
+      ],
+      "name": "libldap-common",
+      "purl": "pkg:deb/debian/libldap-common@2.6.10%2Bdfsg-1?arch=all&distro=debian-13&upstream=openldap",
+      "type": "library",
+      "version": "2.6.10+dfsg-1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "Beerware"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-California"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-variant"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-4-clause-California"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat-ISC"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat-UNM"
+          }
+        },
+        {
+          "license": {
+            "name": "F5"
+          }
+        },
+        {
+          "license": {
+            "name": "FSF-unlimited"
+          }
+        },
+        {
+          "license": {
+            "name": "JCG"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-XC"
+          }
+        },
+        {
+          "license": {
+            "name": "NeoSoft-permissive"
+          }
+        },
+        {
+          "license": {
+            "name": "OpenLDAP-2.8"
+          }
+        },
+        {
+          "license": {
+            "name": "UMich"
+          }
+        },
+        {
+          "license": {
+            "name": "public-domain"
+          }
+        }
+      ],
+      "name": "libldap2",
+      "purl": "pkg:deb/debian/libldap2@2.6.10%2Bdfsg-1?arch=amd64&distro=debian-13&upstream=openldap",
+      "type": "library",
+      "version": "2.6.10+dfsg-1"
     },
     {
       "images": [
@@ -2161,6 +2868,169 @@
       "licenses": [
         {
           "license": {
+            "id": "BSD-2-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT"
+          }
+        },
+        {
+          "license": {
+            "name": "Expat"
+          }
+        },
+        {
+          "license": {
+            "name": "all-permissive"
+          }
+        }
+      ],
+      "name": "libnghttp2-14",
+      "purl": "pkg:deb/debian/libnghttp2-14@1.64.0-1.1%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=nghttp2",
+      "type": "library",
+      "version": "1.64.0-1.1+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "FSFAP"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFUL"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "libnghttp3-9",
+      "purl": "pkg:deb/debian/libnghttp3-9@1.8.0-1?arch=amd64&distro=debian-13&upstream=nghttp3",
+      "type": "library",
+      "version": "1.8.0-1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFAP"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.1-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "X11"
+          }
+        },
+        {
+          "license": {
+            "name": "customFSFUL"
+          }
+        },
+        {
+          "license": {
+            "name": "customFSFULLRWD"
+          }
+        }
+      ],
+      "name": "libp11-kit0",
+      "purl": "pkg:deb/debian/libp11-kit0@0.25.5-3?arch=amd64&distro=debian-13&upstream=p11-kit",
+      "type": "library",
+      "version": "0.25.5-3"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "BSD-3-Clause"
           }
         },
@@ -2461,6 +3331,321 @@
       "licenses": [
         {
           "license": {
+            "id": "MIT"
+          }
+        },
+        {
+          "license": {
+            "name": "Chromium"
+          }
+        },
+        {
+          "license": {
+            "name": "gnulib"
+          }
+        }
+      ],
+      "name": "libpsl5t64",
+      "purl": "pkg:deb/debian/libpsl5t64@0.21.2-1.1%2Bb1?arch=amd64&distro=debian-13&upstream=libpsl%400.21.2-1.1",
+      "type": "library",
+      "version": "0.21.2-1.1+b1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "name": "sha256:4302abcc1ea1b6cbe8d19c79b892acf78878030220210707c19006828866207c"
+          }
+        }
+      ],
+      "name": "librtmp1",
+      "purl": "pkg:deb/debian/librtmp1@2.4%2B20151223.gitfa8646d.1-2%2Bb5?arch=amd64&distro=debian-13&upstream=rtmpdump%402.4%2B20151223.gitfa8646d.1-2",
+      "type": "library",
+      "version": "2.4+20151223.gitfa8646d.1-2+b5"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause-Attribution"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-4-Clause-UC"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        },
+        {
+          "license": {
+            "id": "RSA-MD"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-2.2-clause"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-JANET"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-PADL"
+          }
+        },
+        {
+          "license": {
+            "name": "IBM-as-is"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-Export"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-OpenVision"
+          }
+        },
+        {
+          "license": {
+            "name": "OpenLDAP"
+          }
+        }
+      ],
+      "name": "libsasl2-2",
+      "purl": "pkg:deb/debian/libsasl2-2@2.1.28%2Bdfsg1-9?arch=amd64&distro=debian-13&upstream=cyrus-sasl2",
+      "type": "library",
+      "version": "2.1.28+dfsg1-9"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause-Attribution"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-4-Clause-UC"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        },
+        {
+          "license": {
+            "id": "RSA-MD"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-2.2-clause"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-JANET"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-PADL"
+          }
+        },
+        {
+          "license": {
+            "name": "IBM-as-is"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-Export"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-OpenVision"
+          }
+        },
+        {
+          "license": {
+            "name": "OpenLDAP"
+          }
+        }
+      ],
+      "name": "libsasl2-modules-db",
+      "purl": "pkg:deb/debian/libsasl2-modules-db@2.1.28%2Bdfsg1-9?arch=amd64&distro=debian-13&upstream=cyrus-sasl2",
+      "type": "library",
+      "version": "2.1.28+dfsg1-9"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause-Attribution"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-4-Clause-UC"
+          }
+        },
+        {
+          "license": {
+            "id": "FSFULLR"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        },
+        {
+          "license": {
+            "id": "RSA-MD"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-2.2-clause"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-JANET"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD-3-clause-PADL"
+          }
+        },
+        {
+          "license": {
+            "name": "IBM-as-is"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-Export"
+          }
+        },
+        {
+          "license": {
+            "name": "MIT-OpenVision"
+          }
+        },
+        {
+          "license": {
+            "name": "OpenLDAP"
+          }
+        }
+      ],
+      "name": "libsasl2-modules",
+      "purl": "pkg:deb/debian/libsasl2-modules@2.1.28%2Bdfsg1-9?arch=amd64&distro=debian-13&upstream=cyrus-sasl2",
+      "type": "library",
+      "version": "2.1.28+dfsg1-9"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "LGPL-2.1-only"
           }
         }
@@ -2713,6 +3898,27 @@
       "licenses": [
         {
           "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "name": "BSD3"
+          }
+        }
+      ],
+      "name": "libssh2-1t64",
+      "purl": "pkg:deb/debian/libssh2-1t64@1.11.1-1%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=libssh2",
+      "type": "library",
+      "version": "1.11.1-1+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "Apache-2.0"
           }
         },
@@ -2806,6 +4012,22 @@
       "licenses": [
         {
           "license": {
+            "name": "sha256:5f9f7b538d221104bdb561ae80fd794ec5f813eb8fd04650293bddcc0f856e7d"
+          }
+        }
+      ],
+      "name": "libtasn1-6",
+      "purl": "pkg:deb/debian/libtasn1-6@4.20.0-2%2Bdeb13u1?arch=amd64&distro=debian-13",
+      "type": "library",
+      "version": "4.20.0-2+deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "BSD-3-Clause"
           }
         },
@@ -2870,6 +4092,107 @@
       "purl": "pkg:deb/debian/libudev1@257.13-1~deb13u1?arch=amd64&distro=debian-13&upstream=systemd",
       "type": "library",
       "version": "257.13-1~deb13u1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        },
+        {
+          "license": {
+            "id": "GFDL-1.2-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GFDL-1.3-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "ISC"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.1-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-3.0-only"
+          }
+        },
+        {
+          "license": {
+            "id": "LGPL-3.0-or-later"
+          }
+        },
+        {
+          "license": {
+            "id": "Unicode-DFS-2016"
+          }
+        },
+        {
+          "license": {
+            "id": "X11"
+          }
+        },
+        {
+          "license": {
+            "name": "FreeSoftware"
+          }
+        },
+        {
+          "license": {
+            "name": "public-domain"
+          }
+        }
+      ],
+      "name": "libunistring5",
+      "purl": "pkg:deb/debian/libunistring5@1.3-2?arch=amd64&distro=debian-13&upstream=libunistring",
+      "type": "library",
+      "version": "1.3-2"
     },
     {
       "images": [
@@ -3558,6 +4881,27 @@
       "purl": "pkg:deb/debian/perl-base@5.40.1-6?arch=amd64&distro=debian-13&upstream=perl",
       "type": "library",
       "version": "5.40.1-6"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MPL-2.0"
+          }
+        },
+        {
+          "license": {
+            "name": "CC0"
+          }
+        }
+      ],
+      "name": "publicsuffix",
+      "purl": "pkg:deb/debian/publicsuffix@20250328.1952-0.1?arch=all&distro=debian-13",
+      "type": "library",
+      "version": "20250328.1952-0.1"
     },
     {
       "images": [
