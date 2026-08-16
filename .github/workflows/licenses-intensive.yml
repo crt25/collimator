@@ -81,7 +81,7 @@ jobs:
 
             This PR regenerates the licence inventory. Merge it into that branch to make the licence
             check pass.
-          branch: licenses-refresh/${{ github.head_ref }}
+          branch: licenses-refresh-intensive/${{ github.head_ref }}
           base: ${{ github.head_ref }}
           labels: |
             licenses
