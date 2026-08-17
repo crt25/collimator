@@ -132,6 +132,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/%40babel/plugin-proposal-private-property-in-object@7.21.0-placeholder-for-preset-env.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/%40babel/plugin-syntax-import-assertions@7.27.1": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -139,6 +145,12 @@
       "via": "version-license"
     },
     "pkg:npm/%40babel/plugin-syntax-import-attributes@7.27.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/plugin-syntax-unicode-sets-regex@7.18.6": {
       "fetchedFrom": "npm",
       "license": "MIT",
       "resolvable": true,
@@ -445,6 +457,12 @@
       "via": "version-license"
     },
     "pkg:npm/%40babel/preset-env@7.27.2": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40babel/preset-modules@0.1.6-no-external-plugins": {
       "fetchedFrom": "npm",
       "license": "MIT",
       "resolvable": true,
@@ -1302,6 +1320,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/babel-plugin-polyfill-corejs3@0.11.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/babel-plugin-polyfill-regenerator@0.6.5": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1500,6 +1524,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/ejs@3.1.10": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/electron-to-chromium@1.5.178": {
       "fetchedFrom": "npm",
       "license": "ISC",
@@ -1545,6 +1575,12 @@
     "pkg:npm/file-entry-cache@7.0.2": {
       "fetchedFrom": "npm",
       "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/filelist@1.0.4": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
       "resolvable": true,
       "via": "version-license"
     },
@@ -1686,6 +1722,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/jake@10.9.2": {
+      "fetchedFrom": "npm",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/jest-junit@15.0.0": {
       "fetchedFrom": "npm",
       "license": "Apache-2.0",
@@ -1737,6 +1779,12 @@
     "pkg:npm/license-webpack-plugin@2.3.21": {
       "fetchedFrom": "npm",
       "license": "ISC",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/loader-runner@4.3.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
       "resolvable": true,
       "via": "version-license"
     },
@@ -1956,6 +2004,24 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/regenerate-unicode-properties@10.2.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/regexpu-core@6.2.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/regjsparser@0.12.0": {
+      "fetchedFrom": "npm",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/sanitize-html@2.12.1": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1979,6 +2045,12 @@
       "license": "ISC",
       "resolvable": true,
       "via": "version-license"
+    },
+    "pkg:npm/seq-queue@0.0.5": {
+      "fetchedFrom": "npm",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
     },
     "pkg:npm/shallow-clone@3.0.1": {
       "fetchedFrom": "npm",
@@ -2136,6 +2208,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/terser-webpack-plugin@5.3.14": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/terser@5.43.1": {
       "fetchedFrom": "npm",
       "license": "BSD-2-Clause",
@@ -2191,6 +2269,12 @@
       "via": "version-license"
     },
     "pkg:npm/undici-types@7.8.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/unicode-match-property-value-ecmascript@2.2.0": {
       "fetchedFrom": "npm",
       "license": "MIT",
       "resolvable": true,
