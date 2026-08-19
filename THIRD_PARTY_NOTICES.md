@@ -2751,6 +2751,13 @@ License: Apache-2.0
 
 Author: Lovell Fuller
 
+### @img/sharp-libvips-linux-x64@1.2.4
+
+License: LGPL-3.0-or-later
+
+- Copyright (c) 1991-2024 The libjpeg-turbo Project
+- Copyright, John Smith, 19xx
+
 ### @img/sharp-linux-arm@0.34.5
 
 License: Apache-2.0
