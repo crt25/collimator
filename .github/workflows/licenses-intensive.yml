@@ -53,7 +53,7 @@ jobs:
         run: task setup # required before SBOMlet's intensive analysis
 
       - name: Regenerate licenses
-        uses: Anansi-Solutions/SBOMlet@main # until the definitive version is set
+        uses: Anansi-Solutions/SBOMlet@f7c820dda1608cbae336d08ac761cc16ffe1bfef
         with:
           mode: generate
           policy: .sbomlet.policy.toml
