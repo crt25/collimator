@@ -51,6 +51,114 @@ version = "4.13.0"
 where = ["frontend", "apps/scratch"]
 reason = "MPL-2.0 accessibility-testing engine pulled in only by eslint-plugin-jsx-a11y for linting in the frontend and apps/scratch workspaces. It runs at lint time only; no distributed runtime code imports it and it is absent from every shipped build, so the MPL-2.0 obligation does not extend to the distributed work."
 
+# evidence: the @img/sharp-* platform packages are sharp's prebuilt libvips
+# binaries (LGPL-3.0-or-later; the wasm32/win32 ones add Apache-2.0 AND MIT
+# for the sharp glue). sharp enters both workspaces solely as next's optional
+# image-optimization backend (yarn why sharp -> next@16) and runs at build
+# time on the developer/CI machine only: apps/scratch is a static export
+# (output: "export" disables runtime image optimization) and the frontend
+# build output does not bundle these native binaries. No libvips code ships
+# in a distributed artifact, so the LGPL obligation does not extend to the
+# shipped work. One rule per platform package; versions pinned so a sharp
+# upgrade reopens the review.
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-darwin-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-darwin-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-arm"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-ppc64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-riscv64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-s390x"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linuxmusl-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linuxmusl-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-wasm32"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's wasm build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-arm64"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-ia32"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-x64"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
 # --- ScanCode AND-vs-OR corrections ----------------------------------------
 # Each package below declares a dual-license (a choice of EITHER license) in its
 # registry metadata. The in-depth ScanCode pass finds both bundled license texts
@@ -570,6 +678,17 @@ reason = "pako declares (MIT AND Zlib): it is a JavaScript port of zlib and the 
 package = { name = "prometheus-client", version = "0.24.1" }
 expression = "Apache-2.0 AND BSD-2-Clause"
 reason = "prometheus-client declares License-Expression: Apache-2.0 AND BSD-2-Clause (PEP 639, dist-info METADATA) - the BSD-2 covers vendored code the top-level LICENSE file does not restate. The scan read only the Apache text. I keep the declared complete pair."
+
+# evidence: @img/sharp-win32-x64 declares Apache-2.0 AND LGPL-3.0-or-later
+# (package.json): Apache for sharp's glue code, LGPL for the embedded libvips
+# DLL. The intensive scan (this package was the locally-installed platform
+# binary) read only Apache-2.0 because the LGPL component is a compiled
+# binary with no scannable license text. The declared claim is the complete
+# one; the build-time [[compatible]] rule above covers the LGPL leaf.
+[[clarify]]
+package = { name = "@img/sharp-win32-x64", version = "0.34.5" }
+expression = "Apache-2.0 AND LGPL-3.0-or-later"
+reason = "@img/sharp-win32-x64 declares Apache-2.0 AND LGPL-3.0-or-later: Apache for the sharp glue, LGPL for the embedded prebuilt libvips DLL. The deep scan saw only the Apache text because the LGPL part is a compiled binary with nothing to text-scan. I keep the declared complete pair."
 
 # evidence: backend/node_modules/{string-width-cjs,strip-ansi-cjs,
 # wrap-ansi-cjs}: these are npm ALIASES of Sindre Sorhus's string-width@4/

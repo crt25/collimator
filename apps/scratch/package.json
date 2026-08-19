@@ -118,8 +118,7 @@
     "@svgr/webpack": "6.5.1",
     "@types/react": "18.3.1",
     "babel-preset-react-app@npm:^10.0.1": "patch:babel-preset-react-app@npm%3A10.0.1#~/.yarn/patches/babel-preset-react-app-npm-10.0.1-a9a19b630a.patch",
-    "scratch-storage@npm:4.0.210": "patch:scratch-storage@npm%3A4.0.210#~/.yarn/patches/scratch-storage-npm-4.0.210-b74f040f66.patch",
-    "sharp": "npm:empty-npm-package@^1.0.0"
+    "scratch-storage@npm:4.0.210": "patch:scratch-storage@npm%3A4.0.210#~/.yarn/patches/scratch-storage-npm-4.0.210-b74f040f66.patch"
   },
   "eslintConfig": {
     "extends": [

@@ -2227,6 +2227,12 @@ License: MIT
 
 - Copyright (c) 2021-present Toyobayashi
 
+### @emnapi/runtime@1.11.3
+
+License: MIT
+
+- Copyright (c) 2021-present Toyobayashi
+
 ### @emnapi/runtime@1.7.1
 
 License: MIT
@@ -2722,6 +2728,100 @@ License: Apache-2.0
 - Copyright 2017 - 2025 IBM Corporation
 - Copyright 2024 IBM Corporation
 - Copyright 2025 IBM Corporation
+
+### @img/colour@1.1.0
+
+License: MIT
+
+- Copyright (c) 2012 Heather Arthur
+- Copyright (c) 2011-2016 Heather Arthur &lt;fayearthur@gmail.com&gt;.
+- Copyright (c) 2016-2021 Josh Junon &lt;josh@junon.me&gt;.
+- Copyright (c) 2011 Heather Arthur &lt;fayearthur@gmail.com&gt;
+- Copyright (c) 2015 Dmitry Ivanov
+
+### @img/sharp-darwin-arm64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-darwin-x64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-arm@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-arm64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-ppc64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-riscv64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-s390x@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linux-x64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linuxmusl-arm64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-linuxmusl-x64@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### @img/sharp-wasm32@0.34.5
+
+License: Apache-2.0 AND LGPL-3.0-or-later AND MIT
+
+Author: Lovell Fuller
+
+### @img/sharp-win32-arm64@0.34.5
+
+License: Apache-2.0 AND LGPL-3.0-or-later
+
+Author: Lovell Fuller
+
+### @img/sharp-win32-ia32@0.34.5
+
+License: Apache-2.0 AND LGPL-3.0-or-later
+
+Author: Lovell Fuller
+
+### @img/sharp-win32-x64@0.34.5
+
+License: Apache-2.0 AND LGPL-3.0-or-later
+
+Author: Lovell Fuller
 
 ### @inquirer/checkbox@4.1.3
 
@@ -9311,6 +9411,12 @@ License: Apache-2.0
 Author: Lovell Fuller
 
 ### detect-libc@2.0.3
+
+License: Apache-2.0
+
+Author: Lovell Fuller
+
+### detect-libc@2.1.2
 
 License: Apache-2.0
 
@@ -17589,6 +17695,12 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
 
+### semver@7.8.5
+
+License: ISC
+
+- Copyright (c) Isaac Z. Schlueter and Contributors
+
 ### semver-diff@3.1.1
 
 License: MIT
@@ -17700,6 +17812,12 @@ Author: James Halliday
 License: MIT
 
 - Copyright © 2016 Misha Moroshko
+
+### sharp@0.34.5
+
+License: Apache-2.0
+
+Author: Lovell Fuller
 
 ### shebang-command@1.2.0
 
