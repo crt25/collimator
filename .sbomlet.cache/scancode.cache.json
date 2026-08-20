@@ -3263,6 +3263,14 @@
       "scannedAt": "2026-08-11T14:00:34.105Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40eslint-community/eslint-utils@4.9.1": {
+      "copyrights": [
+        "Copyright (c) 2018 Toru Nagashima"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:23:26.589Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40eslint-community/regexpp@4.11.1": {
       "copyrights": [
         "Copyright (c) 2018 Toru Nagashima"
@@ -3389,6 +3397,11 @@
       "scannedAt": "2026-08-11T14:04:55.483Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40formatjs/cli-native-linux-x64@1.1.12": {
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:25:51.658Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
     "pkg:npm/%40formatjs/cli@6.10.0": {
       "copyrights": [
         "Copyright (c) 2014-2016, Jon Schlinkert",
@@ -3416,6 +3429,22 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T14:07:38.401Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40formatjs/cli@6.16.18": {
+      "copyrights": [
+        "Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors",
+        "Copyright (c) 2014-2016, Jon Schlinkert",
+        "Copyright (c) 2014-2017, Jon Schlinkert",
+        "Copyright (c) 2014-2020 Teambition",
+        "Copyright (c) 2014-present, Jon Schlinkert",
+        "Copyright (c) 2015-present, Jon Schlinkert",
+        "Copyright (c) 2023 FormatJS",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:25:31.933Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40formatjs/cli@6.6.3": {
@@ -4208,6 +4237,14 @@
       "scannedAt": "2026-08-11T14:35:42.727Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40jest/diff-sequences@30.4.0": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:26:01.412Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40jest/environment-jsdom-abstract@30.2.0": {
       "copyrights": [
         "Copyright (c) Meta Platforms, Inc. and affiliates",
@@ -4252,6 +4289,15 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T14:37:44.364Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40jest/expect-utils@30.4.1": {
+      "copyrights": [
+        "Copyright (c) 2008-2016 Pivotal Labs",
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:26:11.197Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40jest/expect@29.7.0": {
@@ -4322,6 +4368,16 @@
       "scannedAt": "2026-08-11T14:39:30.994Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40jest/pattern@30.4.0": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:26:48.219Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40jest/reporters@29.7.0": {
       "copyrights": [
         "Copyright (c) Isaac Z. Schlueter and Contributors",
@@ -4360,6 +4416,14 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T14:40:54.906Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40jest/schemas@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:26:57.347Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40jest/snapshot-utils@30.2.0": {
@@ -4452,6 +4516,16 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T14:43:35.872Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40jest/types@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:27:34.682Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40joshwooding/vite-plugin-react-docgen-typescript@0.6.3": {
@@ -5461,6 +5535,15 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T15:32:25.898Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
+    "pkg:npm/%40next/eslint-plugin-next@16.3.1": {
+      "copyrights": [
+        "Copyright (c) 2018 Toru Nagashima",
+        "Copyright (c) Denis Malinochkin"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:27:56.879Z",
       "via": "scancode-toolkit@32.5.0/manifest"
     },
     "pkg:npm/%40next/swc-linux-x64-gnu@16.0.10": {
@@ -6862,6 +6945,14 @@
       "scannedAt": "2026-08-11T16:43:23.808Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40sinclair/typebox@0.34.52": {
+      "copyrights": [
+        "Copyright (c) 2017-2026 Haydn Paterson"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:28:46.098Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40sindresorhus/is@0.7.0": {
       "copyrights": [
         "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)"
@@ -7341,6 +7432,15 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T17:03:54.775Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40types/archiver@8.0.0": {
+      "copyrights": [
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:29:22.499Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40types/aria-query@5.0.4": {
@@ -7922,6 +8022,16 @@
       "scannedAt": "2026-08-11T17:22:33.489Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/%40types/node@26.2.0": {
+      "copyrights": [
+        "Copyright (c) Matteo Collina and Undici contributors",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:30:07.102Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/%40types/normalize-package-data@2.4.4": {
       "copyrights": [
         "Copyright (c) Microsoft Corporation"
@@ -8109,6 +8219,14 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T17:31:55.873Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/%40types/react-virtualized@9.22.3": {
+      "copyrights": [
+        "Copyright (c) Microsoft Corporation"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:30:17.742Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/%40types/react@18.3.1": {
@@ -10093,6 +10211,18 @@
       "scannedAt": "2026-08-11T18:32:34.958Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/archiver@8.0.0": {
+      "copyrights": [
+        "Copyright (c) 2012-2014 Chris Talkington, contributors",
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
+        "Copyright Joyent, Inc. and other Node contributors",
+        "Copyright Node.js contributors",
+        "copyright (c) 2012-2014 Chris Talkington, contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:30:32.794Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/archy@1.0.0": {
       "license": "MIT",
       "scannedAt": "2026-08-11T18:33:16.457Z",
@@ -10774,6 +10904,15 @@
       "scannedAt": "2026-08-12T20:25:39.130Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/balanced-match@4.0.4": {
+      "copyrights": [
+        "Copyright Isaac Z. Schlueter <i@izs.me>",
+        "Copyright Julian Gruber <julian@juliangruber.com>"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:30:41.608Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/bare-events@2.5.0": {
       "license": "Apache-2.0",
       "scannedAt": "2026-08-11T21:13:22.245Z",
@@ -10958,6 +11097,15 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T21:19:37.629Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/brace-expansion@5.0.9": {
+      "copyrights": [
+        "Copyright Isaac Z. Schlueter <i@izs.me>",
+        "Copyright Julian Gruber <julian@juliangruber.com>"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:30:51.720Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/braces@3.0.3": {
@@ -11454,6 +11602,14 @@
       "scannedAt": "2026-08-11T21:38:54.680Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/ci-info@4.4.0": {
+      "copyrights": [
+        "Copyright (c) 2016 Thomas Watson Steen"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:31:01.117Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/cjs-module-lexer@1.4.1": {
       "copyrights": [
         "Copyright (c) 2012-2018 by various contributors",
@@ -11818,6 +11974,17 @@
       "scannedAt": "2026-08-11T21:49:01.866Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/compress-commons@7.0.1": {
+      "copyrights": [
+        "Copyright (c) 2014 Chris Talkington, contributors",
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
+        "Copyright Joyent, Inc. and other Node contributors",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:31:16.243Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/compute-gcd@1.2.1": {
       "copyrights": [
         "Copyright (c) 2014-2015 Athan Reines",
@@ -12105,6 +12272,16 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T21:58:33.061Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/crc32-stream@7.0.1": {
+      "copyrights": [
+        "Copyright (c) 2014 Chris Talkington, contributors",
+        "Copyright Joyent, Inc. and other Node contributors",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:31:30.260Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/create-jest@29.7.0": {
@@ -13888,6 +14065,14 @@
       "scannedAt": "2026-08-11T22:48:20.327Z",
       "via": "scancode-toolkit@32.5.0/manifest"
     },
+    "pkg:npm/eslint-config-next@16.3.1": {
+      "copyrights": [
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:31:43.983Z",
+      "via": "scancode-toolkit@32.5.0/manifest"
+    },
     "pkg:npm/eslint-config-prettier@10.1.8": {
       "copyrights": [
         "Copyright (c) 2017, 2018, 2019, 2020, 2021, 2022, 2023 Simon Lydell and contributors"
@@ -14349,6 +14534,14 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-11T23:01:05.184Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/expect@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:31:54.672Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/exponential-backoff@3.1.1": {
@@ -15500,6 +15693,11 @@
     "pkg:npm/glob@11.1.0": {
       "license": "BlueOak-1.0.0 AND (CDDL-1.1 OR GPL-2.0-only WITH Classpath-exception-2.0)",
       "scannedAt": "2026-08-12T20:44:49.220Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/glob@13.0.6": {
+      "license": "BlueOak-1.0.0 AND (CDDL-1.1 OR GPL-2.0-only WITH Classpath-exception-2.0)",
+      "scannedAt": "2026-08-20T00:32:30.766Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/glob@7.1.2": {
@@ -16974,6 +17172,14 @@
       "scannedAt": "2026-08-12T00:09:07.967Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/is-stream@4.0.1": {
+      "copyrights": [
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:32:39.621Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/is-string@1.0.7": {
       "copyrights": [
         "Copyright (c) 2015 Jordan Harband"
@@ -17243,6 +17449,15 @@
       "scannedAt": "2026-08-12T00:15:02.666Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/istanbul-lib-processinfo@3.0.1": {
+      "copyrights": [
+        "Copyright (c) 2018 Made With MOXY Lda",
+        "Copyright (c) Isaac Z. Schlueter and Contributors"
+      ],
+      "license": "ISC",
+      "scannedAt": "2026-08-20T00:32:49.419Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/istanbul-lib-report@3.0.1": {
       "copyrights": [
         "Copyright 2012-2015 Yahoo! Inc.",
@@ -17423,6 +17638,15 @@
       "scannedAt": "2026-08-12T00:21:04.596Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/jest-diff@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright 2018 The diff-match-patch"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:33:00.624Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/jest-docblock@29.7.0": {
       "copyrights": [
         "Copyright (c) Meta Platforms, Inc. and affiliates"
@@ -17573,6 +17797,14 @@
       "scannedAt": "2026-08-12T00:26:06.569Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/jest-matcher-utils@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:33:10.276Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/jest-message-util@29.7.0": {
       "copyrights": [
         "Copyright (c) Meta Platforms, Inc. and affiliates"
@@ -17588,6 +17820,16 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-12T00:26:35.318Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/jest-message-util@30.4.1": {
+      "copyrights": [
+        "Copyright (c) 2017-present, Jon Schlinkert",
+        "Copyright (c) 2017-present, Jon Schlinkert (https://github.com/jonschlinkert)",
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:33:21.707Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/jest-mock-extended@4.0.0-beta1": {
@@ -17616,6 +17858,16 @@
       "scannedAt": "2026-08-12T00:27:19.194Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/jest-mock@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:33:59.212Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/jest-pnp-resolver@1.2.3": {
       "copyrights": [
         "Copyright (c) 2016 Mael Nison"
@@ -17638,6 +17890,14 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-12T00:28:02.767Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/jest-regex-util@30.4.0": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:34:08.148Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/jest-resolve-dependencies@29.7.0": {
@@ -17747,6 +18007,18 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-12T00:32:15.531Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/jest-util@30.4.1": {
+      "copyrights": [
+        "Copyright (c) 2017-present, Jon Schlinkert",
+        "Copyright (c) 2017-present, Jon Schlinkert (https://github.com/jonschlinkert)",
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright (c) Microsoft Corporation",
+        "Copyright Node.js contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:34:47.749Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/jest-validate@29.7.0": {
@@ -18824,6 +19096,11 @@
       "scannedAt": "2026-08-12T01:08:09.607Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/lru-cache@11.5.2": {
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:35:29.554Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/lru-cache@5.1.1": {
       "copyrights": [
         "Copyright (c) Isaac Z. Schlueter and Contributors"
@@ -19355,6 +19632,11 @@
       "scannedAt": "2026-08-12T20:57:19.028Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/minimatch@10.2.6": {
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:35:46.324Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/minimatch@3.1.2": {
       "copyrights": [
         "Copyright (c) 2013 Julian Gruber <julian@juliangruber.com>",
@@ -19490,6 +19772,11 @@
       ],
       "license": "ISC",
       "scannedAt": "2026-08-12T01:23:27.387Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/minipass@7.1.3": {
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:35:59.786Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/minizlib@3.0.1": {
@@ -20084,6 +20371,19 @@
       ],
       "license": "ISC",
       "scannedAt": "2026-08-12T01:46:14.540Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/nyc@18.0.0": {
+      "copyrights": [
+        "Copyright (c) 2015, Contributors",
+        "Copyright (c) 2016, Contributors",
+        "Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors",
+        "Copyright 2013 Thorsten Lorenz",
+        "Copyright Isaac Z. Schlueter <i@izs.me>",
+        "Copyright Julian Gruber <julian@juliangruber.com>"
+      ],
+      "license": "ISC",
+      "scannedAt": "2026-08-20T00:37:32.450Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/oas-kit-common@1.0.8": {
@@ -20730,6 +21030,14 @@
     "pkg:npm/path-scurry@2.0.1": {
       "license": "BlueOak-1.0.0",
       "scannedAt": "2026-08-12T21:03:53.956Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/path-scurry@2.0.2": {
+      "copyrights": [
+        "Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors"
+      ],
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:37:52.438Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/path-to-regexp@0.1.12": {
@@ -21805,6 +22113,15 @@
       "scannedAt": "2026-08-12T02:32:26.618Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/pretty-format@30.4.1": {
+      "copyrights": [
+        "Copyright (c) Meta Platforms, Inc. and affiliates",
+        "Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:38:03.027Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/primereact@10.9.4": {
       "copyrights": [
         "Copyright (c) 2013, salesforce.com",
@@ -22531,6 +22848,16 @@
       "scannedAt": "2026-08-12T03:06:09.509Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/readdir-glob@3.0.0": {
+      "copyrights": [
+        "Copyright 2020 Yann Armelin",
+        "Copyright Isaac Z. Schlueter <i@izs.me>",
+        "Copyright Julian Gruber <julian@juliangruber.com>"
+      ],
+      "license": "Apache-2.0",
+      "scannedAt": "2026-08-20T00:38:22.531Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/readdirp@3.6.0": {
       "copyrights": [
         "Copyright (c) 2012-2019 Thorsten Lorenz, Paul Miller ( https://paulmillr.com )",
@@ -22940,6 +23267,16 @@
       ],
       "license": "ISC",
       "scannedAt": "2026-08-12T03:17:59.271Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/rimraf@6.1.3": {
+      "copyrights": [
+        "Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors",
+        "Copyright Isaac Z. Schlueter <i@izs.me>",
+        "Copyright Julian Gruber <julian@juliangruber.com>"
+      ],
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:39:58.768Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/rollup@4.53.5": {
@@ -24115,6 +24452,15 @@
       "scannedAt": "2026-08-12T03:54:16.177Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
+    "pkg:npm/spawn-wrap@3.0.0": {
+      "copyrights": [
+        "Copyright (c) 2018 Made With MOXY Lda",
+        "Copyright (c) Isaac Z. Schlueter and Contributors"
+      ],
+      "license": "BlueOak-1.0.0",
+      "scannedAt": "2026-08-20T00:40:09.266Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
     "pkg:npm/spdx-correct@3.2.0": {
       "copyrights": [
         "Copyright spdx-correct.js contributors"
@@ -25014,6 +25360,14 @@
       ],
       "license": "ISC",
       "scannedAt": "2026-08-12T21:19:15.547Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/test-exclude@8.0.0": {
+      "copyrights": [
+        "Copyright (c) 2016, Contributors"
+      ],
+      "license": "ISC",
+      "scannedAt": "2026-08-20T00:40:18.231Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/text-decoder@1.2.1": {
@@ -25983,6 +26337,14 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-12T04:55:40.346Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/undici-types@8.3.0": {
+      "copyrights": [
+        "Copyright (c) Matteo Collina and Undici contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:40:30.081Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/undici@6.23.0": {
@@ -27345,6 +27707,17 @@
       ],
       "license": "MIT",
       "scannedAt": "2026-08-12T05:34:36.066Z",
+      "via": "scancode-toolkit@32.5.0/license-file"
+    },
+    "pkg:npm/zip-stream@7.0.5": {
+      "copyrights": [
+        "Copyright (c) 2014 Chris Talkington, contributors",
+        "Copyright Joyent, Inc. and other Node contributors",
+        "Copyright Node.js contributors",
+        "copyright (c) 2014 Chris Talkington, contributors"
+      ],
+      "license": "MIT",
+      "scannedAt": "2026-08-20T00:40:44.196Z",
       "via": "scancode-toolkit@32.5.0/license-file"
     },
     "pkg:npm/zod-validation-error@4.0.2": {
