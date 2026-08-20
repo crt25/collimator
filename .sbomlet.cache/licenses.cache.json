@@ -660,6 +660,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/%40formatjs/fast-memoize@2.2.7": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/%40formatjs/icu-messageformat-parser@2.11.4": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1152,6 +1158,60 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/%40primereact/core@11.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primereact/headless@11.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primereact/hooks@11.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primereact/types@11.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primeui/license-manager@1.0.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primeuix/locale@0.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primeuix/motion@1.0.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primeuix/styled@1.0.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40primeuix/utils@0.8.1": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/%40rjsf/core@5.24.12": {
       "fetchedFrom": "npm",
       "license": "Apache-2.0",
@@ -1161,6 +1221,36 @@
     "pkg:npm/%40rjsf/utils@5.24.12": {
       "fetchedFrom": "npm",
       "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40sentry-internal/browser-utils@10.32.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40sentry-internal/feedback@10.32.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40sentry-internal/replay-canvas@10.32.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40sentry-internal/replay@10.32.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/%40sentry/browser@10.32.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
       "resolvable": true,
       "via": "version-license"
     },
@@ -1941,6 +2031,12 @@
     "pkg:npm/prettier@3.6.2": {
       "fetchedFrom": "npm",
       "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/primereact@11.1.0": {
+      "fetchedFrom": "npm",
+      "license": "SEE LICENSE IN LICENSE.md",
       "resolvable": true,
       "via": "version-license"
     },
