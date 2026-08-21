@@ -3,8 +3,6 @@ name: Licenses intensive
 on:
   schedule:
     - cron: "17 4 1 * *" # monthly: the burn-down set is small and changes slowly
-  pull_request: # to be removed after this runs for the first time
-    types: [opened, edited, synchronize]
 
 permissions:
   contents: write
