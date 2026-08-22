@@ -23,6 +23,6 @@ RUN chmod -R 700 .
 
 USER nestjs
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 ENTRYPOINT ["docker/entrypoint.sh"]
