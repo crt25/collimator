@@ -48,6 +48,10 @@ const App = ({ Component, pageProps }: AppProps) => {
         // so that we can buffer any incoming iframe messages until the main app is ready to handle them.
 
         const bufferIncomingMessages = (e) => {
+          if (window.parent === window || e.source !== window.parent) {
+            return;
+          }
+
           // Only buffer RPC messages (JSON-RPC objects). Non-object payloads are
           // foreign traffic on the shared message channel - most notably the
           // setImmediate polyfill's "setImmediate$<rand>$<handle>" strings, which
