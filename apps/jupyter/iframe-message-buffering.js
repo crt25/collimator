@@ -4,6 +4,10 @@
 const logModule = "[Iframe Message Buffer]";
 
 const bufferIncomingMessages = (e) => {
+  if (window.parent === window || e.source !== window.parent) {
+    return;
+  }
+
   // Only buffer RPC messages (JSON-RPC objects). Non-object payloads are foreign
   // traffic on the shared message channel - most notably the setImmediate
   // polyfill's "setImmediate$<rand>$<handle>" strings, which fire in huge volume
