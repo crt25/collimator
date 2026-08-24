@@ -3,6 +3,8 @@ import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
+  // the SentryLogger forwards all Nest logs to Sentry Logs
+  enableLogs: true,
   integrations: [
     // use Sentry.profiler.startProfiler(); and Sentry.profiler.stopProfiler(); to profile the code in between
     nodeProfilingIntegration(),

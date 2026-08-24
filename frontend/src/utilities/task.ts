@@ -1,4 +1,5 @@
 import { IntlShape, MessageDescriptor } from "react-intl";
+import { IframeDocumentReplacedError } from "iframe-rpc-react/src";
 import { toaster } from "@/components/Toaster";
 
 const toastDuration = 60 * 1000;
@@ -55,6 +56,12 @@ export const executeAsyncWithToasts = async <T>(
 
     return response;
   } catch (error) {
+    // iframe navigation cancels work owned by the document that disappeared
+    // replacing it retries initialization, so reporting this expected cancellation as an application failure would be misleading
+    if (error instanceof IframeDocumentReplacedError) {
+      throw error;
+    }
+
     toaster.error({
       id: `error-${Date.now()}`,
       title: formatErrorMessage(errorMessage, error),

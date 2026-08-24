@@ -147,6 +147,16 @@ export class SolutionsController {
     required: false,
     type: Boolean,
   })
+  @ApiQuery({
+    name: "studentSolutionsOnly",
+    required: false,
+    type: Boolean,
+  })
+  @ApiQuery({
+    name: "ignoreStarredSolutions",
+    required: false,
+    type: Boolean,
+  })
   @ApiOkResponse({ type: CurrentAnalysesDto })
   async findCurrentAnalyses(
     @AuthenticatedUser() user: User,
@@ -155,6 +165,10 @@ export class SolutionsController {
     @Param("taskId", ParseIntPipe) taskId: number,
     @Query("includeSoftDelete", new ParseBoolPipe({ optional: true }))
     includeSoftDelete?: boolean,
+    @Query("studentSolutionsOnly", new ParseBoolPipe({ optional: true }))
+    studentSolutionsOnly?: boolean,
+    @Query("ignoreStarredSolutions", new ParseBoolPipe({ optional: true }))
+    ignoreStarredSolutions?: boolean,
   ): Promise<CurrentAnalysesDto> {
     const isAuthorized = await this.authorizationService.canListCurrentAnalyses(
       user,
@@ -165,12 +179,15 @@ export class SolutionsController {
       throw new ForbiddenException();
     }
 
-    const solutions =
-      await this.solutionsService.findCurrentAnalysesWithActivities(
-        sessionId,
-        taskId,
-        includeSoftDelete,
-      );
+    const solutions = await this.solutionsService.findCurrentAnalyses(
+      sessionId,
+      taskId,
+      {
+        includeSoftDeleted: includeSoftDelete,
+        studentSolutionsOnly,
+        ignoreStarredSolutions,
+      },
+    );
 
     const studentAnalyses: CurrentStudentAnalysisDto[] = fromQueryResults(
       CurrentStudentAnalysisDto,

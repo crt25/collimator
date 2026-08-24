@@ -1,0 +1,87 @@
+name: Licenses intensive
+
+on:
+  schedule:
+    - cron: "17 4 1 * *" # monthly: the burn-down set is small and changes slowly
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  licenses:
+    # Never gate refresh PRs themselves, or a failed refresh would recurse.
+    if: startsWith(github.head_ref, 'licenses-refresh/') == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 4800 # the intensive scan can take a long time for large repos
+
+    # Postgres is required because `task setup` runs `db:migrate:deploy`.
+    services: &services
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps TCP port 5433 on the host to Postgres
+          - 5433:5432
+
+    env: &job_env
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/collimator?schema=public"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+          submodules: recursive
+
+      - name: Setup CI environment
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4.2
+
+      - name: Setup dependencies
+        run: task setup # required before SBOMlet's intensive analysis
+
+      - name: Regenerate licenses
+        uses: Anansi-Solutions/SBOMlet@f7c820dda1608cbae336d08ac761cc16ffe1bfef
+        with:
+          mode: generate
+          policy: .sbomlet.policy.toml
+          docker: true
+          intensive: true
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "modified=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "modified=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a PR with the refreshed inventory
+        id: cpr
+        if: steps.git-check.outputs.modified == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore: refresh third-party licence inventory"
+          title: "license refresh (intensive): ${{ github.event.pull_request.title }}"
+          body: |
+            The committed third-party licence inventory is out of date for #${{ github.event.number }}.
+
+            This PR regenerates the licence inventory. Merge it into that branch to make the licence
+            check pass.
+          branch: licenses-refresh-intensive/${{ github.head_ref }}
+          base: ${{ github.head_ref }}
+          labels: |
+            licenses
+            automated pr
+          delete-branch: true

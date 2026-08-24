@@ -30,17 +30,19 @@ jobs:
       - name: Check third-party licence inventory
         id: check
         continue-on-error: true
-        uses: Anansi-Solutions/SBOMlet@ff7c08e11b73b121bb8a6cfd13bde2b98fbde16b
+        uses: Anansi-Solutions/SBOMlet@f7c820dda1608cbae336d08ac761cc16ffe1bfef
         with:
           mode: check
           policy: .sbomlet.policy.toml
+          docker: true
 
       - name: Regenerate licenses
         if: steps.check.outcome == 'failure'
-        uses: Anansi-Solutions/SBOMlet@ff7c08e11b73b121bb8a6cfd13bde2b98fbde16b
+        uses: Anansi-Solutions/SBOMlet@f7c820dda1608cbae336d08ac761cc16ffe1bfef
         with:
           mode: generate
           policy: .sbomlet.policy.toml
+          docker: true
 
       - name: Check for changes
         id: git-check

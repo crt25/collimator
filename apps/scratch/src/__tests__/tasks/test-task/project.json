@@ -179,6 +179,37 @@
       "direction": 90,
       "draggable": false,
       "rotationStyle": "all around"
+    },
+    {
+      "isStage": false,
+      "name": "Sprite2",
+      "variables": {},
+      "lists": {},
+      "broadcasts": {},
+      "blocks": {},
+      "comments": {},
+      "currentCostume": 0,
+      "costumes": [
+        {
+          "name": "costume1",
+          "bitmapResolution": 1,
+          "dataFormat": "svg",
+          "assetId": "bcf454acf82e4504149f7ffe07081dbc",
+          "md5ext": "bcf454acf82e4504149f7ffe07081dbc.svg",
+          "rotationCenterX": 48,
+          "rotationCenterY": 50
+        }
+      ],
+      "sounds": [],
+      "volume": 100,
+      "layerOrder": 2,
+      "visible": true,
+      "x": 150,
+      "y": 0,
+      "size": 100,
+      "direction": 90,
+      "draggable": false,
+      "rotationStyle": "all around"
     }
   ],
   "monitors": [],

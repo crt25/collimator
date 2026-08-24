@@ -18,3 +18,724 @@ handling = "warn"
 
 [os_dependencies]
 handling = "warn"
+
+[[compatible]]
+  match = "license"
+  pattern = "MPL-2.0"
+  reason = "MPL-2.0 dependencies have been reviewed and accepted."
+
+# evidence: jinja2-ansible-filters is required only by copier (see
+# copier-9.11.3.dist-info/METADATA in the apps/jupyter venv), the project
+# templating tool used to scaffold/update the JupyterLite site. It runs at
+# build time only; no GPL code from it ships in the built static site, so
+# the GPL-3.0-or-later obligation does not attach to the distributed work.
+[[compatible]]
+match = "package"
+name = "jinja2-ansible-filters"
+version = "1.3.2"
+where = ["apps/jupyter"]
+reason = "GPL-3.0-or-later Jinja filter library pulled in solely by copier, the build-time project-templating tool for the JupyterLite site in apps/jupyter. It executes during the site build only; none of its code is distributed in the built artifact, so the copyleft obligation does not extend to the shipped work."
+
+# evidence: axe-core (MPL-2.0) is pulled solely by eslint-plugin-jsx-a11y in
+# both the frontend and apps/scratch workspaces (the only package.json
+# declaring an axe-core dependency in either tree). It is a lint-time-only
+# tool - no shipped/runtime module imports it and it does not appear in any
+# distributed build - so the MPL-2.0 file-level copyleft does not attach to the
+# distributed work. Previously stubbed out via a package.json resolution
+# (npm:empty-npm-package); that redirect is removed so the real dependency is
+# inventoried and accepted here on its own merits.
+[[compatible]]
+match = "package"
+name = "axe-core"
+version = "4.13.0"
+where = ["frontend", "apps/scratch"]
+reason = "MPL-2.0 accessibility-testing engine pulled in only by eslint-plugin-jsx-a11y for linting in the frontend and apps/scratch workspaces. It runs at lint time only; no distributed runtime code imports it and it is absent from every shipped build, so the MPL-2.0 obligation does not extend to the distributed work."
+
+# evidence: the @img/sharp-* platform packages are sharp's prebuilt libvips
+# binaries (LGPL-3.0-or-later; the wasm32/win32 ones add Apache-2.0 AND MIT
+# for the sharp glue). sharp enters both workspaces solely as next's optional
+# image-optimization backend (yarn why sharp -> next@16) and runs at build
+# time on the developer/CI machine only: apps/scratch is a static export
+# (output: "export" disables runtime image optimization) and the frontend
+# build output does not bundle these native binaries. No libvips code ships
+# in a distributed artifact, so the LGPL obligation does not extend to the
+# shipped work. One rule per platform package; versions pinned so a sharp
+# upgrade reopens the review.
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-darwin-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-darwin-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-arm"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-ppc64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-riscv64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-s390x"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linux-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linuxmusl-arm64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-libvips-linuxmusl-x64"
+version = "1.2.4"
+where = ["frontend", "apps/scratch"]
+reason = "Prebuilt LGPL-3.0-or-later libvips binary used by sharp, next's optional build-time image-optimization backend. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-wasm32"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's wasm build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-arm64"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-ia32"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+[[compatible]]
+match = "package"
+name = "@img/sharp-win32-x64"
+version = "0.34.5"
+where = ["frontend", "apps/scratch"]
+reason = "sharp's Windows build embedding LGPL-3.0-or-later libvips (plus Apache-2.0 and MIT glue), used only by next's optional build-time image optimization. Build-time only; not part of any shipped artifact, so the copyleft obligation does not extend to the distributed work."
+
+# --- ScanCode AND-vs-OR corrections ----------------------------------------
+# Each package below declares a dual-license (a choice of EITHER license) in its
+# registry metadata. The in-depth ScanCode pass finds both bundled license texts
+# and mechanically joins them with AND (it cannot infer the OR); we adopt the
+# declared choice-of-license. Versions are pinned so a future upstream relicense
+# reopens the package for review instead of silently inheriting this override.
+
+[[clarify]]
+package = { name = "amdefine", version = "1.0.1" }
+expression = "BSD-3-Clause OR MIT"
+reason = "The registry declares amdefine's dual-license (BSD-3-Clause OR MIT), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "atob", version = "2.1.2" }
+expression = "MIT OR Apache-2.0"
+reason = "The registry declares atob's dual-license (MIT OR Apache-2.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "harmony-reflect", version = "1.6.2" }
+expression = "Apache-2.0 OR MPL-1.1"
+reason = "The registry declares harmony-reflect's dual-license (Apache-2.0 OR MPL-1.1), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "opener", version = "1.5.2" }
+expression = "WTFPL OR MIT"
+reason = "The registry declares opener's dual-license (WTFPL OR MIT), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "text-encoding", version = "0.7.0" }
+expression = "Unlicense OR Apache-2.0"
+reason = "The registry declares text-encoding's dual-license (Unlicense OR Apache-2.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "packaging", version = "26.0" }
+expression = "Apache-2.0 OR BSD-2-Clause"
+reason = "The registry declares packaging's dual-license (Apache-2.0 OR BSD-2-Clause), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "type-fest", version = "2.19.0" }
+expression = "MIT OR CC0-1.0"
+reason = "The registry declares type-fest's dual-license (MIT OR CC0-1.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "type-fest", version = "4.38.0" }
+expression = "MIT OR CC0-1.0"
+reason = "The registry declares type-fest's dual-license (MIT OR CC0-1.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "type-fest", version = "4.41.0" }
+expression = "MIT OR CC0-1.0"
+reason = "The registry declares type-fest's dual-license (MIT OR CC0-1.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "type-fest", version = "5.3.1" }
+expression = "MIT OR CC0-1.0"
+reason = "The registry declares type-fest's dual-license (MIT OR CC0-1.0), a choice of either. The in-depth scan found both bundled license texts and mechanically joined them with AND. I adopt the declared choice-of-license."
+
+# --- ScanCode misdetection / dual-license corrections ----------------------
+# Cases where the in-depth scan over-detected licenses from bundled fixture or
+# vendored files, or picked the wrong variant; each expression is the package's
+# real license as confirmed against its own metadata and license files.
+
+[[clarify]]
+package = { name = "typing-extensions", version = "4.15.0" }
+expression = "PSF-2.0"
+reason = "typing-extensions is licensed PSF-2.0 (Python Software Foundation License). The in-depth scan over-detected 0BSD, BSD-3-Clause, GPL-1.0-or-later and Python-2.0 from license references in bundled/fixture files, none of which is the package's own license. I pin the actual PSF-2.0."
+
+[[clarify]]
+package = { name = "json-schema", version = "0.4.0" }
+expression = "AFL-2.1 OR BSD-3-Clause"
+reason = "json-schema@0.4.0 is dual-licensed AFL-2.1 OR BSD-3-Clause (the New BSD License), a choice of either. Its LICENSE text and package.json both state Academic Free License version 2.1; no AFL-3.0 text exists anywhere in the package. The scan AND-joined AFL-2.1, AFL-3.0 and BSD-3-Clause (the AFL-3.0 leaf is a scanner rule collision - AFL-2.1 and AFL-3.0 share most of their text). I record the declared dual-license with the AFL version the files actually carry (2.1), matching the registry."
+
+[[clarify]]
+package = { name = "jszip", version = "3.10.1" }
+expression = "MIT OR GPL-3.0-or-later"
+reason = "jszip is dual-licensed MIT OR GPL-3.0-or-later (choice of either). The in-depth scan found the dual-license texts but added a stray GPL-1.0-or-later reference and mechanically AND-joined them. I adopt the declared choice-of-license."
+
+[[clarify]]
+package = { name = "pywin32", version = "311" }
+expression = "PSF-2.0 AND BSD-3-Clause AND Python-2.0"
+reason = "pywin32 genuinely bundles multiple licenses: the dist-info METADATA declares PSF; the vendored win32/, win32com/ and Pythonwin/ license.txt files are BSD-3-Clause (Mark Hammond / Greg Stein); and bundled Python components carry Python-2.0. I record the full set actually present rather than the registry's PSF-only summary."
+
+# ===========================================================================
+# Intensive-scan conflict adjudication (2026-08-13, autonomous pass).
+# Every entry cites its evidence so it can be re-verified quickly; file paths
+# are relative to the repo root and point at the installed package copy that
+# was inspected. Grouped by decision type.
+# ===========================================================================
+
+# --- A. Dual-licensed packages (choice of either) --------------------------
+# The package's own files state a dual license; ScanCode AND-joined the texts.
+
+# evidence: backend/node_modules/abbrev/LICENSE line 1: "This software is
+# dual-licensed under the ISC and MIT licenses." (both texts follow).
+[[clarify]]
+package = { name = "abbrev", version = "2.0.0" }
+expression = "ISC OR MIT"
+reason = "abbrev's LICENSE opens with: This software is dual-licensed under the ISC and MIT licenses - a choice of either. ScanCode AND-joined the two texts. I record the dual-license choice."
+
+[[clarify]]
+package = { name = "abbrev", version = "3.0.0" }
+expression = "ISC OR MIT"
+reason = "abbrev's LICENSE opens with: This software is dual-licensed under the ISC and MIT licenses - a choice of either. ScanCode AND-joined the two texts. I record the dual-license choice."
+
+# evidence: apps/scratch/node_modules/through ships BOTH LICENSE.APACHE2 and
+# LICENSE.MIT; package.json says MIT; upstream README says "MIT / Apache2".
+[[clarify]]
+package = { name = "through", version = "2.3.8" }
+expression = "MIT OR Apache-2.0"
+reason = "through ships two alternative license files, LICENSE.MIT and LICENSE.APACHE2 (the author offers either). ScanCode elected only the Apache text and the registry only MIT. I record the dual-license choice."
+
+# evidence: apps/scratch/node_modules/dompurify/LICENSE + package.json license
+# "(MPL-2.0 OR Apache-2.0)"; grep found NO GPL text anywhere in the package -
+# the GPL leaves in the scan are an over-detection.
+[[clarify]]
+package = { name = "dompurify", version = "3.1.6" }
+expression = "MPL-2.0 OR Apache-2.0"
+reason = "DOMPurify is dual-licensed (MPL-2.0 OR Apache-2.0) per its LICENSE and package.json. The scan added (GPL-1.0-only OR GPL-2.0-only), but no GPL license text exists anywhere in the installed package - an over-detection from a textual reference. I record the declared dual-license."
+
+[[clarify]]
+package = { name = "dompurify", version = "3.3.1" }
+expression = "MPL-2.0 OR Apache-2.0"
+reason = "DOMPurify is dual-licensed (MPL-2.0 OR Apache-2.0) per its LICENSE and package.json. The scan added (GPL-1.0-only OR GPL-2.0-only), but no GPL license text exists anywhere in the installed package - an over-detection from a textual reference. I record the declared dual-license."
+
+# evidence: python-dateutil is dual Apache-2.0 OR BSD-3-Clause (its LICENSE
+# states both options). This project-level entry supersedes SBOMlet's builtin
+# override, whose literal expects string no longer matches the richer
+# PEP 639 observation and therefore flags stale.
+[[clarify]]
+package = { name = "python-dateutil", version = "2.9.0.post0" }
+expression = "Apache-2.0 OR BSD-3-Clause"
+reason = "python-dateutil is dual-licensed Apache-2.0 OR BSD-3-Clause (its LICENSE presents both options). PyPI reports the imprecise Dual License classifier and the deep scan joins the license texts. This project-level clarify supersedes the tool builtin whose expects guard predates the PEP 639 observation."
+
+# --- B. Registry/declared correct; ScanCode over-detected ------------------
+# The extra licenses ScanCode found correspond to no shipped content: blanket
+# LICENSE prose, sample-code notes, or references without an actual grant.
+
+# evidence: no font files (.woff/.ttf/.otf/.eot) exist in any installed
+# @fortawesome package (verified by find); LICENSE.txt is the project-wide
+# blanket statement whose "Fonts: SIL OFL 1.1" section applies only to the
+# font-file downloads, which these npm packages do not contain.
+[[clarify]]
+package = { name = "@fortawesome/fontawesome-common-types", version = "6.7.2" }
+expression = "MIT"
+reason = "This package ships TypeScript type definitions only (code). Its LICENSE.txt is Font Awesome's blanket statement covering icons (CC-BY-4.0), fonts (OFL-1.1) and code (MIT), but no icon data or font files are in this package - verified: no font files exist in the installed tree. Code-only content is MIT, matching package.json."
+
+[[clarify]]
+package = { name = "@fortawesome/fontawesome-svg-core", version = "6.7.2" }
+expression = "MIT"
+reason = "This package ships rendering code only. Its LICENSE.txt is Font Awesome's blanket statement covering icons (CC-BY-4.0), fonts (OFL-1.1) and code (MIT), but no icon data or font files are in this package - verified: no font files exist in the installed tree. Code-only content is MIT, matching package.json."
+
+[[clarify]]
+package = { name = "@fortawesome/free-regular-svg-icons", version = "6.7.2" }
+expression = "CC-BY-4.0 AND MIT"
+reason = "This package ships icon path data (CC-BY-4.0) plus code (MIT) - package.json declares (CC-BY-4.0 AND MIT). The OFL-1.1 the scan added covers only font files, and none are shipped in this package (verified by find). I keep the declared pair."
+
+[[clarify]]
+package = { name = "@fortawesome/free-solid-svg-icons", version = "6.7.2" }
+expression = "CC-BY-4.0 AND MIT"
+reason = "This package ships icon path data (CC-BY-4.0) plus code (MIT) - package.json declares (CC-BY-4.0 AND MIT). The OFL-1.1 the scan added covers only font files, and none are shipped in this package (verified by find). I keep the declared pair."
+
+# evidence: backend/node_modules/lodash/LICENSE lines 36-40: "Copyright and
+# related rights for SAMPLE CODE are waived via CC0" - the CC0 grant covers
+# documentation samples, not the shipped library, which is MIT. The same
+# LICENSE file is copied into every per-method lodash.* package.
+[[clarify]]
+package = { name = "lodash", version = "4.17.21" }
+expression = "MIT"
+reason = "lodash's LICENSE is MIT; its CC0 paragraph waives rights for documentation sample code only (LICENSE: Copyright and related rights for sample code are waived via CC0), not for the shipped library. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash-es", version = "4.17.21" }
+expression = "MIT"
+reason = "Same LICENSE file as lodash: MIT, with the CC0 paragraph covering documentation sample code only, not the shipped library. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.bindall", version = "4.4.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.debounce", version = "4.0.8" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.defaultsdeep", version = "4.6.1" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.escape", version = "4.0.1" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.flattendeep", version = "4.4.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.isempty", version = "4.4.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.memoize", version = "4.1.2" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.merge", version = "4.6.2" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.mergewith", version = "4.6.2" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.omit", version = "4.5.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.omitby", version = "4.6.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.topath", version = "4.5.2" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.truncate", version = "4.4.2" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.uniq", version = "4.5.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.uniqby", version = "4.7.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+[[clarify]]
+package = { name = "lodash.uniqwith", version = "4.5.0" }
+expression = "MIT"
+reason = "Per-method lodash package carrying lodash's LICENSE: MIT, with the CC0 paragraph covering documentation sample code only. I record MIT, matching package.json."
+
+# evidence: backend/node_modules/glob/LICENSE (v7): ISC text plus a note that
+# the project LOGO is CC-BY-SA-4.0; the logo image is not part of the npm
+# package, so the CC-BY-SA obligation does not attach to shipped content.
+[[clarify]]
+package = { name = "glob", version = "7.1.7" }
+expression = "ISC"
+reason = "glob v7 is ISC. Its LICENSE adds that the glob logo (by Tanya Brassie) is CC-BY-SA-4.0, but the logo image is not shipped in the npm package - only the note about it is. I record ISC, matching package.json."
+
+[[clarify]]
+package = { name = "glob", version = "7.2.3" }
+expression = "ISC"
+reason = "glob v7 is ISC. Its LICENSE adds that the glob logo (by Tanya Brassie) is CC-BY-SA-4.0, but the logo image is not shipped in the npm package - only the note about it is. I record ISC, matching package.json."
+
+# evidence: the isaacs BlueOak packages (chownr@3, glob@11, yallist@5,
+# package-json-from-dist) share a LICENSE.md whose preamble reads "All
+# packages under src/ are licensed according to the terms in their respective
+# LICENSE files" followed by the Blue Oak Model License. grep for
+# CDDL/Classpath across the installed packages finds NOTHING (verified on
+# chownr@3, yallist@5 and glob@11) - the (CDDL-1.1 OR GPL-2.0-only WITH
+# Classpath-exception-2.0) leaf is a ScanCode rule misfire on that preamble.
+[[clarify]]
+package = { name = "chownr", version = "3.0.0" }
+expression = "BlueOak-1.0.0"
+reason = "chownr v3 is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
+
+[[clarify]]
+package = { name = "glob", version = "11.1.0" }
+expression = "BlueOak-1.0.0"
+reason = "glob v11 is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
+
+[[clarify]]
+package = { name = "package-json-from-dist", version = "1.0.0" }
+expression = "BlueOak-1.0.0"
+reason = "package-json-from-dist is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
+
+[[clarify]]
+package = { name = "package-json-from-dist", version = "1.0.1" }
+expression = "BlueOak-1.0.0"
+reason = "package-json-from-dist is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
+
+[[clarify]]
+package = { name = "yallist", version = "5.0.0" }
+expression = "BlueOak-1.0.0"
+reason = "yallist v5 is BlueOak-1.0.0 (package.json and the LICENSE.md body). The CDDL/GPL-Classpath leaf the scan added matches no text in the package - grep for CDDL or Classpath finds nothing - it is a rule misfire on the LICENSE.md preamble. I record BlueOak-1.0.0."
+
+# evidence: apps/scratch/node_modules/bowser/LICENSE is MIT No Attribution
+# (MITNFA): the MIT grant plus the distinctive clause requiring downstream to
+# strip or replace "the Original Author's bug reporting email addresses and
+# urls" on functionally-altering modification. That clause is genuinely present
+# in the installed 2.11.0 LICENSE, so ScanCode's MITNFA detection is correct;
+# package.json's bare "MIT" understates it.
+[[clarify]]
+package = { name = "bowser", version = "2.11.0" }
+expression = "MITNFA"
+reason = "bowser 2.11.0's LICENSE is MIT No Attribution (MITNFA): the standard MIT grant followed by the no-false-attribution clause obliging distributors of functionally-modified copies to replace or remove the Original Author's bug-report addresses and urls. That clause is present verbatim in the shipped LICENSE file, so the scan's MITNFA reading is correct; the file governs over package.json's bare MIT. I record the precise MITNFA variant."
+
+# evidence: apps/jupyter/.venv/.../wcwidth-0.6.0.dist-info: METADATA
+# License-Expression: MIT and licenses/LICENSE is "The MIT License (MIT)".
+# The HPND-Markus-Kuhn leaf comes from docstrings crediting Markus Kuhn's
+# wcwidth.c algorithm; the Python code is a reimplementation, not his code.
+[[clarify]]
+package = { name = "wcwidth", version = "0.6.0" }
+expression = "MIT"
+reason = "wcwidth declares License-Expression: MIT (PEP 639) and ships an MIT LICENSE. The HPND-Markus-Kuhn leaf the scan added comes from docstring credits to Markus Kuhn's original C algorithm, which this package reimplements rather than includes. I record MIT."
+
+# evidence: apps/jupyter/.venv/.../cffi-2.0.0.dist-info: METADATA
+# License-Expression: MIT (PEP 639 authoritative). The MIT-0 election came
+# from the LICENSE preamble wording, not a missing attribution clause.
+[[clarify]]
+package = { name = "cffi", version = "2.0.0" }
+expression = "MIT"
+reason = "cffi declares License-Expression: MIT (PEP 639, dist-info METADATA). The scan elected the MIT-0 variant from the LICENSE preamble wording. I record the declared MIT."
+
+# evidence: apps/jupyter/.venv/.../jinja2_ansible_filters-1.3.2.dist-info:
+# METADATA License: GPL3; LICENSE credits Nick Shobe 2019 and Toshio
+# Kuratomi 2016 (Ansible-derived filter code, GPL-3). The BSD leaves the
+# scan added are compatible-licensed snippets subsumed by the GPL-3 whole.
+[[clarify]]
+package = { name = "jinja2-ansible-filters", version = "1.3.2" }
+expression = "GPL-3.0-or-later"
+reason = "jinja2-ansible-filters declares GPL3 and vendors Ansible-derived filter code (LICENSE credits Toshio Kuratomi / Ansible, GPL-3). The BSD leaves the scan added are compatible snippets within the GPL-3-or-later combined work. I record the declared GPL-3.0-or-later, unchanged from the registry."
+
+# evidence: apps/scratch/node_modules/exports-loader and raw-loader (0.x):
+# no license file is shipped; package.json licenses field is the only grant
+# statement, type MIT. The BSD-2 leaf has no corresponding text in either
+# package.
+[[clarify]]
+package = { name = "exports-loader", version = "0.6.3" }
+expression = "MIT"
+reason = "exports-loader 0.6.3 ships no license file; the only license statement in the package is the package.json licenses field, type MIT. The BSD-2-Clause leaf the scan added corresponds to no text in the package. I record MIT."
+
+[[clarify]]
+package = { name = "raw-loader", version = "0.5.1" }
+expression = "MIT"
+reason = "raw-loader 0.5.1 ships no license file; the only license statement in the package is the package.json licenses field, type MIT. The BSD-2-Clause leaf the scan added corresponds to no text in the package. I record MIT."
+
+# --- C. ScanCode correct: the deep scan found real content the registry
+# missed (bundled third-party code, or a more precise license variant). -----
+
+# evidence: backend/node_modules/fs.realpath/LICENSE: ISC text PLUS "methods
+# from Node.js v0.10 under the terms of the Node.js MIT license" with the
+# full Joyent MIT text - both obligations genuinely attach.
+[[clarify]]
+package = { name = "fs.realpath", version = "1.0.0" }
+expression = "ISC AND MIT"
+reason = "fs.realpath's LICENSE contains the ISC grant plus the Node.js/Joyent MIT license covering methods copied from Node v0.10 - both texts and both obligations are genuinely present. I record ISC AND MIT as the scan found."
+
+# evidence: apps/scratch/node_modules/bcrypt-pbkdf/LICENSE: BSD (Niels
+# Provos 1997) + ISC (Ted Unangst/OpenBSD 2013) + Joyent 2016 - vendored
+# OpenBSD crypto under both licenses.
+[[clarify]]
+package = { name = "bcrypt-pbkdf", version = "1.0.2" }
+expression = "BSD-3-Clause AND ISC"
+reason = "bcrypt-pbkdf's LICENSE stacks the original BSD grant (Niels Provos 1997) with ISC grants (Ted Unangst / OpenBSD 2013, Joyent 2016) for the vendored OpenBSD crypto code - both obligations attach. I record BSD-3-Clause AND ISC as the scan found."
+
+# evidence: apps/scratch/node_modules/intl-messageformat-parser/LICENSE:
+# Yahoo BSD-3-Clause text (2014) PLUS "Copyright 2014 Alex Sexton - Apache
+# License, Version 2.0" for the grammar heritage; src/parser.pegjs also
+# carries the Apache reference.
+[[clarify]]
+package = { name = "intl-messageformat-parser", version = "1.8.1" }
+expression = "Apache-2.0 AND BSD-3-Clause"
+reason = "intl-messageformat-parser's LICENSE contains both the Yahoo BSD-3-Clause grant and an Apache-2.0 grant (Alex Sexton 2014) covering the message-format grammar the parser derives from - both are genuinely present. I record Apache-2.0 AND BSD-3-Clause as the scan found."
+
+# evidence: apps/scratch/node_modules/normalize-package-data/LICENSE: opens
+# "This package contains code originally written by Isaac Z. Schlueter"
+# then Meryn Stol's BSD license - the scan reads both the package BSD-2
+# grant and the BSD-3 covering the npm-derived code.
+[[clarify]]
+package = { name = "normalize-package-data", version = "2.5.0" }
+expression = "BSD-2-Clause AND BSD-3-Clause"
+reason = "normalize-package-data's LICENSE notes it contains code originally written by Isaac Z. Schlueter (npm, BSD-3-Clause) alongside Meryn Stol's BSD-2-Clause grant for the package itself. I record both, as the scan found."
+
+[[clarify]]
+package = { name = "normalize-package-data", version = "3.0.3" }
+expression = "BSD-2-Clause AND BSD-3-Clause"
+reason = "normalize-package-data's LICENSE notes it contains code originally written by Isaac Z. Schlueter (npm, BSD-3-Clause) alongside Meryn Stol's BSD-2-Clause grant for the package itself. I record both, as the scan found."
+
+# evidence: frontend/node_modules/@sentry/{babel-plugin-component-annotate,
+# bundler-plugin-core,webpack-plugin}/LICENSE each open with the heading
+# "# MIT License" but the body is verbatim BSD-3-Clause text ("Redistribution
+# and use ...", plus the clause-3 "Neither the name ... may be used to
+# endorse"). package.json declares MIT. So both licenses are genuinely present
+# in the LICENSE file itself; the dist/ folders contain no BSD text. Same
+# mislabeled LICENSE ships in all three plugin packages.
+[[clarify]]
+package = { name = "@sentry/babel-plugin-component-annotate", version = "4.6.1" }
+expression = "MIT AND BSD-3-Clause"
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
+
+[[clarify]]
+package = { name = "@sentry/bundler-plugin-core", version = "4.6.1" }
+expression = "MIT AND BSD-3-Clause"
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
+
+[[clarify]]
+package = { name = "@sentry/webpack-plugin", version = "4.6.1" }
+expression = "MIT AND BSD-3-Clause"
+reason = "The Sentry bundler-plugin packages declare MIT in package.json, but their shipped LICENSE file is headed \"MIT License\" over a verbatim BSD-3-Clause body (the redistribution clauses and the no-endorsement clause 3). Both grants are present in the one file, so both obligations attach. I record MIT AND BSD-3-Clause as the scan read from that LICENSE."
+
+# evidence: backend/node_modules/encoding/LICENSE: the MIT grant text WITHOUT
+# the "above copyright notice shall be included" attribution condition -
+# that is exactly the MIT-0 (MIT No Attribution) text.
+[[clarify]]
+package = { name = "encoding", version = "0.1.13" }
+expression = "MIT-0"
+reason = "encoding's LICENSE is the MIT text without the attribution-retention clause (the above-copyright-notice condition is absent - verified) which is the MIT-0 variant the scan detected. I record the precise MIT-0."
+
+# evidence: backend/node_modules/jsbn/LICENSE: Tom Wu's bespoke BSD-like
+# license ("This software is covered under the following copyright" -
+# www-cs-students.stanford.edu/~tjw). SPDX has an id for exactly this text:
+# MIT-Wu.
+[[clarify]]
+package = { name = "jsbn", version = "0.1.1" }
+expression = "MIT-Wu"
+reason = "jsbn ships Tom Wu's own license text, for which SPDX defines the dedicated id MIT-Wu; the registry flattens it to MIT. I record the precise variant the file carries."
+
+[[clarify]]
+package = { name = "jsbn", version = "1.1.0" }
+expression = "MIT-Wu"
+reason = "jsbn ships Tom Wu's own license text, for which SPDX defines the dedicated id MIT-Wu; the registry flattens it to MIT. I record the precise variant the file carries."
+
+# evidence: backend/node_modules/uri-js/LICENSE carries the views-and-
+# conclusions sentence - the BSD-2-Clause-Views variant. (Same adjudication
+# as SBOMlet's own dogfood policy for this exact package.)
+[[clarify]]
+package = { name = "uri-js", version = "4.4.1" }
+expression = "BSD-2-Clause-Views"
+reason = "The scan read the actual LICENSE file and found the BSD-2-Clause-Views variant: plain BSD-2-Clause plus the views-and-conclusions sentence. The registry flattened it to plain BSD-2-Clause. I adopt the precise variant the file carries."
+
+# evidence: apps/scratch/node_modules/fast-uri/LICENSE: BSD-3-Clause text
+# naming The Fastify Team AND Gary Court (uri-js) - while package.json still
+# said MIT at 3.0.1. This is the known fast-uri licensing mixup (the package
+# vendored BSD-licensed uri-js code under an MIT declaration); upstream later
+# corrected the declared license to BSD-3-Clause.
+[[clarify]]
+package = { name = "fast-uri", version = "3.0.1" }
+expression = "BSD-3-Clause"
+reason = "fast-uri's LICENSE is BSD-3-Clause (Fastify Team + Gary Court, whose uri-js code it derives from) even though version 3.0.1 still declared MIT in package.json - the mismatch upstream later fixed by declaring BSD-3-Clause. The license text in the package governs. I record BSD-3-Clause."
+
+# evidence: the big bundled tools ship aggregated license files enumerating
+# their vendored dependencies (grep -c License: prettier/LICENSE 276 hits,
+# vite/LICENSE.md 179, sass/LICENSE 63, rollup/LICENSE.md 56, vitest/
+# LICENSE.md 44). The scan's AND set is those bundled licenses - all
+# permissive; the obligations genuinely ship with the dist bundles.
+[[clarify]]
+package = { name = "prettier", version = "3.4.2" }
+expression = "Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND ISC AND MIT"
+reason = "prettier is MIT but its LICENSE file aggregates the licenses of all dependencies vendored into its dist bundle (hundreds of entries: Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, MIT). Those obligations ship with the artifact. I record the complete permissive set the scan found."
+
+[[clarify]]
+package = { name = "rollup", version = "4.53.5" }
+expression = "0BSD AND ISC AND MIT"
+reason = "rollup is MIT but its LICENSE.md aggregates the licenses of dependencies vendored into its dist bundle (0BSD, ISC, MIT). Those obligations ship with the artifact. I record the complete permissive set the scan found."
+
+[[clarify]]
+package = { name = "sass", version = "1.97.2" }
+expression = "Apache-2.0 AND BSD-3-Clause AND MIT"
+reason = "sass (dart-sass npm) is MIT but its LICENSE aggregates the licenses of code compiled into the bundled dist (Apache-2.0, BSD-3-Clause, MIT - the Dart SDK pieces are BSD). Those obligations ship with the artifact. I record the complete permissive set the scan found."
+
+[[clarify]]
+package = { name = "vite", version = "6.4.1" }
+expression = "Apache-2.0 AND BSD-2-Clause AND CC0-1.0 AND ISC AND MIT"
+reason = "vite is MIT but its LICENSE.md aggregates the licenses of all dependencies vendored into its dist bundle (Apache-2.0, BSD-2-Clause, CC0-1.0, ISC, MIT). Those obligations ship with the artifact. I record the complete permissive set the scan found."
+
+[[clarify]]
+package = { name = "vitest", version = "4.0.16" }
+expression = "BSD-3-Clause AND ISC AND MIT"
+reason = "vitest is MIT but its LICENSE.md aggregates the licenses of dependencies vendored into its dist bundle (BSD-3-Clause, ISC, MIT). Those obligations ship with the artifact. I record the complete permissive set the scan found."
+
+# evidence: apps/jupyter/.venv/.../jupyterlab-4.5.4: LICENSE is the Project
+# Jupyter BSD-3-Clause; the wheel additionally ships prebuilt static JS
+# assets bundling MIT-licensed npm packages.
+[[clarify]]
+package = { name = "jupyterlab", version = "4.5.4" }
+expression = "BSD-3-Clause AND MIT"
+reason = "jupyterlab is BSD-3-Clause (Project Jupyter LICENSE); its wheel also ships prebuilt static JavaScript bundling MIT-licensed npm packages, so both obligations attach to the shipped artifact. I record BSD-3-Clause AND MIT as the scan found; the registry's bare BSD was imprecise."
+
+# evidence: apps/jupyter/.venv/.../json5-0.13.0.dist-info/licenses/LICENSE is
+# a Debian-style split: everything except benchmarks/*.json under one grant
+# (Apache-2.0), the benchmark files under another (MIT, from the JSON5 JS
+# project) - both texts are in the shipped license file.
+[[clarify]]
+package = { name = "json5", version = "0.13.0" }
+expression = "Apache-2.0 AND MIT"
+reason = "The Python json5 package ships a split license file: the code is Apache-2.0 and the JSON5-project-derived benchmark data is MIT; both texts are present in the dist-info license. The registry's bare Apache label was imprecise. I record Apache-2.0 AND MIT as the scan found."
+
+# --- D. Declared metadata is the more complete claim; scan under-read ------
+
+# evidence: apps/scratch/node_modules/pako/package.json license field is
+# "(MIT AND Zlib)" - pako is a zlib port and carries the zlib license for
+# the ported code; the scan elected only MIT.
+[[clarify]]
+package = { name = "pako", version = "1.0.11" }
+expression = "MIT AND Zlib"
+reason = "pako declares (MIT AND Zlib): it is a JavaScript port of zlib and the zlib license covers the ported algorithm code alongside pako's own MIT. The scan elected only MIT. I keep the declared complete pair so the zlib obligation stays on the inventory."
+
+# evidence: apps/jupyter/.venv/.../prometheus_client-0.24.1.dist-info:
+# METADATA License-Expression: Apache-2.0 AND BSD-2-Clause (PEP 639
+# authoritative); the scan read only the Apache LICENSE file.
+[[clarify]]
+package = { name = "prometheus-client", version = "0.24.1" }
+expression = "Apache-2.0 AND BSD-2-Clause"
+reason = "prometheus-client declares License-Expression: Apache-2.0 AND BSD-2-Clause (PEP 639, dist-info METADATA) - the BSD-2 covers vendored code the top-level LICENSE file does not restate. The scan read only the Apache text. I keep the declared complete pair."
+
+# evidence: @img/sharp-win32-x64 declares Apache-2.0 AND LGPL-3.0-or-later
+# (package.json): Apache for sharp's glue code, LGPL for the embedded libvips
+# DLL. The intensive scan (this package was the locally-installed platform
+# binary) read only Apache-2.0 because the LGPL component is a compiled
+# binary with no scannable license text. The declared claim is the complete
+# one; the build-time [[compatible]] rule above covers the LGPL leaf.
+[[clarify]]
+package = { name = "@img/sharp-win32-x64", version = "0.34.5" }
+expression = "Apache-2.0 AND LGPL-3.0-or-later"
+reason = "@img/sharp-win32-x64 declares Apache-2.0 AND LGPL-3.0-or-later: Apache for the sharp glue, LGPL for the embedded prebuilt libvips DLL. The deep scan saw only the Apache text because the LGPL part is a compiled binary with nothing to text-scan. I keep the declared complete pair."
+
+# evidence: backend/node_modules/{string-width-cjs,strip-ansi-cjs,
+# wrap-ansi-cjs}: these are npm ALIASES of Sindre Sorhus's string-width@4/
+# strip-ansi@6/wrap-ansi@7 - on disk each ships the MIT license file and
+# package.json license MIT. The registry's ISC answer is an alias-resolution
+# artifact, not the package's license.
+[[clarify]]
+package = { name = "string-width-cjs", version = "4.2.3" }
+expression = "MIT"
+reason = "string-width-cjs is an npm alias of string-width@4.2.3, which is MIT (license file and package.json in the installed package). The registry's ISC claim is an alias-resolution artifact. I record MIT as the scan read from the actual files."
+
+[[clarify]]
+package = { name = "strip-ansi-cjs", version = "6.0.1" }
+expression = "MIT"
+reason = "strip-ansi-cjs is an npm alias of strip-ansi@6.0.1, which is MIT (license file and package.json in the installed package). The registry's ISC claim is an alias-resolution artifact. I record MIT as the scan read from the actual files."
+
+[[clarify]]
+package = { name = "wrap-ansi-cjs", version = "7.0.0" }
+expression = "MIT"
+reason = "wrap-ansi-cjs is an npm alias of wrap-ansi@7.0.0, which is MIT (license file and package.json in the installed package). The registry's ISC claim is an alias-resolution artifact. I record MIT as the scan read from the actual files."
+
+# evidence: backend/node_modules/@pkgjs/parseargs: the shipped LICENSE file
+# is the full Apache-2.0 text while package.json declares MIT, and no MIT
+# text exists in the package. Both claims are kept visible until upstream
+# reconciles them.
+[[clarify]]
+package = { name = "@pkgjs/parseargs", version = "0.11.0" }
+expression = "Apache-2.0 AND MIT"
+reason = "The package ships only the Apache-2.0 LICENSE text while its package.json declares MIT - contradictory permissive claims from upstream. I record both (Apache-2.0 AND MIT) so each stated obligation stays on the inventory until upstream reconciles the mismatch."
+
+# evidence: apps/scratch/node_modules/@scratch/{scratch-vm,scratch-render,
+# scratch-svg-renderer}: package.json declares AGPL-3.0-only (the Scratch
+# Foundation's v11 relicense), but each tarball still ships the 2016 MIT-
+# the-institution BSD-3-Clause LICENSE file. Both claims recorded; the AGPL
+# component is in-family for the AGPL-licensed apps/scratch workspace
+# (copyleft_suppressed above).
+[[clarify]]
+package = { name = "@scratch/scratch-vm", version = "11.6.0-react-18" }
+expression = "AGPL-3.0-only AND BSD-3-Clause"
+reason = "package.json declares AGPL-3.0-only (Scratch Foundation v11 relicense) while the shipped LICENSE file still carries the 2016 Massachusetts Institute of Technology BSD-3-Clause text. I record both claims until upstream reconciles the tarball; the AGPL side is in-family for the AGPL-3.0-only apps/scratch workspace."
+
+[[clarify]]
+package = { name = "@scratch/scratch-render", version = "11.6.0-react-18" }
+expression = "AGPL-3.0-only AND BSD-3-Clause"
+reason = "package.json declares AGPL-3.0-only (Scratch Foundation v11 relicense) while the shipped LICENSE file still carries the 2016 Massachusetts Institute of Technology BSD-3-Clause text. I record both claims until upstream reconciles the tarball; the AGPL side is in-family for the AGPL-3.0-only apps/scratch workspace."
+
+[[clarify]]
+package = { name = "@scratch/scratch-svg-renderer", version = "11.6.0-react-18" }
+expression = "AGPL-3.0-only AND BSD-3-Clause"
+reason = "package.json declares AGPL-3.0-only (Scratch Foundation v11 relicense) while the shipped LICENSE file still carries the 2016 Massachusetts Institute of Technology BSD-3-Clause text. I record both claims until upstream reconciles the tarball; the AGPL side is in-family for the AGPL-3.0-only apps/scratch workspace."

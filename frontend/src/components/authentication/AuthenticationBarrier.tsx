@@ -13,6 +13,7 @@ const allowedRoutesForUnauthenticatedUsers = new Set<string>([
   "/login/admin",
   "/login/teacher",
   "/login/student",
+  "/impressum",
   // this page has a special role in the process of student authentication
   // in particular, an ephemeral key pair is generated for the session
   // and the student's authentication is completed by communicating with the teacher

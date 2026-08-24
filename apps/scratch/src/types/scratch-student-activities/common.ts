@@ -26,6 +26,7 @@ export enum StudentActionType {
   Move = "move",
   Delete = "delete",
   GreenFlag = "greenFlag",
+  StopAll = "stopAll",
   BlockChange = "blockChange",
   IntermediateFieldChange = "intermediateFieldChange",
 }

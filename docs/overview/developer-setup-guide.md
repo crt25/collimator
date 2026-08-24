@@ -53,10 +53,10 @@ By default, when you run `task setup:dev` the PostgreSQL container will be runni
 
 ### Backend setup
 
-1. By running the commands above, a `.env` file will have been created in your `backend` folder,
+1. By running the commands above, a `.env.local` file will have been created in your `backend` folder,
    with a `DATABASE_URL` matching the PostgreSQL container configuration. 
 
-2. Configure the admin account by setting environment variables in your `backend/.env` file:
+2. Configure the admin account by setting environment variables in your `backend/.env.local` file:
 
     ```sh
     SEED_ADMIN_EMAIL=yourMicrosoftAccountEmail
@@ -91,7 +91,7 @@ By default, when you run `task setup:dev` the PostgreSQL container will be runni
 
 ### Frontend setup
 
-1. If you changed the backend URI, you will need to update it in `frontend/.env`.
+1. If you changed the backend URI, you will need to update it in `frontend/.env.development`.
 
 2. Start the frontend in development mode:
 
@@ -108,8 +108,8 @@ By default, when you run `task setup:dev` the PostgreSQL container will be runni
     ```
 
 ### Jupyter setup
-1. 
-2. Start the app in development mode:
+
+1. Start the app in development mode:
 
     ```sh
     $ task apps:jupyter:dev
@@ -125,6 +125,8 @@ See [apps/jupyter/README.md](../../apps/jupyter/README.md) for more information.
 ### Appendices
 
 #### Postgres Docker
+
+?> The recommended way to run PostgreSQL locally is `task db:run` (also invoked by `task setup:dev`), which starts the container for you. The manual Docker setup below is only needed if you prefer to manage the containers yourself.
 
 This process creates two Docker containers:  
 
@@ -164,7 +166,7 @@ This process creates two Docker containers:
     - Port: 5432 (default postgres port)
     - Username: postgres
     - Password: password (value from step 1)
-9. Save. Update the `backend/.env` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public`.
+9. Save. Update the `backend/.env.local` file by setting `DATABASE_URL` to `postgresql://postgres:password@localhost:5432/database?schema=public`.
 
 ## Infrastructure and deployment
 

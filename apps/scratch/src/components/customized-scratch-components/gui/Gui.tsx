@@ -98,6 +98,7 @@ const GUIComponent = (props: {
   blocksId?: string;
   cannotInteractWithBlocks?: boolean;
   canEditTask?: boolean;
+  isStudentSolving?: boolean;
   isStandaloneCodeEnabled?: boolean;
   isCodeTabEnabled?: boolean;
   isStageEnabled?: boolean;
@@ -139,6 +140,7 @@ const GUIComponent = (props: {
     cardsVisible,
     cannotInteractWithBlocks,
     canEditTask,
+    isStudentSolving,
     isStandaloneCodeEnabled,
     isCodeTabEnabled,
     isStageEnabled,
@@ -245,6 +247,7 @@ const GUIComponent = (props: {
               stageSize={STAGE_SIZE_MODES.large}
               vm={vm}
               canEditTask={canEditTask}
+              isStudentSolving={isStudentSolving}
             />
           ) : (
             <Box
@@ -457,6 +460,7 @@ const GUIComponent = (props: {
                         stageSize={stageSize}
                         vm={vm}
                         canEditTask={canEditTask}
+                        isStudentSolving={isStudentSolving}
                         isStageInteractive={
                           canEditTask || crtConfig.enableStageInteractions
                         }

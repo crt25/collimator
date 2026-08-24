@@ -8,6 +8,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
+import { SentryLogger } from "./sentry.logger";
 import * as swagger from "./swagger";
 
 async function bootstrap(): Promise<void> {
@@ -15,9 +16,14 @@ async function bootstrap(): Promise<void> {
   const API_VERSIONS = ["0"];
 
   const app = await NestFactory.create(AppModule, {
-    logger:
-      // log everything when LOG_LEVEL is set to true, and only errors and warnings otherwise
-      process.env.LOG_LEVEL === "true" ? undefined : ["error", "warn", "fatal"],
+    // all levels are forwarded to Sentry; the console prints everything when
+    // LOG_LEVEL is set to true, and only errors and warnings otherwise
+    logger: new SentryLogger({
+      logLevels:
+        process.env.LOG_LEVEL === "true"
+          ? undefined
+          : ["error", "warn", "fatal"],
+    }),
   });
 
   app.enableShutdownHooks();

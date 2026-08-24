@@ -1,13 +1,11 @@
 import { useCallback } from "react";
 import { useSWRConfig } from "swr";
-import {
-  getSolutionsControllerFindCurrentAnalysesV0Url,
-  solutionsControllerPatchStudentReferenceSolutionsV0,
-} from "../../generated/endpoints/solutions/solutions";
+import { solutionsControllerPatchStudentReferenceSolutionsV0 } from "../../generated/endpoints/solutions/solutions";
 import { CurrentStudentAnalysis } from "../../models/solutions/current-student-analysis";
 import { useAuthenticationOptions } from "../authentication/useAuthenticationOptions";
 import { GetCurrentAnalysisReturnType } from "./useCurrentSessionTaskSolutions";
 import { useRevalidateSolutionList } from "./useRevalidateSolutionList";
+import { matchesCurrentAnalysesKey } from "./currentAnalysesKey";
 
 type PatchStudentReferenceSolutions = (
   classId: number,
@@ -21,7 +19,7 @@ type PatchStudentReferenceSolutions = (
 export const usePatchStudentReferenceSolutions =
   (): PatchStudentReferenceSolutions => {
     const revalidateSolutionList = useRevalidateSolutionList();
-    const { mutate, cache } = useSWRConfig();
+    const { mutate } = useSWRConfig();
     const authOptions = useAuthenticationOptions();
 
     return useCallback<PatchStudentReferenceSolutions>(
@@ -35,32 +33,28 @@ export const usePatchStudentReferenceSolutions =
           undefined,
           authOptions,
         ).then(() => {
-          revalidateSolutionList(classId, sessionId, taskId);
+          const solutionHashSet = new Set(solutionHashes);
 
-          const key = getSolutionsControllerFindCurrentAnalysesV0Url(
-            classId,
-            sessionId,
-            taskId,
-            {},
+          // Optimistically flag the starred solutions across every cached
+          // variant of the current-analyses list (the analysis dashboard uses
+          // a distinct query key), before the revalidation below.
+          mutate(
+            matchesCurrentAnalysesKey(classId, sessionId, taskId),
+            (cachedData?: GetCurrentAnalysisReturnType) =>
+              cachedData
+                ? cachedData.map((analysis) =>
+                    analysis instanceof CurrentStudentAnalysis &&
+                    analysis.studentId === studentId &&
+                    solutionHashSet.has(analysis.solutionHash)
+                      ? analysis.withIsReference(isReference)
+                      : analysis,
+                  )
+                : cachedData,
+            { revalidate: false },
           );
-          const cachedData: GetCurrentAnalysisReturnType | undefined =
-            cache.get(key)?.data;
 
-          if (cachedData !== undefined) {
-            const solutionHashSet = new Set(solutionHashes);
-            mutate(
-              key,
-              cachedData.map((analysis) =>
-                analysis instanceof CurrentStudentAnalysis &&
-                analysis.studentId === studentId &&
-                solutionHashSet.has(analysis.solutionHash)
-                  ? analysis.withIsReference(isReference)
-                  : analysis,
-              ),
-              { revalidate: false },
-            );
-          }
+          revalidateSolutionList(classId, sessionId, taskId);
         }),
-      [authOptions, cache, mutate, revalidateSolutionList],
+      [authOptions, mutate, revalidateSolutionList],
     );
   };

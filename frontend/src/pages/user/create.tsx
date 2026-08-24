@@ -46,6 +46,8 @@ const CreateUser = () => {
         intl.formatMessage(messages.createUserError),
       );
       router.back();
+
+      return true;
     },
     [createUser, router, intl],
   );

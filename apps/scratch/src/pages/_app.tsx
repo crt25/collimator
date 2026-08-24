@@ -48,6 +48,19 @@ const App = ({ Component, pageProps }: AppProps) => {
         // so that we can buffer any incoming iframe messages until the main app is ready to handle them.
 
         const bufferIncomingMessages = (e) => {
+          if (window.parent === window || e.source !== window.parent) {
+            return;
+          }
+
+          // Only buffer RPC messages (JSON-RPC objects). Non-object payloads are
+          // foreign traffic on the shared message channel - most notably the
+          // setImmediate polyfill's "setImmediate$<rand>$<handle>" strings, which
+          // fire in huge volume during Scratch boot. Buffering them would bloat
+          // the buffer and, on replay, spam the console with "unknown source".
+          if (typeof e.data !== "object" || e.data === null) {
+            return;
+          }
+
           console.debug(\`\${logModule} Buffering incoming message:\`, e);
           window.bufferedMessages.push(e);
         };

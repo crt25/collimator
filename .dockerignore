@@ -5,7 +5,6 @@
 
 docker
 docker-compose.yml
-nginx.Dockerfile
 
 documentation
 backend
