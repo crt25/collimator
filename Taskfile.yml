@@ -649,7 +649,26 @@ tasks:
   infrastructure:ssh:dev:
     desc: Setup an SSH tunnel to the database, on localhost:5555
     vars:
-      DEPLOYMENT: collimator-dev
+      DEPLOYMENT: classmosaic-dev
+      TASK_ARN:
+        sh: aws ecs list-tasks --cluster {{.DEPLOYMENT}}-backend --service {{.DEPLOYMENT}}-backend --query 'taskArns[0]' --output text
+      TASK_ID:
+        sh: python -c 'import sys; print(sys.argv[1].split("/")[-1])' "{{.TASK_ARN}}"
+      RUNTIME_ID:
+        sh: aws ecs describe-tasks --cluster {{.DEPLOYMENT}}-backend --tasks {{.TASK_ARN}} --query 'tasks[0].containers[0].runtimeId'
+      ENDPOINT_DB:
+        sh: aws rds describe-db-instances --db-instance-identifier {{.DEPLOYMENT}}-database --query 'DBInstances[0].Endpoint.Address' --output text
+    cmd: |
+      aws ssm start-session \
+        --target ecs:{{.DEPLOYMENT}}-backend_{{.TASK_ID}}_{{.RUNTIME_ID}} \
+        --document-name AWS-StartPortForwardingSessionToRemoteHost \
+        --parameters '{"host": [ "{{.ENDPOINT_DB}}" ], "portNumber": [ "5432" ], "localPortNumber": [ "5555" ] }' \
+        --region eu-central-2
+
+  infrastructure:ssh:prod:
+    desc: Setup an SSH tunnel to the prod database, on localhost:5555
+    vars:
+      DEPLOYMENT: classmosaic-prod
       TASK_ARN:
         sh: aws ecs list-tasks --cluster {{.DEPLOYMENT}}-backend --service {{.DEPLOYMENT}}-backend --query 'taskArns[0]' --output text
       TASK_ID:
