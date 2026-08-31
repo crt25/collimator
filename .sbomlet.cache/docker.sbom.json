@@ -3939,9 +3939,9 @@
         }
       ],
       "name": "libssl3t64",
-      "purl": "pkg:deb/debian/libssl3t64@3.5.6-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
+      "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -4690,9 +4690,9 @@
         }
       ],
       "name": "openssl-provider-legacy",
-      "purl": "pkg:deb/debian/openssl-provider-legacy@3.5.6-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
+      "purl": "pkg:deb/debian/openssl-provider-legacy@3.5.7-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -4721,9 +4721,9 @@
         }
       ],
       "name": "openssl",
-      "purl": "pkg:deb/debian/openssl@3.5.6-1~deb13u2?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/openssl@3.5.7-1~deb13u2?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -5480,14 +5480,30 @@
       "licenses": [
         {
           "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "@apm-js-collab/code-transformer-bundler-plugins",
+      "purl": "pkg:npm/%40apm-js-collab/code-transformer-bundler-plugins@0.7.4",
+      "type": "library",
+      "version": "0.7.4"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "Apache-2.0"
           }
         }
       ],
       "name": "@apm-js-collab/code-transformer",
-      "purl": "pkg:npm/%40apm-js-collab/code-transformer@0.8.2",
+      "purl": "pkg:npm/%40apm-js-collab/code-transformer@0.18.1",
       "type": "library",
-      "version": "0.8.2"
+      "version": "0.18.1"
     },
     {
       "images": [
@@ -5501,9 +5517,9 @@
         }
       ],
       "name": "@apm-js-collab/tracing-hooks",
-      "purl": "pkg:npm/%40apm-js-collab/tracing-hooks@0.3.1",
+      "purl": "pkg:npm/%40apm-js-collab/tracing-hooks@0.13.0",
       "type": "library",
-      "version": "0.3.1"
+      "version": "0.13.0"
     },
     {
       "images": [
@@ -8492,6 +8508,22 @@
           }
         }
       ],
+      "name": "@jridgewell/sourcemap-codec",
+      "purl": "pkg:npm/%40jridgewell/sourcemap-codec@1.5.5",
+      "type": "library",
+      "version": "1.5.5"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "@jridgewell/trace-mapping",
       "purl": "pkg:npm/%40jridgewell/trace-mapping@0.3.25",
       "type": "library",
@@ -8653,9 +8685,9 @@
         }
       ],
       "name": "@nestjs/common",
-      "purl": "pkg:npm/%40nestjs/common@11.1.11",
+      "purl": "pkg:npm/%40nestjs/common@11.2.1",
       "type": "library",
-      "version": "11.1.11"
+      "version": "11.2.1"
     },
     {
       "images": [
@@ -8669,9 +8701,9 @@
         }
       ],
       "name": "@nestjs/config",
-      "purl": "pkg:npm/%40nestjs/config@4.0.2",
+      "purl": "pkg:npm/%40nestjs/config@4.0.4",
       "type": "library",
-      "version": "4.0.2"
+      "version": "4.0.4"
     },
     {
       "images": [
@@ -8685,9 +8717,9 @@
         }
       ],
       "name": "@nestjs/core",
-      "purl": "pkg:npm/%40nestjs/core@11.1.11",
+      "purl": "pkg:npm/%40nestjs/core@11.2.1",
       "type": "library",
-      "version": "11.1.11"
+      "version": "11.2.1"
     },
     {
       "images": [
@@ -8701,9 +8733,9 @@
         }
       ],
       "name": "@nestjs/mapped-types",
-      "purl": "pkg:npm/%40nestjs/mapped-types@2.1.0",
+      "purl": "pkg:npm/%40nestjs/mapped-types@2.1.1",
       "type": "library",
-      "version": "2.1.0"
+      "version": "2.1.1"
     },
     {
       "images": [
@@ -8717,9 +8749,9 @@
         }
       ],
       "name": "@nestjs/platform-express",
-      "purl": "pkg:npm/%40nestjs/platform-express@11.1.11",
+      "purl": "pkg:npm/%40nestjs/platform-express@11.2.1",
       "type": "library",
-      "version": "11.1.11"
+      "version": "11.2.1"
     },
     {
       "images": [
@@ -8733,9 +8765,9 @@
         }
       ],
       "name": "@nestjs/platform-socket.io",
-      "purl": "pkg:npm/%40nestjs/platform-socket.io@11.1.11",
+      "purl": "pkg:npm/%40nestjs/platform-socket.io@11.2.1",
       "type": "library",
-      "version": "11.1.11"
+      "version": "11.2.1"
     },
     {
       "images": [
@@ -8749,9 +8781,9 @@
         }
       ],
       "name": "@nestjs/schedule",
-      "purl": "pkg:npm/%40nestjs/schedule@6.1.0",
+      "purl": "pkg:npm/%40nestjs/schedule@6.1.3",
       "type": "library",
-      "version": "6.1.0"
+      "version": "6.1.3"
     },
     {
       "images": [
@@ -8797,9 +8829,9 @@
         }
       ],
       "name": "@nestjs/swagger",
-      "purl": "pkg:npm/%40nestjs/swagger@11.2.4",
+      "purl": "pkg:npm/%40nestjs/swagger@11.4.7",
       "type": "library",
-      "version": "11.2.4"
+      "version": "11.4.7"
     },
     {
       "images": [
@@ -8829,9 +8861,9 @@
         }
       ],
       "name": "@nestjs/websockets",
-      "purl": "pkg:npm/%40nestjs/websockets@11.1.11",
+      "purl": "pkg:npm/%40nestjs/websockets@11.2.1",
       "type": "library",
-      "version": "11.1.11"
+      "version": "11.2.1"
     },
     {
       "images": [
@@ -9132,22 +9164,6 @@
           }
         }
       ],
-      "name": "@nuxt/opencollective",
-      "purl": "pkg:npm/%40nuxt/opencollective@0.4.1",
-      "type": "library",
-      "version": "0.4.1"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "@open-draft/deferred-promise",
       "purl": "pkg:npm/%40open-draft/deferred-promise@2.2.0",
       "type": "library",
@@ -9165,25 +9181,9 @@
         }
       ],
       "name": "@opentelemetry/api-logs",
-      "purl": "pkg:npm/%40opentelemetry/api-logs@0.208.0",
+      "purl": "pkg:npm/%40opentelemetry/api-logs@0.220.0",
       "type": "library",
-      "version": "0.208.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/api-logs",
-      "purl": "pkg:npm/%40opentelemetry/api-logs@0.209.0",
-      "type": "library",
-      "version": "0.209.0"
+      "version": "0.220.0"
     },
     {
       "images": [
@@ -9212,10 +9212,10 @@
           }
         }
       ],
-      "name": "@opentelemetry/context-async-hooks",
-      "purl": "pkg:npm/%40opentelemetry/context-async-hooks@2.3.0",
+      "name": "@opentelemetry/api",
+      "purl": "pkg:npm/%40opentelemetry/api@1.9.1",
       "type": "library",
-      "version": "2.3.0"
+      "version": "1.9.1"
     },
     {
       "images": [
@@ -9229,393 +9229,9 @@
         }
       ],
       "name": "@opentelemetry/core",
-      "purl": "pkg:npm/%40opentelemetry/core@2.2.0",
+      "purl": "pkg:npm/%40opentelemetry/core@2.10.0",
       "type": "library",
-      "version": "2.2.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/core",
-      "purl": "pkg:npm/%40opentelemetry/core@2.3.0",
-      "type": "library",
-      "version": "2.3.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-amqplib",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-amqplib@0.55.0",
-      "type": "library",
-      "version": "0.55.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-connect",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-connect@0.52.0",
-      "type": "library",
-      "version": "0.52.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-dataloader",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-dataloader@0.26.0",
-      "type": "library",
-      "version": "0.26.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-express",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-express@0.57.0",
-      "type": "library",
-      "version": "0.57.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-fs",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-fs@0.28.0",
-      "type": "library",
-      "version": "0.28.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-generic-pool",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-generic-pool@0.52.0",
-      "type": "library",
-      "version": "0.52.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-graphql",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-graphql@0.56.0",
-      "type": "library",
-      "version": "0.56.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-hapi",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-hapi@0.55.0",
-      "type": "library",
-      "version": "0.55.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-http",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-http@0.208.0",
-      "type": "library",
-      "version": "0.208.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-ioredis",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-ioredis@0.56.0",
-      "type": "library",
-      "version": "0.56.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-kafkajs",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-kafkajs@0.18.0",
-      "type": "library",
-      "version": "0.18.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-knex",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-knex@0.53.0",
-      "type": "library",
-      "version": "0.53.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-koa",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-koa@0.57.0",
-      "type": "library",
-      "version": "0.57.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-lru-memoizer",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-lru-memoizer@0.53.0",
-      "type": "library",
-      "version": "0.53.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-mongodb",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-mongodb@0.61.0",
-      "type": "library",
-      "version": "0.61.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-mongoose",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-mongoose@0.55.0",
-      "type": "library",
-      "version": "0.55.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-mysql2",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-mysql2@0.55.0",
-      "type": "library",
-      "version": "0.55.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-mysql",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-mysql@0.54.0",
-      "type": "library",
-      "version": "0.54.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-nestjs-core",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-nestjs-core@0.55.0",
-      "type": "library",
-      "version": "0.55.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-pg",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-pg@0.61.0",
-      "type": "library",
-      "version": "0.61.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-redis",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-redis@0.57.0",
-      "type": "library",
-      "version": "0.57.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-tedious",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-tedious@0.27.0",
-      "type": "library",
-      "version": "0.27.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation-undici",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation-undici@0.19.0",
-      "type": "library",
-      "version": "0.19.0"
+      "version": "2.10.0"
     },
     {
       "images": [
@@ -9629,41 +9245,9 @@
         }
       ],
       "name": "@opentelemetry/instrumentation",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation@0.208.0",
+      "purl": "pkg:npm/%40opentelemetry/instrumentation@0.220.0",
       "type": "library",
-      "version": "0.208.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/instrumentation",
-      "purl": "pkg:npm/%40opentelemetry/instrumentation@0.209.0",
-      "type": "library",
-      "version": "0.209.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/redis-common",
-      "purl": "pkg:npm/%40opentelemetry/redis-common@0.38.2",
-      "type": "library",
-      "version": "0.38.2"
+      "version": "0.220.0"
     },
     {
       "images": [
@@ -9677,9 +9261,9 @@
         }
       ],
       "name": "@opentelemetry/resources",
-      "purl": "pkg:npm/%40opentelemetry/resources@2.3.0",
+      "purl": "pkg:npm/%40opentelemetry/resources@2.10.0",
       "type": "library",
-      "version": "2.3.0"
+      "version": "2.10.0"
     },
     {
       "images": [
@@ -9693,9 +9277,9 @@
         }
       ],
       "name": "@opentelemetry/sdk-trace-base",
-      "purl": "pkg:npm/%40opentelemetry/sdk-trace-base@2.3.0",
+      "purl": "pkg:npm/%40opentelemetry/sdk-trace-base@2.10.0",
       "type": "library",
-      "version": "2.3.0"
+      "version": "2.10.0"
     },
     {
       "images": [
@@ -9708,26 +9292,10 @@
           }
         }
       ],
-      "name": "@opentelemetry/semantic-conventions",
-      "purl": "pkg:npm/%40opentelemetry/semantic-conventions@1.28.0",
+      "name": "@opentelemetry/sdk-trace",
+      "purl": "pkg:npm/%40opentelemetry/sdk-trace@2.10.0",
       "type": "library",
-      "version": "1.28.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/semantic-conventions",
-      "purl": "pkg:npm/%40opentelemetry/semantic-conventions@1.30.0",
-      "type": "library",
-      "version": "1.30.0"
+      "version": "2.10.0"
     },
     {
       "images": [
@@ -9744,22 +9312,6 @@
       "purl": "pkg:npm/%40opentelemetry/semantic-conventions@1.38.0",
       "type": "library",
       "version": "1.38.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@opentelemetry/sql-common",
-      "purl": "pkg:npm/%40opentelemetry/sql-common@0.41.2",
-      "type": "library",
-      "version": "0.41.2"
     },
     {
       "images": [
@@ -9804,10 +9356,10 @@
           }
         }
       ],
-      "name": "@prisma/client",
-      "purl": "pkg:npm/%40prisma/client@6.19.1",
+      "name": "@prisma/client-runtime-utils",
+      "purl": "pkg:npm/%40prisma/client-runtime-utils@7.9.1",
       "type": "library",
-      "version": "6.19.1"
+      "version": "7.9.1"
     },
     {
       "images": [
@@ -9824,6 +9376,22 @@
       "purl": "pkg:npm/%40prisma/client@6.6.0",
       "type": "library",
       "version": "6.6.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "@prisma/client",
+      "purl": "pkg:npm/%40prisma/client@7.9.1",
+      "type": "library",
+      "version": "7.9.1"
     },
     {
       "images": [
@@ -9928,22 +9496,6 @@
       "licenses": [
         {
           "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "@prisma/instrumentation",
-      "purl": "pkg:npm/%40prisma/instrumentation@6.19.0",
-      "type": "library",
-      "version": "6.19.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
             "id": "MIT"
           }
         }
@@ -10008,30 +9560,14 @@
       "licenses": [
         {
           "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "@sentry-internal/node-cpu-profiler",
-      "purl": "pkg:npm/%40sentry-internal/node-cpu-profiler@2.2.0",
-      "type": "library",
-      "version": "2.2.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
             "id": "FSL-1.1-MIT"
           }
         }
       ],
       "name": "@sentry/cli-linux-x64",
-      "purl": "pkg:npm/%40sentry/cli-linux-x64@3.0.3",
+      "purl": "pkg:npm/%40sentry/cli-linux-x64@3.6.2",
       "type": "library",
-      "version": "3.0.3"
+      "version": "3.6.2"
     },
     {
       "images": [
@@ -10045,9 +9581,25 @@
         }
       ],
       "name": "@sentry/cli",
-      "purl": "pkg:npm/%40sentry/cli@3.0.3",
+      "purl": "pkg:npm/%40sentry/cli@3.6.2",
       "type": "library",
-      "version": "3.0.3"
+      "version": "3.6.2"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "@sentry/conventions",
+      "purl": "pkg:npm/%40sentry/conventions@0.16.0",
+      "type": "library",
+      "version": "0.16.0"
     },
     {
       "images": [
@@ -10061,9 +9613,9 @@
         }
       ],
       "name": "@sentry/core",
-      "purl": "pkg:npm/%40sentry/core@10.32.1",
+      "purl": "pkg:npm/%40sentry/core@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
     },
     {
       "images": [
@@ -10077,9 +9629,9 @@
         }
       ],
       "name": "@sentry/nestjs",
-      "purl": "pkg:npm/%40sentry/nestjs@10.32.1",
+      "purl": "pkg:npm/%40sentry/nestjs@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
     },
     {
       "images": [
@@ -10093,9 +9645,25 @@
         }
       ],
       "name": "@sentry/node-core",
-      "purl": "pkg:npm/%40sentry/node-core@10.32.1",
+      "purl": "pkg:npm/%40sentry/node-core@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "@sentry/node-cpu-profiler",
+      "purl": "pkg:npm/%40sentry/node-cpu-profiler@2.4.3",
+      "type": "library",
+      "version": "2.4.3"
     },
     {
       "images": [
@@ -10109,9 +9677,9 @@
         }
       ],
       "name": "@sentry/node",
-      "purl": "pkg:npm/%40sentry/node@10.32.1",
+      "purl": "pkg:npm/%40sentry/node@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
     },
     {
       "images": [
@@ -10125,9 +9693,9 @@
         }
       ],
       "name": "@sentry/opentelemetry",
-      "purl": "pkg:npm/%40sentry/opentelemetry@10.32.1",
+      "purl": "pkg:npm/%40sentry/opentelemetry@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
     },
     {
       "images": [
@@ -10141,9 +9709,25 @@
         }
       ],
       "name": "@sentry/profiling-node",
-      "purl": "pkg:npm/%40sentry/profiling-node@10.32.1",
+      "purl": "pkg:npm/%40sentry/profiling-node@10.70.0",
       "type": "library",
-      "version": "10.32.1"
+      "version": "10.70.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "@sentry/server-utils",
+      "purl": "pkg:npm/%40sentry/server-utils@10.70.0",
+      "type": "library",
+      "version": "10.70.0"
     },
     {
       "images": [
@@ -10661,6 +10245,22 @@
           }
         }
       ],
+      "name": "@types/estree",
+      "purl": "pkg:npm/%40types/estree@1.0.9",
+      "type": "library",
+      "version": "1.0.9"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "@types/express-serve-static-core",
       "purl": "pkg:npm/%40types/express-serve-static-core@5.0.3",
       "type": "library",
@@ -10917,22 +10517,6 @@
           }
         }
       ],
-      "name": "@types/mysql",
-      "purl": "pkg:npm/%40types/mysql@2.15.27",
-      "type": "library",
-      "version": "2.15.27"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "@types/node",
       "purl": "pkg:npm/%40types/node@22.10.5",
       "type": "library",
@@ -10953,54 +10537,6 @@
       "purl": "pkg:npm/%40types/node@22.14.0",
       "type": "library",
       "version": "22.14.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "@types/pg-pool",
-      "purl": "pkg:npm/%40types/pg-pool@2.0.6",
-      "type": "library",
-      "version": "2.0.6"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "@types/pg",
-      "purl": "pkg:npm/%40types/pg@8.11.11",
-      "type": "library",
-      "version": "8.11.11"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "@types/pg",
-      "purl": "pkg:npm/%40types/pg@8.15.6",
-      "type": "library",
-      "version": "8.15.6"
     },
     {
       "images": [
@@ -11113,22 +10649,6 @@
       "purl": "pkg:npm/%40types/supertest@6.0.3",
       "type": "library",
       "version": "6.0.3"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "@types/tedious",
-      "purl": "pkg:npm/%40types/tedious@4.0.14",
-      "type": "library",
-      "version": "4.0.14"
     },
     {
       "images": [
@@ -11669,22 +11189,6 @@
           }
         }
       ],
-      "name": "acorn-import-attributes",
-      "purl": "pkg:npm/acorn-import-attributes@1.9.5",
-      "type": "library",
-      "version": "1.9.5"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "acorn-jsx",
       "purl": "pkg:npm/acorn-jsx@5.3.2",
       "type": "library",
@@ -11945,6 +11449,22 @@
       "purl": "pkg:npm/ansi-regex@6.2.2",
       "type": "library",
       "version": "6.2.2"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "ansi-regex",
+      "purl": "pkg:npm/ansi-regex@6.3.0",
+      "type": "library",
+      "version": "6.3.0"
     },
     {
       "images": [
@@ -12297,6 +11817,22 @@
       "purl": "pkg:npm/asap@2.0.6",
       "type": "library",
       "version": "2.0.6"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "astring",
+      "purl": "pkg:npm/astring@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
     },
     {
       "images": [
@@ -13224,9 +12760,9 @@
         }
       ],
       "name": "cjs-module-lexer",
-      "purl": "pkg:npm/cjs-module-lexer@1.4.3",
+      "purl": "pkg:npm/cjs-module-lexer@2.2.1",
       "type": "library",
-      "version": "1.4.3"
+      "version": "2.2.1"
     },
     {
       "images": [
@@ -13256,9 +12792,9 @@
         }
       ],
       "name": "class-validator",
-      "purl": "pkg:npm/class-validator@0.14.3",
+      "purl": "pkg:npm/class-validator@0.15.1",
       "type": "library",
-      "version": "0.14.3"
+      "version": "0.15.1"
     },
     {
       "images": [
@@ -13607,22 +13143,6 @@
           }
         }
       ],
-      "name": "consola",
-      "purl": "pkg:npm/consola@3.4.0",
-      "type": "library",
-      "version": "3.4.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "content-disposition",
       "purl": "pkg:npm/content-disposition@1.0.0",
       "type": "library",
@@ -13783,6 +13303,22 @@
           }
         }
       ],
+      "name": "cors",
+      "purl": "pkg:npm/cors@2.8.6",
+      "type": "library",
+      "version": "2.8.6"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "cosmiconfig",
       "purl": "pkg:npm/cosmiconfig@8.3.6",
       "type": "library",
@@ -13832,9 +13368,9 @@
         }
       ],
       "name": "cron",
-      "purl": "pkg:npm/cron@4.3.5",
+      "purl": "pkg:npm/cron@4.4.0",
       "type": "library",
-      "version": "4.3.5"
+      "version": "4.4.0"
     },
     {
       "images": [
@@ -14296,22 +13832,6 @@
         }
       ],
       "name": "dotenv-expand",
-      "purl": "pkg:npm/dotenv-expand@12.0.1",
-      "type": "library",
-      "version": "12.0.1"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-2-Clause"
-          }
-        }
-      ],
-      "name": "dotenv-expand",
       "purl": "pkg:npm/dotenv-expand@12.0.3",
       "type": "library",
       "version": "12.0.3"
@@ -14347,6 +13867,22 @@
       "purl": "pkg:npm/dotenv@17.2.3",
       "type": "library",
       "version": "17.2.3"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "name": "dotenv",
+      "purl": "pkg:npm/dotenv@17.4.1",
+      "type": "library",
+      "version": "17.4.1"
     },
     {
       "images": [
@@ -14724,6 +14260,22 @@
       "purl": "pkg:npm/es-module-lexer@1.6.0",
       "type": "library",
       "version": "1.6.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "es-module-lexer",
+      "purl": "pkg:npm/es-module-lexer@2.3.2",
+      "type": "library",
+      "version": "2.3.2"
     },
     {
       "images": [
@@ -15140,6 +14692,22 @@
       "purl": "pkg:npm/esquery@1.6.0",
       "type": "library",
       "version": "1.6.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "esquery",
+      "purl": "pkg:npm/esquery@1.7.0",
+      "type": "library",
+      "version": "1.7.0"
     },
     {
       "images": [
@@ -15594,9 +15162,9 @@
         }
       ],
       "name": "file-type",
-      "purl": "pkg:npm/file-type@21.2.0",
+      "purl": "pkg:npm/file-type@21.3.4",
       "type": "library",
-      "version": "21.2.0"
+      "version": "21.3.4"
     },
     {
       "images": [
@@ -15833,22 +15401,6 @@
           }
         }
       ],
-      "name": "forwarded-parse",
-      "purl": "pkg:npm/forwarded-parse@2.1.2",
-      "type": "library",
-      "version": "2.1.2"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "forwarded",
       "purl": "pkg:npm/forwarded@0.2.0",
       "type": "library",
@@ -16061,6 +15613,22 @@
       "purl": "pkg:npm/get-east-asian-width@1.4.0",
       "type": "library",
       "version": "1.4.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "get-east-asian-width",
+      "purl": "pkg:npm/get-east-asian-width@1.6.0",
+      "type": "library",
+      "version": "1.6.0"
     },
     {
       "images": [
@@ -16330,9 +15898,9 @@
         }
       ],
       "name": "globals",
-      "purl": "pkg:npm/globals@17.0.0",
+      "purl": "pkg:npm/globals@17.11.0",
       "type": "library",
-      "version": "17.0.0"
+      "version": "17.11.0"
     },
     {
       "images": [
@@ -16826,9 +16394,9 @@
         }
       ],
       "name": "import-in-the-middle",
-      "purl": "pkg:npm/import-in-the-middle@2.0.1",
+      "purl": "pkg:npm/import-in-the-middle@3.3.3",
       "type": "library",
-      "version": "2.0.1"
+      "version": "3.3.3"
     },
     {
       "images": [
@@ -18275,9 +17843,9 @@
         }
       ],
       "name": "jose",
-      "purl": "pkg:npm/jose@6.1.3",
+      "purl": "pkg:npm/jose@6.2.9",
       "type": "library",
-      "version": "6.1.3"
+      "version": "6.2.9"
     },
     {
       "images": [
@@ -18342,6 +17910,22 @@
       "purl": "pkg:npm/js-yaml@4.1.1",
       "type": "library",
       "version": "4.1.1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "js-yaml",
+      "purl": "pkg:npm/js-yaml@5.3.0",
+      "type": "library",
+      "version": "5.3.0"
     },
     {
       "images": [
@@ -19139,6 +18723,22 @@
           }
         }
       ],
+      "name": "lodash",
+      "purl": "pkg:npm/lodash@4.18.1",
+      "type": "library",
+      "version": "4.18.1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "log-symbols",
       "purl": "pkg:npm/log-symbols@4.1.0",
       "type": "library",
@@ -19223,6 +18823,22 @@
       "purl": "pkg:npm/magic-string@0.30.17",
       "type": "library",
       "version": "0.30.17"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "name": "magic-string",
+      "purl": "pkg:npm/magic-string@0.30.21",
+      "type": "library",
+      "version": "0.30.21"
     },
     {
       "images": [
@@ -19399,6 +19015,22 @@
       "purl": "pkg:npm/merge2@1.4.1",
       "type": "library",
       "version": "1.4.1"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "ISC"
+          }
+        }
+      ],
+      "name": "meriyah",
+      "purl": "pkg:npm/meriyah@6.1.4",
+      "type": "library",
+      "version": "6.1.4"
     },
     {
       "images": [
@@ -19844,22 +19476,6 @@
         }
       ],
       "name": "mkdirp",
-      "purl": "pkg:npm/mkdirp@0.5.6",
-      "type": "library",
-      "version": "0.5.6"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "mkdirp",
       "purl": "pkg:npm/mkdirp@3.0.1",
       "type": "library",
       "version": "3.0.1"
@@ -19924,9 +19540,9 @@
         }
       ],
       "name": "multer",
-      "purl": "pkg:npm/multer@2.0.2",
+      "purl": "pkg:npm/multer@2.2.0",
       "type": "library",
-      "version": "2.0.2"
+      "version": "2.2.0"
     },
     {
       "images": [
@@ -20579,22 +20195,6 @@
           }
         }
       ],
-      "name": "obuf",
-      "purl": "pkg:npm/obuf@1.1.2",
-      "type": "library",
-      "version": "1.1.2"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
       "name": "on-finished",
       "purl": "pkg:npm/on-finished@2.4.1",
       "type": "library",
@@ -21085,9 +20685,9 @@
         }
       ],
       "name": "path-to-regexp",
-      "purl": "pkg:npm/path-to-regexp@8.3.0",
+      "purl": "pkg:npm/path-to-regexp@8.4.2",
       "type": "library",
-      "version": "8.3.0"
+      "version": "8.4.2"
     },
     {
       "images": [
@@ -21104,86 +20704,6 @@
       "purl": "pkg:npm/path-type@4.0.0",
       "type": "library",
       "version": "4.0.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "ISC"
-          }
-        }
-      ],
-      "name": "pg-int8",
-      "purl": "pkg:npm/pg-int8@1.0.1",
-      "type": "library",
-      "version": "1.0.1"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "ISC"
-          }
-        }
-      ],
-      "name": "pg-numeric",
-      "purl": "pkg:npm/pg-numeric@1.0.2",
-      "type": "library",
-      "version": "1.0.2"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "pg-protocol",
-      "purl": "pkg:npm/pg-protocol@1.7.0",
-      "type": "library",
-      "version": "1.7.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "pg-types",
-      "purl": "pkg:npm/pg-types@2.2.0",
-      "type": "library",
-      "version": "2.2.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "pg-types",
-      "purl": "pkg:npm/pg-types@4.0.2",
-      "type": "library",
-      "version": "4.0.2"
     },
     {
       "images": [
@@ -21277,9 +20797,9 @@
         }
       ],
       "name": "piscina",
-      "purl": "pkg:npm/piscina@5.1.4",
+      "purl": "pkg:npm/piscina@5.3.1",
       "type": "library",
-      "version": "5.1.4"
+      "version": "5.3.1"
     },
     {
       "images": [
@@ -21344,150 +20864,6 @@
       "purl": "pkg:npm/postcss-selector-parser@7.1.1",
       "type": "library",
       "version": "7.1.1"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-array",
-      "purl": "pkg:npm/postgres-array@2.0.0",
-      "type": "library",
-      "version": "2.0.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-array",
-      "purl": "pkg:npm/postgres-array@3.0.2",
-      "type": "library",
-      "version": "3.0.2"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-bytea",
-      "purl": "pkg:npm/postgres-bytea@1.0.0",
-      "type": "library",
-      "version": "1.0.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-bytea",
-      "purl": "pkg:npm/postgres-bytea@3.0.0",
-      "type": "library",
-      "version": "3.0.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-date",
-      "purl": "pkg:npm/postgres-date@1.0.7",
-      "type": "library",
-      "version": "1.0.7"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-date",
-      "purl": "pkg:npm/postgres-date@2.1.0",
-      "type": "library",
-      "version": "2.1.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-interval",
-      "purl": "pkg:npm/postgres-interval@1.2.0",
-      "type": "library",
-      "version": "1.2.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-interval",
-      "purl": "pkg:npm/postgres-interval@3.0.0",
-      "type": "library",
-      "version": "3.0.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "postgres-range",
-      "purl": "pkg:npm/postgres-range@1.1.4",
-      "type": "library",
-      "version": "1.1.4"
     },
     {
       "images": [
@@ -21568,15 +20944,6 @@
       "purl": "pkg:npm/pretty-format@29.7.0",
       "type": "library",
       "version": "29.7.0"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "name": "prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844",
-      "purl": "pkg:npm/prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0",
-      "type": "library",
-      "version": "6.6.0"
     },
     {
       "images": [
@@ -22638,6 +22005,22 @@
       "licenses": [
         {
           "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "semifies",
+      "purl": "pkg:npm/semifies@1.0.0",
+      "type": "library",
+      "version": "1.0.0"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
             "id": "ISC"
           }
         }
@@ -23538,6 +22921,22 @@
           }
         }
       ],
+      "name": "string-width",
+      "purl": "pkg:npm/string-width@8.2.2",
+      "type": "library",
+      "version": "8.2.2"
+    },
+    {
+      "images": [
+        "sbomlet-scan/backend-dockerfile-fed51f49"
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
       "name": "string.prototype.trim",
       "purl": "pkg:npm/string.prototype.trim@1.2.10",
       "type": "library",
@@ -23859,9 +23258,9 @@
         }
       ],
       "name": "swagger-ui-dist",
-      "purl": "pkg:npm/swagger-ui-dist@5.31.0",
+      "purl": "pkg:npm/swagger-ui-dist@5.32.13",
       "type": "library",
-      "version": "5.31.0"
+      "version": "5.32.13"
     },
     {
       "images": [
@@ -24927,9 +24326,9 @@
         }
       ],
       "name": "validator",
-      "purl": "pkg:npm/validator@13.15.26",
+      "purl": "pkg:npm/validator@13.15.35",
       "type": "library",
-      "version": "13.15.26"
+      "version": "13.15.35"
     },
     {
       "images": [
@@ -25338,22 +24737,6 @@
       "licenses": [
         {
           "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "name": "xtend",
-      "purl": "pkg:npm/xtend@4.0.2",
-      "type": "library",
-      "version": "4.0.2"
-    },
-    {
-      "images": [
-        "sbomlet-scan/backend-dockerfile-fed51f49"
-      ],
-      "licenses": [
-        {
-          "license": {
             "id": "ISC"
           }
         }
@@ -25471,9 +24854,9 @@
         }
       ],
       "name": "yargs",
-      "purl": "pkg:npm/yargs@18.0.0",
+      "purl": "pkg:npm/yargs@18.1.0",
       "type": "library",
-      "version": "18.0.0"
+      "version": "18.1.0"
     },
     {
       "images": [
