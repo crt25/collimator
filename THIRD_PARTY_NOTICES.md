@@ -25,7 +25,13 @@ License: MIT
 
 - Copyright (c) 2010-2025 Google LLC. https://angular.dev/license
 
-### @angular-devkit/core@19.2.6
+### @angular-devkit/core@19.2.24
+
+License: MIT
+
+- Copyright (c) 2010-2025 Google LLC. https://angular.dev/license
+
+### @angular-devkit/core@19.2.27
 
 License: MIT
 
@@ -37,13 +43,19 @@ License: MIT
 
 - Copyright (c) 2010-2025 Google LLC. https://angular.dev/license
 
-### @angular-devkit/schematics@19.2.6
+### @angular-devkit/schematics@19.2.24
 
 License: MIT
 
 - Copyright (c) 2010-2025 Google LLC. https://angular.dev/license
 
-### @angular-devkit/schematics-cli@19.2.6
+### @angular-devkit/schematics@19.2.27
+
+License: MIT
+
+- Copyright (c) 2010-2025 Google LLC. https://angular.dev/license
+
+### @angular-devkit/schematics-cli@19.2.27
 
 License: MIT
 
@@ -154,6 +166,18 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/code-frame@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/code-frame@8.0.0
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/compat-data@7.25.8
 
 License: MIT
@@ -185,6 +209,18 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/compat-data@7.28.5
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/compat-data@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/compat-data@8.0.0
 
 License: MIT
 
@@ -229,6 +265,18 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/core@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/core@8.0.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/generator@7.25.7
 
 License: MIT
@@ -236,12 +284,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/generator@7.26.0
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/generator@7.26.10
 
 License: MIT
 
@@ -277,13 +319,25 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-annotate-as-pure@7.25.9
+### @babel/generator@7.29.8
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/generator@8.0.0
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-annotate-as-pure@7.27.3
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-annotate-as-pure@8.0.0
 
 License: MIT
 
@@ -319,7 +373,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-create-class-features-plugin@7.26.9
+### @babel/helper-compilation-targets@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-compilation-targets@8.0.0
 
 License: MIT
 
@@ -331,7 +391,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-create-regexp-features-plugin@7.26.3
+### @babel/helper-create-class-features-plugin@8.0.1
 
 License: MIT
 
@@ -343,11 +403,11 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-define-polyfill-provider@0.6.3
+### @babel/helper-create-regexp-features-plugin@8.0.1
 
 License: MIT
 
-- Copyright (c) 2014-present Nicolò Ribaudo and other contributors
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-define-polyfill-provider@0.6.5
 
@@ -355,19 +415,37 @@ License: MIT
 
 - Copyright (c) 2014-present Nicolo Ribaudo and other contributors
 
+### @babel/helper-define-polyfill-provider@1.0.0
+
+License: MIT
+
+- Copyright (c) 2014-present Nicolò Ribaudo and other contributors
+
 ### @babel/helper-globals@7.28.0
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-member-expression-to-functions@7.25.9
+### @babel/helper-globals@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-globals@8.0.0
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-member-expression-to-functions@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-member-expression-to-functions@8.0.0
 
 License: MIT
 
@@ -386,6 +464,18 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-module-imports@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-module-imports@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-module-imports@8.0.0
 
 License: MIT
 
@@ -415,13 +505,25 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-optimise-call-expression@7.25.9
+### @babel/helper-module-transforms@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-module-transforms@8.0.1
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-optimise-call-expression@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-optimise-call-expression@8.0.0
 
 License: MIT
 
@@ -451,7 +553,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-remap-async-to-generator@7.25.9
+### @babel/helper-plugin-utils@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-plugin-utils@8.0.1
 
 License: MIT
 
@@ -463,7 +571,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-replace-supers@7.26.5
+### @babel/helper-remap-async-to-generator@8.0.1
 
 License: MIT
 
@@ -475,19 +583,25 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/helper-replace-supers@8.0.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/helper-simple-access@7.25.7
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-skip-transparent-expression-wrappers@7.25.9
+### @babel/helper-skip-transparent-expression-wrappers@7.27.1
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-skip-transparent-expression-wrappers@7.27.1
+### @babel/helper-skip-transparent-expression-wrappers@8.0.0
 
 License: MIT
 
@@ -512,6 +626,18 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-string-parser@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-string-parser@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-string-parser@8.0.0
 
 License: MIT
 
@@ -547,6 +673,18 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/helper-validator-identifier@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-validator-identifier@8.0.4
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/helper-validator-option@7.25.7
 
 License: MIT
@@ -565,13 +703,25 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/helper-wrap-function@7.25.9
+### @babel/helper-validator-option@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-validator-option@8.0.0
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helper-wrap-function@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/helper-wrap-function@8.0.0
 
 License: MIT
 
@@ -584,12 +734,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/helpers@7.26.0
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/helpers@7.26.10
 
 License: MIT
 
@@ -615,6 +759,20 @@ License: MIT
 - Copyright (c) 2014-present, Facebook, Inc.
 
 ### @babel/helpers@7.28.4
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+- Copyright (c) 2014-present, Facebook, Inc. (ONLY ./src/helpers/regenerator* files)
+
+### @babel/helpers@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+- Copyright (c) 2014-present, Facebook, Inc. (ONLY ./src/helpers/regenerator* files)
+
+### @babel/helpers@8.0.0
 
 License: MIT
 
@@ -651,12 +809,6 @@ License: MIT
 
 - Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
-### @babel/parser@7.26.10
-
-License: MIT
-
-- Copyright (C) 2012-2014 by various contributors (see AUTHORS)
-
 ### @babel/parser@7.26.3
 
 License: MIT
@@ -687,11 +839,17 @@ License: MIT
 
 - Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
-### @babel/plugin-bugfix-firefox-class-in-computed-class-key@7.25.9
+### @babel/parser@7.29.8
 
 License: MIT
 
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+- Copyright (C) 2012-2014 by various contributors (see AUTHORS)
+
+### @babel/parser@8.0.4
+
+License: MIT
+
+- Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
 ### @babel/plugin-bugfix-firefox-class-in-computed-class-key@7.27.1
 
@@ -699,7 +857,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-bugfix-safari-class-field-initializer-scope@7.25.9
+### @babel/plugin-bugfix-firefox-class-in-computed-class-key@8.0.1
 
 License: MIT
 
@@ -711,7 +869,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@7.25.9
+### @babel/plugin-bugfix-safari-class-field-initializer-scope@8.0.1
 
 License: MIT
 
@@ -723,7 +881,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@7.25.9
+### @babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@8.0.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-bugfix-safari-rest-destructuring-rhs-array@8.0.1
 
 License: MIT
 
@@ -735,13 +899,19 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-bugfix-v8-static-class-fields-redefine-readonly@7.25.9
+### @babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining@8.0.1
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/plugin-bugfix-v8-static-class-fields-redefine-readonly@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-bugfix-v8-static-class-fields-redefine-readonly@8.0.1
 
 License: MIT
 
@@ -772,12 +942,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/plugin-syntax-class-static-block@7.14.5
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/plugin-syntax-import-assertions@7.26.0
 
 License: MIT
 
@@ -820,6 +984,12 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/plugin-syntax-jsx@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-syntax-jsx@7.29.7
 
 License: MIT
 
@@ -885,13 +1055,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-syntax-unicode-sets-regex@7.18.6
+### @babel/plugin-syntax-typescript@7.29.7
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-arrow-functions@7.25.9
+### @babel/plugin-syntax-unicode-sets-regex@7.18.6
 
 License: MIT
 
@@ -903,7 +1073,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-async-generator-functions@7.26.8
+### @babel/plugin-transform-arrow-functions@8.0.1
 
 License: MIT
 
@@ -915,7 +1085,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-async-to-generator@7.25.9
+### @babel/plugin-transform-async-generator-functions@8.0.1
 
 License: MIT
 
@@ -927,7 +1097,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-block-scoped-functions@7.26.5
+### @babel/plugin-transform-async-to-generator@8.0.1
 
 License: MIT
 
@@ -939,7 +1109,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-block-scoping@7.25.9
+### @babel/plugin-transform-block-scoped-functions@8.0.1
 
 License: MIT
 
@@ -951,7 +1121,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-class-properties@7.25.9
+### @babel/plugin-transform-block-scoping@8.0.1
 
 License: MIT
 
@@ -963,7 +1133,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-class-static-block@7.26.0
+### @babel/plugin-transform-class-properties@8.0.1
 
 License: MIT
 
@@ -975,7 +1145,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-classes@7.25.9
+### @babel/plugin-transform-class-static-block@8.0.1
 
 License: MIT
 
@@ -989,7 +1159,7 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
-### @babel/plugin-transform-computed-properties@7.25.9
+### @babel/plugin-transform-classes@8.0.1
 
 License: MIT
 
@@ -1001,7 +1171,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-destructuring@7.25.9
+### @babel/plugin-transform-computed-properties@8.0.1
 
 License: MIT
 
@@ -1013,7 +1183,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-dotall-regex@7.25.9
+### @babel/plugin-transform-destructuring@8.0.1
 
 License: MIT
 
@@ -1025,7 +1195,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-duplicate-keys@7.25.9
+### @babel/plugin-transform-dotall-regex@8.0.1
 
 License: MIT
 
@@ -1037,7 +1207,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-duplicate-named-capturing-groups-regex@7.25.9
+### @babel/plugin-transform-duplicate-keys@8.0.1
 
 License: MIT
 
@@ -1049,7 +1219,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-dynamic-import@7.25.9
+### @babel/plugin-transform-duplicate-named-capturing-groups-regex@8.0.1
 
 License: MIT
 
@@ -1061,7 +1231,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-exponentiation-operator@7.26.3
+### @babel/plugin-transform-dynamic-import@8.0.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-transform-explicit-resource-management@8.0.1
 
 License: MIT
 
@@ -1073,7 +1249,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-export-namespace-from@7.25.9
+### @babel/plugin-transform-exponentiation-operator@8.0.1
 
 License: MIT
 
@@ -1085,7 +1261,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-for-of@7.26.9
+### @babel/plugin-transform-export-namespace-from@8.0.1
 
 License: MIT
 
@@ -1097,7 +1273,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-function-name@7.25.9
+### @babel/plugin-transform-for-of@8.0.1
 
 License: MIT
 
@@ -1109,7 +1285,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-json-strings@7.25.9
+### @babel/plugin-transform-function-name@8.0.1
 
 License: MIT
 
@@ -1121,7 +1297,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-literals@7.25.9
+### @babel/plugin-transform-json-strings@8.0.1
 
 License: MIT
 
@@ -1133,7 +1309,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-logical-assignment-operators@7.25.9
+### @babel/plugin-transform-literals@8.0.1
 
 License: MIT
 
@@ -1145,7 +1321,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-member-expression-literals@7.25.9
+### @babel/plugin-transform-logical-assignment-operators@8.0.1
 
 License: MIT
 
@@ -1157,7 +1333,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-modules-amd@7.25.9
+### @babel/plugin-transform-member-expression-literals@8.0.1
 
 License: MIT
 
@@ -1169,7 +1345,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-modules-commonjs@7.26.3
+### @babel/plugin-transform-modules-amd@8.0.1
 
 License: MIT
 
@@ -1181,7 +1357,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-modules-systemjs@7.25.9
+### @babel/plugin-transform-modules-commonjs@8.0.1
 
 License: MIT
 
@@ -1193,7 +1369,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-modules-umd@7.25.9
+### @babel/plugin-transform-modules-systemjs@8.0.1
 
 License: MIT
 
@@ -1205,7 +1381,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-named-capturing-groups-regex@7.25.9
+### @babel/plugin-transform-modules-umd@8.0.1
 
 License: MIT
 
@@ -1217,7 +1393,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-new-target@7.25.9
+### @babel/plugin-transform-named-capturing-groups-regex@8.0.1
 
 License: MIT
 
@@ -1229,7 +1405,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-nullish-coalescing-operator@7.26.6
+### @babel/plugin-transform-new-target@8.0.1
 
 License: MIT
 
@@ -1241,7 +1417,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-numeric-separator@7.25.9
+### @babel/plugin-transform-nullish-coalescing-operator@8.0.1
 
 License: MIT
 
@@ -1253,7 +1429,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-object-rest-spread@7.25.9
+### @babel/plugin-transform-numeric-separator@8.0.1
 
 License: MIT
 
@@ -1265,7 +1441,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-object-super@7.25.9
+### @babel/plugin-transform-object-rest-spread@8.0.1
 
 License: MIT
 
@@ -1277,7 +1453,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-optional-catch-binding@7.25.9
+### @babel/plugin-transform-object-super@8.0.1
 
 License: MIT
 
@@ -1289,7 +1465,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-optional-chaining@7.25.9
+### @babel/plugin-transform-optional-catch-binding@8.0.1
 
 License: MIT
 
@@ -1301,7 +1477,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-parameters@7.25.9
+### @babel/plugin-transform-optional-chaining@8.0.1
 
 License: MIT
 
@@ -1313,7 +1489,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-private-methods@7.25.9
+### @babel/plugin-transform-parameters@8.0.1
 
 License: MIT
 
@@ -1325,7 +1501,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-private-property-in-object@7.25.9
+### @babel/plugin-transform-private-methods@8.0.1
 
 License: MIT
 
@@ -1337,13 +1513,19 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-property-literals@7.25.9
+### @babel/plugin-transform-private-property-in-object@8.0.1
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/plugin-transform-property-literals@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-transform-property-literals@8.0.1
 
 License: MIT
 
@@ -1361,12 +1543,6 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-regenerator@7.25.9
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
 ### @babel/plugin-transform-regenerator@7.27.5
 
 License: MIT
@@ -1374,11 +1550,12 @@ License: MIT
 - Copyright (c) 2014-present Facebook, Inc.
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-regexp-modifiers@7.26.0
+### @babel/plugin-transform-regenerator@8.0.2
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
+- Copyright (c) 2014-present Facebook, Inc.
 
 ### @babel/plugin-transform-regexp-modifiers@7.27.1
 
@@ -1386,7 +1563,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-reserved-words@7.25.9
+### @babel/plugin-transform-regexp-modifiers@8.0.1
 
 License: MIT
 
@@ -1398,7 +1575,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-shorthand-properties@7.25.9
+### @babel/plugin-transform-reserved-words@8.0.1
 
 License: MIT
 
@@ -1410,7 +1587,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-spread@7.25.9
+### @babel/plugin-transform-shorthand-properties@8.0.1
 
 License: MIT
 
@@ -1422,7 +1599,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-sticky-regex@7.25.9
+### @babel/plugin-transform-spread@8.0.1
 
 License: MIT
 
@@ -1434,7 +1611,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-template-literals@7.26.8
+### @babel/plugin-transform-sticky-regex@8.0.1
 
 License: MIT
 
@@ -1446,7 +1623,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-typeof-symbol@7.26.7
+### @babel/plugin-transform-template-literals@8.0.1
 
 License: MIT
 
@@ -1458,7 +1635,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-unicode-escapes@7.25.9
+### @babel/plugin-transform-typeof-symbol@8.0.1
 
 License: MIT
 
@@ -1470,7 +1647,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-unicode-property-regex@7.25.9
+### @babel/plugin-transform-unicode-escapes@8.0.1
 
 License: MIT
 
@@ -1482,7 +1659,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-unicode-regex@7.25.9
+### @babel/plugin-transform-unicode-property-regex@8.0.1
 
 License: MIT
 
@@ -1494,7 +1671,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-unicode-sets-regex@7.25.9
+### @babel/plugin-transform-unicode-regex@8.0.1
 
 License: MIT
 
@@ -1506,7 +1683,7 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/preset-env@7.26.9
+### @babel/plugin-transform-unicode-sets-regex@8.0.1
 
 License: MIT
 
@@ -1518,7 +1695,19 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/preset-env@8.0.2
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/preset-modules@0.1.6-no-external-plugins
+
+License: MIT
+
+- Copyright (c) 2020 Babel
+
+### @babel/preset-modules@0.2.0
 
 License: MIT
 
@@ -1531,12 +1720,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/runtime@7.25.7
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/runtime@7.26.10
 
 License: MIT
 
@@ -1584,6 +1767,18 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/template@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/template@8.0.0
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/traverse@7.25.7
 
 License: MIT
@@ -1591,12 +1786,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/traverse@7.25.9
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/traverse@7.26.10
 
 License: MIT
 
@@ -1634,6 +1823,18 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/traverse@7.29.8
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/traverse@8.0.4
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/types@7.25.6
 
 License: MIT
@@ -1647,12 +1848,6 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/types@7.26.0
-
-License: MIT
-
-- Copyright (c) 2014-present Sebastian McKenzie and other contributors
-
-### @babel/types@7.26.10
 
 License: MIT
 
@@ -1683,6 +1878,18 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/types@7.28.5
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/types@7.29.8
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/types@8.0.4
 
 License: MIT
 
@@ -2215,6 +2422,30 @@ License: MIT
 
 - Copyright (c) 2021, Claudéric Demers
 
+### @electric-sql/pglite@0.4.3
+
+License: Apache-2.0
+
+Author: Electric DB Limited
+
+### @electric-sql/pglite-socket@0.1.3
+
+License: Apache-2.0
+
+Author: Electric DB Limited
+
+### @electric-sql/pglite-tools@0.3.3
+
+License: Apache-2.0
+
+Author: Electric DB Limited
+
+### @emnapi/core@1.10.0
+
+License: MIT
+
+- Copyright (c) 2021-present Toyobayashi
+
 ### @emnapi/core@1.7.1
 
 License: MIT
@@ -2222,6 +2453,12 @@ License: MIT
 - Copyright (c) 2021-present Toyobayashi
 
 ### @emnapi/core@1.8.1
+
+License: MIT
+
+- Copyright (c) 2021-present Toyobayashi
+
+### @emnapi/runtime@1.10.0
 
 License: MIT
 
@@ -2246,6 +2483,12 @@ License: MIT
 - Copyright (c) 2021-present Toyobayashi
 
 ### @emnapi/wasi-threads@1.1.0
+
+License: MIT
+
+- Copyright (c) 2021-present Toyobayashi
+
+### @emnapi/wasi-threads@1.2.1
 
 License: MIT
 
@@ -2335,6 +2578,12 @@ License: MIT
 
 - Copyright (c) Emotion team and other contributors
 
+### @eslint-community/eslint-utils@4.10.1
+
+License: MIT
+
+- Copyright (c) 2018 Toru Nagashima
+
 ### @eslint-community/eslint-utils@4.4.1
 
 License: MIT
@@ -2383,7 +2632,19 @@ License: Apache-2.0
 
 Author: Nicholas C. Zakas
 
+### @eslint/config-array@0.23.5
+
+License: Apache-2.0
+
+Author: Nicholas C. Zakas
+
 ### @eslint/core@0.17.0
+
+License: Apache-2.0
+
+Author: Nicholas C. Zakas
+
+### @eslint/core@1.2.1
 
 License: Apache-2.0
 
@@ -2395,13 +2656,31 @@ License: MIT
 
 Author: Nicholas C. Zakas
 
+### @eslint/eslintrc@3.3.6
+
+License: MIT
+
+Author: Nicholas C. Zakas
+
 ### @eslint/object-schema@2.1.7
 
 License: Apache-2.0
 
 Author: Nicholas C. Zakas
 
+### @eslint/object-schema@3.0.5
+
+License: Apache-2.0
+
+Author: Nicholas C. Zakas
+
 ### @eslint/plugin-kit@0.4.1
+
+License: Apache-2.0
+
+Author: Nicholas C. Zakas
+
+### @eslint/plugin-kit@0.7.2
 
 License: Apache-2.0
 
@@ -2830,13 +3109,25 @@ License: Apache-2.0 AND LGPL-3.0-or-later
 
 Author: Lovell Fuller
 
+### @inquirer/ansi@1.0.2
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
 ### @inquirer/checkbox@4.1.3
 
 License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/checkbox@4.1.5
+### @inquirer/checkbox@4.3.2
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
+### @inquirer/confirm@5.1.21
 
 License: MIT
 
@@ -2854,18 +3145,6 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/confirm@5.1.9
-
-License: MIT
-
-- Copyright (c) 2025 Simon Boudrias
-
-### @inquirer/core@10.1.10
-
-License: MIT
-
-- Copyright (c) 2025 Simon Boudrias
-
 ### @inquirer/core@10.1.7
 
 License: MIT
@@ -2878,7 +3157,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/editor@4.2.10
+### @inquirer/core@10.3.2
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
+### @inquirer/editor@4.2.23
 
 License: MIT
 
@@ -2896,7 +3181,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/expand@4.0.12
+### @inquirer/expand@4.0.23
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
+### @inquirer/external-editor@1.0.3
 
 License: MIT
 
@@ -2914,13 +3205,19 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
+### @inquirer/figures@1.0.15
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
 ### @inquirer/input@4.1.7
 
 License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/input@4.1.9
+### @inquirer/input@4.3.1
 
 License: MIT
 
@@ -2932,7 +3229,7 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/number@3.0.12
+### @inquirer/number@3.0.23
 
 License: MIT
 
@@ -2944,7 +3241,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/password@4.0.12
+### @inquirer/password@4.0.23
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
+### @inquirer/prompts@7.10.1
 
 License: MIT
 
@@ -2956,19 +3259,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/prompts@7.4.1
-
-License: MIT
-
-- Copyright (c) 2025 Simon Boudrias
-
 ### @inquirer/rawlist@4.0.10
 
 License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/rawlist@4.0.12
+### @inquirer/rawlist@4.1.11
 
 License: MIT
 
@@ -2980,7 +3277,7 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/search@3.0.12
+### @inquirer/search@3.2.2
 
 License: MIT
 
@@ -2992,7 +3289,13 @@ License: MIT
 
 - Copyright (c) 2025 Simon Boudrias
 
-### @inquirer/select@4.1.1
+### @inquirer/select@4.4.2
+
+License: MIT
+
+- Copyright (c) 2025 Simon Boudrias
+
+### @inquirer/type@3.0.10
 
 License: MIT
 
@@ -3005,12 +3308,6 @@ License: MIT
 - Copyright (c) 2025 Simon Boudrias
 
 ### @inquirer/type@3.0.5
-
-License: MIT
-
-- Copyright (c) 2025 Simon Boudrias
-
-### @inquirer/type@3.0.6
 
 License: MIT
 
@@ -3064,6 +3361,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/console@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/core@29.7.0
 
 License: MIT
@@ -3076,7 +3379,19 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/core@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/diff-sequences@30.0.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/diff-sequences@30.4.0
 
 License: MIT
 
@@ -3089,6 +3404,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/environment@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/environment@30.4.1
 
 License: MIT
 
@@ -3112,6 +3433,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/expect@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/expect-utils@29.7.0
 
 License: MIT
@@ -3124,6 +3451,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/expect-utils@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/fake-timers@29.7.0
 
 License: MIT
@@ -3131,6 +3464,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/fake-timers@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/fake-timers@30.4.1
 
 License: MIT
 
@@ -3154,7 +3493,19 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/globals@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/pattern@30.0.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/pattern@30.4.0
 
 License: MIT
 
@@ -3172,6 +3523,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/reporters@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/schemas@29.6.3
 
 License: MIT
@@ -3184,7 +3541,19 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/schemas@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/snapshot-utils@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/snapshot-utils@30.4.1
 
 License: MIT
 
@@ -3214,6 +3583,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/test-result@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/test-sequencer@29.7.0
 
 License: MIT
@@ -3221,6 +3596,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/test-sequencer@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/test-sequencer@30.4.1
 
 License: MIT
 
@@ -3238,6 +3619,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/transform@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/types@29.6.3
 
 License: MIT
@@ -3245,6 +3632,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/types@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/types@30.4.1
 
 License: MIT
 
@@ -3866,7 +4259,7 @@ License: MIT
 - Copyright (c) 2020-present LongYinan
 - Copyright (c) 2018 GitHub
 
-### @nestjs/cli@11.0.6
+### @nestjs/cli@11.0.24
 
 License: MIT
 
@@ -3920,7 +4313,7 @@ License: MIT
 
 - Copyright (c) 2018-2022 nestjs
 
-### @nestjs/schematics@11.0.4
+### @nestjs/schematics@11.1.0
 
 License: MIT
 
@@ -3932,11 +4325,11 @@ License: MIT
 
 - Copyright (c) 2020-2022 Kamil Mysliwiec
 
-### @nestjs/testing@11.0.13
+### @nestjs/testing@11.2.1
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
 ### @nestjs/websockets@11.1.11
 
@@ -3980,6 +4373,12 @@ License: MIT
 - Copyright 2011 The Closure Compiler Authors
 - Copyright 2014 Mozilla Foundation and contributors
 - Copyright 2014 Simon Lydell
+
+### @noble/hashes@1.8.0
+
+License: MIT
+
+- Copyright (c) 2022 Paul Miller (https://paulmillr.com)
 
 ### @nodelib/fs.scandir@2.1.5
 
@@ -4296,6 +4695,12 @@ License: MIT
 
 - Copyright (c) 2023 Segun Adebayo
 
+### @paralleldrive/cuid2@2.3.1
+
+License: MIT
+
+- Copyright (c) 2022 Eric Elliott
+
 ### @parcel/watcher@2.5.1
 
 License: MIT
@@ -4430,41 +4835,69 @@ License: Apache-2.0
 
 Author: Tim Suchanek
 
-### @prisma/config@6.6.0
+### @prisma/config@7.9.1
 
 License: Apache-2.0
 
 Author: Alberto Schiabel
 
-### @prisma/debug@6.6.0
+### @prisma/debug@7.2.0
 
 License: Apache-2.0
 
 Author: Tim Suchanek
 
-### @prisma/engines@6.6.0
+### @prisma/debug@7.9.1
 
 License: Apache-2.0
 
 Author: Tim Suchanek
 
-### @prisma/engines-version@6.6.0-53.f676762280b54cd07c770017ed3711ddde35f37a
+### @prisma/engines@7.9.1
 
 License: Apache-2.0
 
 Author: Tim Suchanek
 
-### @prisma/fetch-engine@6.6.0
+### @prisma/engines-version@7.9.0-1.e922089b7d7502aff4249d5da3420f6fa55fc6ad
 
 License: Apache-2.0
 
 Author: Tim Suchanek
 
-### @prisma/get-platform@6.6.0
+### @prisma/fetch-engine@7.9.1
 
 License: Apache-2.0
 
 Author: Tim Suchanek
+
+### @prisma/get-platform@7.2.0
+
+License: Apache-2.0
+
+Author: Tim Suchanek
+
+### @prisma/get-platform@7.9.1
+
+License: Apache-2.0
+
+Author: Tim Suchanek
+
+### @prisma/studio-core@0.33.0
+
+License: Apache-2.0
+
+NOTICE:
+
+```
+This software includes brand elements owned by Prisma Data, Inc.
+
+Use in production is permitted under the Apache 2.0 license, provided that Prisma branding is preserved.
+
+You may not remove or obscure logos, UI marks, or references to Prisma unless you have purchased a commercial license.
+
+See: https://www.prisma.io/terms
+```
 
 ### @radix-ui/primitive@1.1.3
 
@@ -4545,6 +4978,12 @@ License: MIT
 - Copyright (c) 2022 WorkOS
 
 ### @radix-ui/react-slot@1.2.3
+
+License: MIT
+
+- Copyright (c) 2022 WorkOS
+
+### @radix-ui/react-toggle@1.1.10
 
 License: MIT
 
@@ -4921,6 +5360,12 @@ License: MIT
 
 - Copyright (c) 2017-2026 Haydn Paterson
 
+### @sinclair/typebox@0.34.52
+
+License: MIT
+
+- Copyright (c) 2017-2026 Haydn Paterson
+
 ### @sindresorhus/is@0.14.0
 
 License: MIT
@@ -4946,6 +5391,12 @@ License: BSD-3-Clause
 - Copyright (c) 2010-2014, Christian Johansen, christian@cjohansen.no. All rights reserved.
 
 ### @sinonjs/fake-timers@13.0.5
+
+License: BSD-3-Clause
+
+- Copyright (c) 2010-2014, Christian Johansen, christian@cjohansen.no. All rights reserved.
+
+### @sinonjs/fake-timers@15.4.0
 
 License: BSD-3-Clause
 
@@ -5361,6 +5812,84 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation
 
+### @types/d3-array@3.0.3
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-color@3.1.0
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-color@3.1.3
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-delaunay@6.0.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-format@3.0.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-geo@3.1.0
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-interpolate@3.0.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-path@3.1.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-scale@4.0.2
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-shape@3.1.7
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-time@3.0.0
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-time@3.0.4
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/d3-time-format@2.1.0
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation. All rights reserved.
+
 ### @types/deep-eql@4.0.2
 
 License: MIT
@@ -5397,6 +5926,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/esrecurse@4.3.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/estree@1.0.6
 
 License: MIT
@@ -5409,13 +5944,19 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/estree@1.0.9
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/express@5.0.0
 
 License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/express@5.0.1
+### @types/express@5.0.6
 
 License: MIT
 
@@ -5428,6 +5969,18 @@ License: MIT
 - Copyright (c) Microsoft Corporation.
 
 ### @types/express-serve-static-core@5.0.3
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/gensync@1.0.5
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/geojson@7946.0.16
 
 License: MIT
 
@@ -5511,6 +6064,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/jsesc@2.5.1
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/json-schema@7.0.15
 
 License: MIT
@@ -5530,6 +6089,12 @@ License: MIT
 - Copyright (c) Microsoft Corporation.
 
 ### @types/lodash@4.17.14
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/lodash@4.17.25
 
 License: MIT
 
@@ -5595,7 +6160,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation
 
-### @types/multer@1.4.12
+### @types/multer@2.2.0
 
 License: MIT
 
@@ -5663,6 +6228,12 @@ License: MIT
 - Copyright Node.js contributors
 
 ### @types/node@25.0.3
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
+### @types/node@26.2.0
 
 License: MIT
 
@@ -5782,6 +6353,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation
 
+### @types/react@19.2.18
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/react@19.2.7
 
 License: MIT
@@ -5872,6 +6449,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/serve-static@2.2.0
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/source-list-map@0.1.6
 
 License: MIT
@@ -5896,7 +6479,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/supertest@6.0.3
+### @types/supertest@7.2.1
 
 License: MIT
 
@@ -5998,12 +6581,6 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
-### @typescript-eslint/eslint-plugin@8.29.0
-
-License: MIT
-
-- Copyright (c) 2019 typescript-eslint and other contributors
-
 ### @typescript-eslint/eslint-plugin@8.31.0
 
 License: MIT
@@ -6023,13 +6600,13 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
-### @typescript-eslint/parser@8.19.1
+### @typescript-eslint/eslint-plugin@8.67.0
 
 License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
-### @typescript-eslint/parser@8.29.0
+### @typescript-eslint/parser@8.19.1
 
 License: MIT
 
@@ -6053,6 +6630,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/parser@8.67.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/project-service@8.39.1
 
 License: MIT
@@ -6060,6 +6643,12 @@ License: MIT
 - Copyright (c) 2025 typescript-eslint and other contributors
 
 ### @typescript-eslint/project-service@8.50.0
+
+License: MIT
+
+- Copyright (c) 2025 typescript-eslint and other contributors
+
+### @typescript-eslint/project-service@8.67.0
 
 License: MIT
 
@@ -6101,6 +6690,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/scope-manager@8.67.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/tsconfig-utils@8.39.1
 
 License: MIT
@@ -6113,13 +6708,19 @@ License: MIT
 
 - Copyright (c) 2025 typescript-eslint and other contributors
 
-### @typescript-eslint/type-utils@8.19.1
+### @typescript-eslint/tsconfig-utils@8.67.0
 
 License: MIT
 
-- Copyright (c) 2021 typescript-eslint and other contributors
+- Copyright (c) 2025 typescript-eslint and other contributors
 
-### @typescript-eslint/type-utils@8.29.0
+### @typescript-eslint/tsconfig-utils@8.68.0
+
+License: MIT
+
+- Copyright (c) 2025 typescript-eslint and other contributors
+
+### @typescript-eslint/type-utils@8.19.1
 
 License: MIT
 
@@ -6138,6 +6739,12 @@ License: MIT
 - Copyright (c) 2021 typescript-eslint and other contributors
 
 ### @typescript-eslint/type-utils@8.50.0
+
+License: MIT
+
+- Copyright (c) 2021 typescript-eslint and other contributors
+
+### @typescript-eslint/type-utils@8.67.0
 
 License: MIT
 
@@ -6174,6 +6781,18 @@ License: MIT
 - Copyright (c) 2019 typescript-eslint and other contributors
 
 ### @typescript-eslint/types@8.50.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
+### @typescript-eslint/types@8.67.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
+### @typescript-eslint/types@8.68.0
 
 License: MIT
 
@@ -6218,6 +6837,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/typescript-estree@8.67.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/utils@8.19.1
 
 License: MIT
@@ -6249,6 +6874,12 @@ License: MIT
 - Copyright (c) 2019 typescript-eslint and other contributors
 
 ### @typescript-eslint/utils@8.50.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
+### @typescript-eslint/utils@8.67.0
 
 License: MIT
 
@@ -6290,7 +6921,19 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/visitor-keys@8.67.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @ungap/structured-clone@1.3.0
+
+License: ISC
+
+- Copyright (c) 2021, Andrea Giammarchi, @WebReflection
+
+### @ungap/structured-clone@1.3.3
 
 License: ISC
 
@@ -6301,6 +6944,60 @@ License: ISC
 License: BSD-3-Clause
 
 - Copyright (c) 2019, Vernier Software & Technology
+
+### @visx/curve@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/event@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/grid@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/group@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/point@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/responsive@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/scale@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/shape@4.0.1-alpha.0
+
+License: MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
+
+### @visx/vendor@4.0.0-alpha.0
+
+License: ISC AND MIT
+
+- Copyright (c) 2017-2018 Harrison Shoff
 
 ### @vitejs/plugin-react@4.3.4
 
@@ -7012,6 +7709,12 @@ License: MIT
 
 - Copyright (C) 2012-2022 by various contributors (see AUTHORS)
 
+### acorn@8.18.0
+
+License: MIT
+
+- Copyright (C) 2012-2022 by various contributors (see AUTHORS)
+
 ### acorn-globals@7.0.1
 
 License: MIT
@@ -7078,7 +7781,25 @@ License: MIT
 
 - Copyright (c) 2015-2017 Evgeny Poberezkin
 
+### ajv@6.15.0
+
+License: MIT
+
+- Copyright (c) 2015-2017 Evgeny Poberezkin
+
 ### ajv@8.17.1
+
+License: MIT
+
+- Copyright (c) 2015-2021 Evgeny Poberezkin
+
+### ajv@8.18.0
+
+License: MIT
+
+- Copyright (c) 2015-2021 Evgeny Poberezkin
+
+### ajv@8.20.0
 
 License: MIT
 
@@ -7204,7 +7925,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### ansis@3.17.0
+### ansis@4.2.0
 
 License: ISC
 
@@ -7568,6 +8289,12 @@ License: Apache-2.0
 
 Author: Mikeal Rogers
 
+### aws-ssl-profiles@1.1.2
+
+License: MIT
+
+- Copyright (c) 2024 Andrey Sidorov, Douglas Wilson, Weslley Araújo and contributors.
+
 ### aws4@1.13.2
 
 License: MIT
@@ -7629,6 +8356,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### babel-jest@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### babel-plugin-formatjs@11.1.1
 
 License: MIT
@@ -7665,6 +8398,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### babel-plugin-jest-hoist@30.4.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### babel-plugin-macros@3.1.0
 
 License: MIT
@@ -7677,12 +8416,6 @@ License: MIT
 
 - Copyright (c) 2015 Tommy Leunen &lt;tommy.leunen@gmail.com&gt; (tommyleunen.com)
 
-### babel-plugin-polyfill-corejs2@0.4.12
-
-License: MIT
-
-- Copyright (c) 2014-present Nicolò Ribaudo and other contributors
-
 ### babel-plugin-polyfill-corejs2@0.4.14
 
 License: MIT
@@ -7693,9 +8426,9 @@ License: MIT
 
 License: MIT
 
-- Copyright (c) 2014-present Nicolò Ribaudo and other contributors
+- Copyright (c) 2014-present Nicolo Ribaudo and other contributors
 
-### babel-plugin-polyfill-regenerator@0.6.3
+### babel-plugin-polyfill-corejs3@1.0.0
 
 License: MIT
 
@@ -7732,6 +8465,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### babel-preset-jest@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### babel-preset-jest@30.4.0
 
 License: MIT
 
@@ -7828,6 +8567,12 @@ License: MIT
 - Copyright (c) Isaac Muse
 - Copyright (c) James Graham and other contributors
 - Copyright (c) Leonard Richardson
+
+### better-result@2.10.0
+
+License: MIT
+
+- Copyright (c) 2026 Dillon Mulroy
 
 ### big.js@3.2.0
 
@@ -7965,6 +8710,12 @@ License: MIT
 
 - Copyright 2014 Andrey Sitnik &lt;andrey@sitnik.ru&gt; and other contributors
 
+### browserslist@4.28.8
+
+License: MIT
+
+- Copyright 2014 Andrey Sitnik &lt;andrey@sitnik.es&gt; and other contributors
+
 ### bs-logger@0.2.6
 
 License: MIT
@@ -8032,7 +8783,13 @@ License: MIT
 - Copyright (c) 2012-2014 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 - Copyright (c) 2015 Jed Watson &lt;jed.watson@me.com&gt;
 
-### c8@10.1.3
+### c12@3.3.4
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+
+### c8@12.0.0
 
 License: ISC
 
@@ -8158,6 +8915,12 @@ License: CC-BY-4.0
 
 Author: Ben Briggs
 
+### caniuse-lite@1.0.30001809
+
+License: CC-BY-4.0
+
+Author: Ben Briggs
+
 ### canvas-toBlob@1.0.0
 
 License: MIT
@@ -8218,6 +8981,12 @@ License: MIT
 
 - Copyright (C) 2018 Dmitry Shirokov
 
+### chardet@2.2.0
+
+License: MIT
+
+- Copyright (C) 2024 Dmitry Shirokov
+
 ### charset-normalizer@3.4.4
 
 License: MIT
@@ -8251,6 +9020,12 @@ License: MIT
 - Copyright (c) 2012-2019 Paul Miller (https://paulmillr.com), Elan Shanker
 
 ### chokidar@4.0.3
+
+License: MIT
+
+- Copyright (c) 2012 Paul Miller (https://paulmillr.com), Elan Shanker
+
+### chokidar@5.0.0
 
 License: MIT
 
@@ -8292,11 +9067,11 @@ License: MIT
 
 - Copyright (c) 2016 Thomas Watson Steen
 
-### cjs-module-lexer@1.4.1
+### ci-info@4.4.0
 
 License: MIT
 
-- Copyright (C) 2018-2020 Guy Bedford
+- Copyright (c) 2016 Thomas Watson Steen
 
 ### cjs-module-lexer@1.4.3
 
@@ -8305,6 +9080,12 @@ License: MIT
 - Copyright (C) 2018-2020 Guy Bedford
 
 ### cjs-module-lexer@2.2.0
+
+License: MIT
+
+- Copyright (C) 2018-2020 Guy Bedford
+
+### cjs-module-lexer@2.2.1
 
 License: MIT
 
@@ -8567,6 +9348,12 @@ License: MIT
 
 - Copyright (c) 2013 kaelzhang &lt;&gt;, contributors
 
+### comment-json@5.0.0
+
+License: MIT
+
+- Copyright (c) 2013 kaelzhang &lt;&gt;, contributors
+
 ### commondir@1.0.1
 
 License: MIT
@@ -8628,6 +9415,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2013 Max Ogden
+
+### confbox@0.2.4
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### configstore@5.0.1
 
@@ -8764,17 +9557,18 @@ License: MIT
 
 - Copyright (c) 2014-2025 Denis Pushkarev, 2025 CoreJS Company
 
-### core-js-compat@3.41.0
-
-License: MIT
-
-- Copyright (c) 2014-2025 Denis Pushkarev
-
 ### core-js-compat@3.43.0
 
 License: MIT
 
 - Copyright (c) 2014-2025 Denis Pushkarev
+
+### core-js-compat@3.50.0
+
+License: MIT
+
+- Copyright (c) 2013–2025 Denis Pushkarev (zloirock.ru)
+- Copyright (c) 2025–2026 CoreJS Company (core-js.io)
 
 ### core-util-is@1.0.2
 
@@ -9063,6 +9857,86 @@ License: MIT
 
 - Copyright (c) 2017-2018 Fredrik Nicol
 
+### d3-array@3.2.1
+
+License: ISC
+
+- Copyright 2010-2022 Mike Bostock
+
+### d3-array@3.2.4
+
+License: ISC
+
+- Copyright 2010-2023 Mike Bostock
+
+### d3-color@3.1.0
+
+License: ISC
+
+- Copyright 2010-2022 Mike Bostock
+
+### d3-delaunay@6.0.2
+
+License: ISC
+
+- Copyright 2018-2021 Observable, Inc.
+- Copyright 2021 Mapbox
+
+### d3-format@3.1.0
+
+License: ISC
+
+- Copyright 2010-2021 Mike Bostock
+
+### d3-format@3.1.2
+
+License: ISC
+
+- Copyright 2010-2026 Mike Bostock
+
+### d3-geo@3.1.0
+
+License: ISC
+
+- Copyright 2010-2022 Mike Bostock
+- Copyright 2008-2012 Charles Karney
+
+### d3-interpolate@3.0.1
+
+License: ISC
+
+- Copyright 2010-2021 Mike Bostock
+
+### d3-path@3.1.0
+
+License: ISC
+
+- Copyright 2015-2022 Mike Bostock
+
+### d3-scale@4.0.2
+
+License: ISC
+
+- Copyright 2010-2021 Mike Bostock
+
+### d3-shape@3.2.0
+
+License: ISC
+
+- Copyright 2010-2022 Mike Bostock
+
+### d3-time@3.1.0
+
+License: ISC
+
+- Copyright 2010-2022 Mike Bostock
+
+### d3-time-format@4.1.0
+
+License: ISC
+
+- Copyright 2010-2021 Mike Bostock
+
 ### damerau-levenshtein@1.0.8
 
 License: BSD-2-Clause
@@ -9296,6 +10170,12 @@ License: MIT
 
 Author: Desmond Brand
 
+### dedent@1.7.2
+
+License: MIT
+
+Author: Desmond Brand
+
 ### deep-eql@5.0.2
 
 License: MIT
@@ -9321,6 +10201,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2012 James Halliday, Josh Duff, and other contributors
+
+### deepmerge-ts@7.1.5
+
+License: BSD-3-Clause
+
+- Copyright (c) 2021, Rebecca Stevens
 
 ### default-browser@5.4.0
 
@@ -9373,6 +10259,12 @@ License: MIT
 
 - Copyright (C) 2015 Jordan Harband
 
+### defu@6.1.7
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+
 ### defusedxml@0.7.1
 
 License: PSF-2.0
@@ -9380,11 +10272,23 @@ License: PSF-2.0
 - Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Python Software Foundation
 - Copyright (c) 2013-2017 by Christian Heimes &lt;christian@python.org&gt;
 
+### delaunator@5.1.0
+
+License: ISC
+
+- Copyright (c) 2026, Mapbox
+
 ### delayed-stream@1.0.0
 
 License: MIT
 
 - Copyright (c) 2011 Debuggable Limited &lt;felix@debuggable.com&gt;
+
+### denque@2.1.0
+
+License: Apache-2.0
+
+- Copyright 2018-present Invertase Limited
 
 ### depd@2.0.0
 
@@ -9403,6 +10307,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) Luke Edwards &lt;luke.edwards05@gmail.com&gt; (lukeed.com)
+
+### destr@2.0.5
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### destroy@1.2.0
 
@@ -9604,6 +10514,12 @@ License: BSD-2-Clause
 
 - Copyright (c) 2015, Scott Motte
 
+### dotenv@17.4.2
+
+License: BSD-2-Clause
+
+- Copyright (c) 2015, Scott Motte
+
 ### dotenv-cli@11.0.0
 
 License: MIT
@@ -9701,11 +10617,17 @@ License: MIT
 
 - Copyright (c) 2014 Jonathan Ong me@jongleberry.com
 
+### effect@3.20.0
+
+License: MIT
+
+- Copyright (c) 2023 Effectful Technologies Inc
+
 ### ejs@3.1.10
 
 License: Apache-2.0
 
-Author: Matthew Eernisse
+- Copyright Joyent, Inc. and other Node contributors
 
 ### electron-to-chromium@1.5.109
 
@@ -9743,11 +10665,23 @@ License: ISC
 
 - Copyright 2018 Kilian Valkhof
 
+### electron-to-chromium@1.5.413
+
+License: ISC
+
+- Copyright 2018 Kilian Valkhof
+
 ### electron-to-chromium@1.5.76
 
 License: ISC
 
 - Copyright 2018 Kilian Valkhof
+
+### elkjs@0.11.1
+
+License: EPL-2.0
+
+Author: Ulf Rüegg
 
 ### emittery@0.13.1
 
@@ -9786,6 +10720,12 @@ License: MIT
 - Copyright © 2015 Kiko Beats
 
 ### empathic@2.0.0
+
+License: MIT
+
+- Copyright (c) Luke Edwards &lt;luke.edwards05@gmail.com&gt; (lukeed.com)
+
+### empathic@2.0.1
 
 License: MIT
 
@@ -9864,6 +10804,12 @@ License: MIT
 
 Author: Tobias Koppers @sokra
 
+### enhanced-resolve@5.24.5
+
+License: MIT
+
+Author: Tobias Koppers @sokra
+
 ### enquirer@2.4.1
 
 License: MIT
@@ -9905,6 +10851,12 @@ License: BSD-2-Clause
 License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
+
+### env-paths@3.0.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### envinfo@7.14.0
 
@@ -9973,13 +10925,13 @@ License: MIT
 
 - Copyright (c) 2022 ECMAScript Shims
 
-### es-module-lexer@1.6.0
+### es-module-lexer@1.7.0
 
 License: MIT
 
 - Copyright (C) 2018-2022 Guy Bedford
 
-### es-module-lexer@1.7.0
+### es-module-lexer@2.3.2
 
 License: MIT
 
@@ -10057,12 +11009,6 @@ License: MIT
 
 - Copyright (c) 2020 Evan Wallace
 
-### esbuild@0.25.1
-
-License: MIT
-
-- Copyright (c) 2020 Evan Wallace
-
 ### esbuild@0.25.12
 
 License: MIT
@@ -10074,12 +11020,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2020 Evan Wallace
-
-### esbuild-register@3.6.0
-
-License: MIT
-
-- Copyright (c) EGOIST &lt;0x142857@gmail.com&gt; (https://egoist.sh)
 
 ### escalade@3.2.0
 
@@ -10124,6 +11064,12 @@ License: MIT
 License: BSD-2-Clause
 
 - Copyright (C) 2012 Yusuke Suzuki (twitter: @Constellation) and other contributors.
+
+### eslint@10.9.0
+
+License: MIT
+
+Author: Nicholas C. Zakas
 
 ### eslint@9.39.2
 
@@ -10209,6 +11155,12 @@ License: MIT
 
 - Copyright © 2017 Andres Suarez and Teddy Katz
 
+### eslint-plugin-prettier@5.5.6
+
+License: MIT
+
+- Copyright © 2017 Andres Suarez and Teddy Katz
+
 ### eslint-plugin-react@7.37.4
 
 License: MIT
@@ -10245,6 +11197,12 @@ License: BSD-2-Clause
 
 - Copyright (C) 2012-2013 Yusuke Suzuki (twitter: @Constellation) and other contributors.
 
+### eslint-scope@9.1.2
+
+License: BSD-2-Clause
+
+- Copyright (C) 2012-2013 Yusuke Suzuki (twitter: @Constellation) and other contributors.
+
 ### eslint-visitor-keys@3.4.3
 
 License: Apache-2.0
@@ -10263,7 +11221,19 @@ License: Apache-2.0
 
 Author: Toru Nagashima
 
+### eslint-visitor-keys@5.0.1
+
+License: Apache-2.0
+
+Author: Toru Nagashima
+
 ### espree@10.4.0
+
+License: BSD-2-Clause
+
+- Copyright (c) Open JS Foundation
+
+### espree@11.2.0
 
 License: BSD-2-Clause
 
@@ -10288,6 +11258,12 @@ License: BSD-2-Clause
 Author: Ariya Hidayat
 
 ### esquery@1.6.0
+
+License: BSD-3-Clause
+
+- Copyright (c) 2013, Joel Feenstra
+
+### esquery@1.7.0
 
 License: BSD-3-Clause
 
@@ -10390,6 +11366,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### expect@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### expect-type@1.3.0
 
 License: Apache-2.0
@@ -10447,6 +11429,13 @@ License: MIT
 - Copyright (c) 2013-2014 Roman Shtylman &lt;shtylman+expressjs@gmail.com&gt;
 - Copyright (c) 2014-2015 Douglas Christopher Wilson &lt;doug@somethingdoug.com&gt;
 
+### exsolve@1.1.1
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+- Copyright (c) 2021 Titus Wormer &lt;mailto:tituswormer@gmail.com&gt;
+
 ### ext-list@2.2.2
 
 License: MIT
@@ -10488,6 +11477,20 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2012 James Halliday
+
+### fast-check@3.23.2
+
+License: MIT
+
+- Copyright (c) 2017 Nicolas DUBIEN
+
+### fast-decode-uri-component@1.0.1
+
+License: MIT
+
+- Copyright (c) 2018 Tomas Della Vedova
+- Copyright (c) 2017 Justin Ridgewell
+- Copyright (c) 2008-2009 Bjoern Hoehrmann &lt;bjoern@hoehrmann.de&gt;
 
 ### fast-deep-equal@3.1.3
 
@@ -10543,6 +11546,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2016 Caio Gondim
+
+### fast-querystring@1.1.2
+
+License: MIT
+
+- Copyright (c) 2022 Yagiz Nizipli
 
 ### fast-safe-stringify@2.1.1
 
@@ -10753,6 +11762,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### find-my-way@9.7.0
+
+License: MIT
+
+- Copyright (c) 2017-2019 Tomas Della Vedova
+
 ### find-root@1.1.0
 
 License: MIT
@@ -10898,7 +11913,13 @@ License: MIT
 
 - Copyright (c) 2012 Felix Geisendorfer (felix@debuggable.com) and contributors
 
-### formidable@3.5.2
+### form-data@4.0.6
+
+License: MIT
+
+- Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
+
+### formidable@3.5.4
 
 License: MIT
 
@@ -11056,6 +12077,12 @@ License: BSD-3-Clause
 
 - Copyright (c) 2012-2020, Alexander Schepanovski
 
+### generate-function@2.3.1
+
+License: MIT
+
+- Copyright (c) 2014 Mathias Buus
+
 ### generator-function@2.0.1
 
 License: MIT
@@ -11127,6 +12154,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
+
+### get-port-please@3.2.0
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### get-proto@1.0.1
 
@@ -11200,6 +12233,18 @@ License: MIT
 
 Author: Alex Wilson
 
+### giget@3.3.1
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+- Copyright (c) Isaac Z. Schlueter and Contributors
+- Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+- Copyright (c) 2017-2023 Isaac Z. Schlueter and Contributors
+- Copyright (c) 2017-2023 Node.js contributors. All rights reserved.
+- Copyright (c) 2017-2023 Joyent, Inc. and other Node contributors. All rights reserved.
+- Copyright (c) 2011-2023 James Halliday (mail@substack.net) and Isaac Z. Schlueter (i@izs.me)
+
 ### glob@10.4.5
 
 License: ISC
@@ -11212,13 +12257,13 @@ License: ISC
 
 - Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
 
-### glob@11.0.1
-
-License: ISC
-
-- Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
-
 ### glob@11.1.0
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
+### glob@13.0.6
 
 License: BlueOak-1.0.0
 
@@ -11385,6 +12430,12 @@ License: ISC
 
 - Copyright (c) 2011-2022 Isaac Z. Schlueter, Ben Noordhuis, and Contributors
 
+### grammex@3.1.13
+
+License: MIT
+
+- Copyright (c) 2023-present Fabio Spampinato
+
 ### grapheme-breaker@0.3.2
 
 License: MIT
@@ -11396,6 +12447,12 @@ License: MIT
 License: MIT
 
 - Copyright 2020 Filament (Anomalous Technologies Limited)
+
+### graphmatch@1.1.1
+
+License: MIT
+
+- Copyright (c) 2025-present Fabio Spampinato
 
 ### graphql@16.12.0
 
@@ -11416,6 +12473,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2016 Nathaniel J. Smith &lt;njs@pobox.com&gt; and other contributors
+
+### handlebars@4.7.9
+
+License: MIT
+
+- Copyright (C) 2011-2019 by Yehuda Katz
 
 ### har-schema@2.0.0
 
@@ -11557,6 +12620,12 @@ License: MIT
 
 - Copyright (c) Jordan Harband and contributors
 
+### hasown@2.0.4
+
+License: MIT
+
+- Copyright (c) Jordan Harband and contributors
+
 ### he@1.1.1
 
 License: MIT
@@ -11586,12 +12655,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
-
-### hexoid@2.0.0
-
-License: MIT
-
-- Copyright (c) Luke Edwards &lt;luke.edwards05@gmail.com&gt; (lukeed.com)
 
 ### hoist-non-react-statics@3.3.2
 
@@ -11850,6 +12913,12 @@ License: MIT
 
 - Copyright (c) 2013 Kael Zhang &lt;i@kael.me&gt;, contributors
 
+### ignore@7.0.6
+
+License: MIT
+
+- Copyright (c) 2013 Kael Zhang &lt;i@kael.me&gt;, contributors
+
 ### image-size@2.0.2
 
 License: MIT
@@ -12015,6 +13084,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### import-meta-resolve@4.2.0
+
+License: MIT
+
+- Copyright (c) Titus Wormer &lt;mailto:tituswormer@gmail.com&gt;
+
 ### imports-loader@0.6.5
 
 License: MIT
@@ -12099,6 +13174,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2019 Jordan Harband
+
+### internmap@2.0.3
+
+License: ISC
+
+- Copyright 2021 Mike Bostock
 
 ### interpret@1.4.0
 
@@ -12480,6 +13561,12 @@ License: MIT
 
 - Copyright (c) 2014 Forbes Lindesay
 
+### is-property@1.0.2
+
+License: MIT
+
+- Copyright (c) 2013 Mikola Lysenko
+
 ### is-reference@1.2.1
 
 License: MIT
@@ -12793,12 +13880,6 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
-### jackspeak@4.1.0
-
-License: BlueOak-1.0.0
-
-Author: Isaac Z. Schlueter
-
 ### jackspeak@4.1.1
 
 License: BlueOak-1.0.0
@@ -12823,6 +13904,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-changed-files@29.7.0
 
 License: MIT
@@ -12830,6 +13917,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-changed-files@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-changed-files@30.4.1
 
 License: MIT
 
@@ -12847,6 +13940,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-circus@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-cli@29.7.0
 
 License: MIT
@@ -12854,6 +13953,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-cli@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-cli@30.4.2
 
 License: MIT
 
@@ -12871,6 +13976,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-config@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-diff@29.7.0
 
 License: MIT
@@ -12878,6 +13989,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-diff@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-diff@30.4.1
 
 License: MIT
 
@@ -12895,6 +14012,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-docblock@30.4.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-each@29.7.0
 
 License: MIT
@@ -12902,6 +14025,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-each@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-each@30.4.1
 
 License: MIT
 
@@ -12926,6 +14055,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-environment-node@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-environment-node@30.4.1
 
 License: MIT
 
@@ -12961,6 +14096,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-haste-map@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-junit@15.0.0
 
 License: Apache-2.0
@@ -12979,6 +14120,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-leak-detector@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-matcher-utils@29.7.0
 
 License: MIT
@@ -12986,6 +14133,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-matcher-utils@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-matcher-utils@30.4.1
 
 License: MIT
 
@@ -13003,6 +14156,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-message-util@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-mock@29.7.0
 
 License: MIT
@@ -13015,7 +14174,13 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
-### jest-mock-extended@4.0.0-beta1
+### jest-mock@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-mock-extended@4.0.1
 
 License: MIT
 
@@ -13039,6 +14204,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-regex-util@30.4.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-resolve@29.7.0
 
 License: MIT
@@ -13046,6 +14217,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-resolve@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-resolve@30.4.1
 
 License: MIT
 
@@ -13063,6 +14240,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-resolve-dependencies@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-runner@29.7.0
 
 License: MIT
@@ -13070,6 +14253,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-runner@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-runner@30.4.2
 
 License: MIT
 
@@ -13087,6 +14276,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-runtime@30.4.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-snapshot@29.7.0
 
 License: MIT
@@ -13094,6 +14289,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-snapshot@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-snapshot@30.4.1
 
 License: MIT
 
@@ -13111,6 +14312,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-util@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-validate@29.7.0
 
 License: MIT
@@ -13123,6 +14330,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-validate@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-watcher@29.7.0
 
 License: MIT
@@ -13130,6 +14343,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-watcher@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-watcher@30.4.1
 
 License: MIT
 
@@ -13148,6 +14367,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-worker@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-worker@30.4.1
 
 License: MIT
 
@@ -13174,6 +14399,12 @@ License: MIT
 - Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### jiti@2.6.1
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+
+### jiti@2.7.0
 
 License: MIT
 
@@ -13209,6 +14440,12 @@ License: MIT
 
 - Copyright 2014-2017 Chen, Yi-Cyuan
 
+### js-tokens@10.0.0
+
+License: MIT
+
+- Copyright (c) 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Simon Lydell
+
 ### js-tokens@4.0.0
 
 License: MIT
@@ -13234,6 +14471,12 @@ License: MIT
 - Copyright (C) 2011-2015 by Vitaly Puzrin
 
 ### js-yaml@4.1.1
+
+License: MIT
+
+- Copyright (C) 2011-2015 by Vitaly Puzrin
+
+### js-yaml@4.3.1
 
 License: MIT
 
@@ -13712,9 +14955,15 @@ License: MIT
 
 License: MIT
 
-- Copyright (c) Tobias Koppers @sokra
+- Copyright (c) Tobias Koppers
 
 ### loader-runner@4.3.1
+
+License: MIT
+
+- Copyright (c) Tobias Koppers @sokra
+
+### loader-runner@4.3.2
 
 License: MIT
 
@@ -13822,6 +15071,12 @@ License: MIT
 
 Author: John-David Dalton
 
+### lodash.isequal@4.5.0
+
+License: MIT
+
+Author: John-David Dalton
+
 ### lodash.memoize@4.1.2
 
 License: MIT
@@ -13918,6 +15173,12 @@ License: MIT
 
 - Copyright (c) 2017 Evgeniy Pavlov
 
+### long@5.3.2
+
+License: Apache-2.0
+
+Author: Daniel Wirtz
+
 ### loose-envify@1.4.0
 
 License: MIT
@@ -13983,6 +15244,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
+
+### lru.min@1.1.4
+
+License: MIT
+
+- Copyright (c) 2024-current Weslley Araújo (@wellwelwel)
 
 ### lunr@2.3.9
 
@@ -14342,19 +15609,25 @@ License: MIT
 
 Author: Mikito Takada
 
-### minimatch@10.0.1
-
-License: ISC
-
-- Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
-
 ### minimatch@10.1.1
 
 License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### minimatch@10.2.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### minimatch@3.1.2
+
+License: ISC
+
+- Copyright (c) Isaac Z. Schlueter and Contributors
+
+### minimatch@3.1.5
 
 License: ISC
 
@@ -14426,6 +15699,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+### minipass@7.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### minipass-collect@2.0.1
 
@@ -14590,6 +15869,18 @@ License: MIT
 License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
+
+### mysql2@3.15.3
+
+License: MIT
+
+- Copyright (c) 2016 Andrey Sidorov (sidorares@yandex.ru) and contributors
+
+### named-placeholders@1.1.6
+
+License: MIT
+
+- Copyright (c) 2014 Andrey Sidorov
 
 ### nanoid@3.3.11
 
@@ -14792,6 +16083,12 @@ License: MIT
 - Copyright (c) 2017 Sergey Rubanov (https://github.com/chicoxyzzy)
 
 ### node-releases@2.0.27
+
+License: MIT
+
+- Copyright (c) 2017 Sergey Rubanov (https://github.com/chicoxyzzy)
+
+### node-releases@2.0.53
 
 License: MIT
 
@@ -15065,6 +16362,20 @@ License: MIT
 - Copyright © 2025-PRESENT Kevin Deng (https://github.com/sxzz)
 - Copyright (c) 2014-2017 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 - Copyright (c) 2018-2021 Josh Junon
+
+### obug@2.1.4
+
+License: MIT
+
+- Copyright © 2025-PRESENT Kevin Deng (https://github.com/sxzz)
+- Copyright (c) 2014-2017 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+- Copyright (c) 2018-2021 Josh Junon
+
+### ohash@2.0.12
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### on-finished@2.3.0
 
@@ -15449,13 +16760,13 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
-### path-scurry@2.0.0
+### path-scurry@2.0.1
 
 License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
-### path-scurry@2.0.1
+### path-scurry@2.0.2
 
 License: BlueOak-1.0.0
 
@@ -15515,6 +16826,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2014 Andrew Kelley
+
+### perfect-debounce@2.1.0
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
 
 ### perfect-freehand@1.2.2
 
@@ -15637,6 +16954,18 @@ License: MIT
 
 - Copyright (c) 2017-present, Jon Schlinkert.
 
+### picomatch@4.0.4
+
+License: MIT
+
+- Copyright (c) 2017-present, Jon Schlinkert.
+
+### picomatch@4.0.7
+
+License: MIT
+
+- Copyright (c) 2017-present, Jon Schlinkert.
+
 ### pidtree@0.6.0
 
 License: MIT
@@ -15673,12 +17002,6 @@ License: MIT
 
 - Copyright (c) Vsevolod Strukchinsky &lt;floatdrop@gmail.com&gt; (github.com/floatdrop)
 
-### pirates@4.0.6
-
-License: MIT
-
-- Copyright (c) 2016-2018 Ari Porad
-
 ### pirates@4.0.7
 
 License: MIT
@@ -15702,6 +17025,12 @@ License: ISC
 License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
+
+### pkg-types@2.3.1
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt; - Daniel Roe &lt;daniel@roe.dev&gt;
 
 ### pkg-up@3.1.0
 
@@ -16205,7 +17534,19 @@ License: MIT
 
 - Copyright © James Long and contributors
 
+### prettier@3.9.6
+
+License: MIT
+
+- Copyright © James Long and contributors
+
 ### prettier-linter-helpers@1.0.0
+
+License: MIT
+
+- Copyright © 2017 Andres Suarez and Teddy Katz
+
+### prettier-linter-helpers@1.0.1
 
 License: MIT
 
@@ -16229,13 +17570,19 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### pretty-format@30.4.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### primereact@10.9.4
 
 License: MIT
 
 - Copyright (c) 2016-2025 PrimeTek
 
-### prisma@6.6.0
+### prisma@7.9.1
 
 License: Apache-2.0
 
@@ -16324,6 +17671,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2013-present, Facebook, Inc.
+
+### proper-lockfile@4.1.2
+
+License: MIT
+
+- Copyright (c) 2018 Made With MOXY Lda &lt;hello@moxy.studio&gt;
 
 ### property-expr@2.0.6
 
@@ -16494,12 +17847,6 @@ License: BSD-3-Clause
 
 - Copyright (c) 2014, Nathan LaFreniere and other \[contributors\](https://github.com/ljharb/qs/graphs/contributors)
 
-### qs@6.13.1
-
-License: BSD-3-Clause
-
-- Copyright (c) 2014, Nathan LaFreniere and other \[contributors\](https://github.com/ljharb/qs/graphs/contributors)
-
 ### qs@6.14.0
 
 License: BSD-3-Clause
@@ -16598,6 +17945,13 @@ License: Apache-2.0 OR BSD-2-Clause OR MIT
 - Copyright (c) 2013, Dominic Tarr
 - Copyright (c) 2011 Dominic Tarr
 
+### rc9@3.0.1
+
+License: MIT
+
+- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
+- Copyright (c) 2014, Hugh Kennedy
+
 ### react@18.3.1
 
 License: MIT
@@ -16695,6 +18049,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) Facebook, Inc. and its affiliates.
+
+### react-is@19.2.8
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### react-lifecycles-compat@3.0.4
 
@@ -16839,6 +18199,12 @@ License: MIT
 
 - Copyright (c) 2012-2019 Thorsten Lorenz, Paul Miller (https://paulmillr.com)
 
+### readdirp@5.1.1
+
+License: MIT
+
+- Copyright (c) 2012-2019 Thorsten Lorenz, Paul Miller (https://paulmillr.com)
+
 ### recast@0.23.10
 
 License: MIT
@@ -16920,15 +18286,15 @@ Author: Mathias Bynens
 
 License: MIT
 
-Author: Mathias Bynens
+- Copyright Mathias Bynens https://mathiasbynens.be
 
-### regenerator-runtime@0.14.1
+### regenerate-unicode-properties@10.2.2
 
 License: MIT
 
-- Copyright (c) 2014-present, Facebook, Inc.
+Author: Mathias Bynens
 
-### regenerator-transform@0.15.2
+### regenerator-runtime@0.14.1
 
 License: MIT
 
@@ -16947,6 +18313,12 @@ License: MIT
 - Copyright (C) 2014 Jordan Harband
 
 ### regexpu-core@6.2.0
+
+License: MIT
+
+- Copyright Mathias Bynens https://mathiasbynens.be
+
+### regexpu-core@6.4.0
 
 License: MIT
 
@@ -16971,6 +18343,13 @@ License: MIT
 - Copyright 2014-2020 Benjamin Tan &lt;https://ofcr.se/&gt;
 
 ### regjsparser@0.12.0
+
+License: BSD-2-Clause
+
+- Copyright (c) Julian Viereck and Contributors
+- Copyright Mathias Bynens https://mathiasbynens.be
+
+### regjsparser@0.13.2
 
 License: BSD-2-Clause
 
@@ -17104,6 +18483,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
+### ret@0.5.0
+
+License: MIT
+
+- Copyright (C) 2011 by fent
+
 ### retry@0.12.0
 
 License: MIT
@@ -17157,6 +18542,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+
+### robust-predicates@3.0.3
+
+License: Unlicense
+
+Author: Vladimir Agafonkin
 
 ### rollup@4.53.5
 
@@ -17267,6 +18658,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2022 Jordan Harband
+
+### safe-regex2@5.1.1
+
+License: MIT
+
+- Copyright (c) 2019-present The Fastify team &lt;https://github.com/fastify/fastify#team&gt;
 
 ### safe-stable-stringify@1.1.1
 
@@ -17740,6 +19137,39 @@ License: MIT
 License: BSD-3-Clause
 
 - Copyright (c) 2017, Virgil Dupras
+
+### seq-queue@0.0.5
+
+License: MIT
+
+- Copyright (c) 2012 Netease, Inc. and other pomelo contributors
+
+Verbatim license text:
+
+```
+(The MIT License)
+
+Copyright (c) 2012 Netease, Inc. and other pomelo contributors
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
 
 ### serialize-javascript@6.0.2
 
@@ -18237,6 +19667,12 @@ License: BSD-3-Clause
 
 - Copyright (c) 2007-present, Alexandru Mărășteanu &lt;hello@alexei.ro&gt;
 
+### sqlstring@2.3.3
+
+License: MIT
+
+- Copyright (c) 2012 Felix Geisendörfer (felix@debuggable.com) and contributors
+
 ### sshpk@1.18.0
 
 License: MIT
@@ -18625,17 +20061,17 @@ License: MIT
 
 - Copyright (c) 2016-present Sultan Tarimo
 
-### superagent@9.0.2
+### superagent@10.3.0
 
 License: MIT
 
 - Copyright (c) 2014-2016 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 
-### supertest@7.1.0
+### supertest@7.2.2
 
 License: MIT
 
-- Copyright (c) 2014 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+- Copyright (c) 2014 TJ Holowaychuk &lt;tj@vision-media.ca&gt; and other
 
 ### supports-color@2.0.0
 
@@ -18731,6 +20167,12 @@ License: MIT
 
 - Copyright (c) 2021 UnTS
 
+### synckit@0.11.13
+
+License: MIT
+
+- Copyright (c) 2021 UnTS
+
 ### synckit@0.11.8
 
 License: MIT
@@ -18768,6 +20210,12 @@ License: MIT
 - Copyright JS Foundation and other contributors
 
 ### tapable@2.3.0
+
+License: MIT
+
+Author: Tobias Koppers @sokra
+
+### tapable@2.3.3
 
 License: MIT
 
@@ -18834,9 +20282,17 @@ License: BSD-2-Clause
 
 License: MIT
 
-Author: webpack Contrib Team
+- Copyright (c) Facebook, Inc. and its affiliates
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+- Copyright JS Foundation and other contributors
 
 ### terser-webpack-plugin@5.3.16
+
+License: MIT
+
+Author: webpack Contrib Team
+
+### terser-webpack-plugin@5.6.1
 
 License: MIT
 
@@ -18848,7 +20304,7 @@ License: ISC
 
 - Copyright (c) 2016, Contributors
 
-### test-exclude@7.0.1
+### test-exclude@8.0.0
 
 License: ISC
 
@@ -18939,6 +20395,12 @@ License: MIT
 - Copyright (c) 2024 Madeline Gurriarán
 
 ### tinyglobby@0.2.15
+
+License: MIT
+
+- Copyright (c) 2024 Madeline Gurriarán
+
+### tinyglobby@0.2.17
 
 License: MIT
 
@@ -19113,12 +20575,6 @@ License: MIT
 
 - Copyright (c) 2013 Ali Al Dallal
 
-### tree-kill@1.2.2
-
-License: MIT
-
-- Copyright (c) 2018 Peter Krumins
-
 ### trim-newlines@4.1.1
 
 License: MIT
@@ -19149,23 +20605,23 @@ License: MIT
 
 Author: JoshuaKGoldberg
 
+### ts-api-utils@2.5.0
+
+License: MIT
+
+Author: JoshuaKGoldberg
+
 ### ts-dedent@2.2.0
 
 License: MIT
 
 - Copyright (c) 2018 Tamino Martinius
 
-### ts-essentials@10.0.4
+### ts-essentials@10.2.1
 
 License: MIT
 
 - Copyright (c) 2018-2019 Chris Kaczor (github.com/krzkaczor)
-
-### ts-jest@29.3.1
-
-License: MIT
-
-- Copyright (c) 2016-2025
 
 ### ts-jest@29.4.0
 
@@ -19176,7 +20632,13 @@ License: MIT
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 - Copyright Isaac Z. Schlueter
 
-### ts-loader@9.5.2
+### ts-jest@29.4.12
+
+License: MIT
+
+- Copyright (c) 2016-2025
+
+### ts-loader@9.6.2
 
 License: MIT
 
@@ -19322,12 +20784,6 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### type-fest@4.38.0
-
-License: CC0-1.0 OR MIT
-
-- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
-
 ### type-fest@4.41.0
 
 License: CC0-1.0 OR MIT
@@ -19444,12 +20900,6 @@ License: Apache-2.0
 
 Author: Microsoft Corp.
 
-### typescript@5.7.3
-
-License: Apache-2.0
-
-Author: Microsoft Corp.
-
 ### typescript@5.8.3
 
 License: Apache-2.0
@@ -19506,6 +20956,12 @@ License: MIT
 License: Apache-2.0
 
 - Copyright (c) 2020, Paul Ganssle
+
+### uglify-js@3.19.3
+
+License: BSD-2-Clause
+
+- Copyright 2012-2024 (c) Mihai Bazon &lt;mihai.bazon@gmail.com&gt;
 
 ### uid@2.0.2
 
@@ -19574,6 +21030,12 @@ License: MIT
 
 - Copyright (c) Matteo Collina and Undici contributors
 
+### undici-types@8.3.0
+
+License: MIT
+
+- Copyright (c) Matteo Collina and Undici contributors
+
 ### unicode-canonical-property-names-ecmascript@2.0.1
 
 License: MIT
@@ -19587,6 +21049,12 @@ License: MIT
 Author: Mathias Bynens
 
 ### unicode-match-property-value-ecmascript@2.2.0
+
+License: MIT
+
+- Copyright Mathias Bynens https://mathiasbynens.be
+
+### unicode-match-property-value-ecmascript@2.2.1
 
 License: MIT
 
@@ -19729,6 +21197,12 @@ License: MIT
 License: MIT
 
 - Copyright 2022 Andrey Sitnik &lt;andrey@sitnik.ru&gt; and other contributors
+
+### update-browserslist-db@1.3.1
+
+License: MIT
+
+- Copyright 2022 Andrey Sitnik &lt;andrey@sitnik.es&gt; and other contributors
 
 ### update-notifier@4.1.3
 
@@ -19874,6 +21348,12 @@ License: MIT
 License: ISC
 
 - Copyright (c) 2017, Contributors
+
+### valibot@1.4.2
+
+License: MIT
+
+- Copyright (c) Fabian Hiller
 
 ### validate-npm-package-license@3.0.4
 
@@ -20082,13 +21562,13 @@ License: MIT
 
 - Copyright (c) 2013-present, Facebook, Inc.
 
-### watchpack@2.4.2
+### watchpack@2.4.4
 
 License: MIT
 
 Author: Tobias Koppers @sokra
 
-### watchpack@2.4.4
+### watchpack@2.5.2
 
 License: MIT
 
@@ -20142,7 +21622,7 @@ License: MIT
 
 Author: Tobias Koppers @sokra
 
-### webpack@5.98.0
+### webpack@5.106.2
 
 License: MIT
 
@@ -20187,6 +21667,12 @@ License: MIT
 - Copyright (c) 2017 JS Foundation and other contributors
 
 ### webpack-sources@3.3.3
+
+License: MIT
+
+- Copyright (c) 2017 JS Foundation and other contributors
+
+### webpack-sources@3.5.1
 
 License: MIT
 
@@ -20365,6 +21851,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2014-2016, Jon Schlinkert
+
+### wordwrap@1.0.0
+
+License: MIT
+
+Author: James Halliday
 
 ### worker-loader@3.0.8
 
@@ -20589,6 +22081,12 @@ License: MIT
 
 - Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
 
+### yargs@17.7.3
+
+License: MIT
+
+- Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
+
 ### yargs@18.0.0
 
 License: MIT
@@ -20649,11 +22147,23 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### yoctocolors-cjs@2.1.3
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### yup@1.6.1
 
 License: MIT
 
 - Copyright (c) 2014 Jason Quense
+
+### zeptomatch@2.1.0
+
+License: MIT
+
+- Copyright (c) 2023-present Fabio Spampinato
 
 ### zip-stream@6.0.1
 
@@ -20689,8 +22199,6 @@ No license could be determined for these packages; no license text is included:
 - engine.io-parser@UNKNOWN — unknown license, no text included
 - false_main@UNKNOWN — unknown license, no text included
 - gcc-14-base@14.2.0-19 — unknown license, no text included
-- github.com/evanw/esbuild@v0.0.0-20250310034244-6bfc1c13b4d9 — unknown license, no text included
-- golang.org/x/sys@v0.0.0-20220715151400-c0bba94af5f8 — unknown license, no text included
 - invalid_main@UNKNOWN — unknown license, no text included
 - jsonify@0.0.1 — unknown license, no text included
 - krb5-locales@1.21.3-5+deb13u1 — unknown license, no text included
@@ -20714,8 +22222,6 @@ No license could be determined for these packages; no license text is included:
 - libstdc++6@14.2.0-19 — unknown license, no text included
 - node@22.23.2 — unknown license, no text included
 - node-clone@0.1.1 — unknown license, no text included
-- package@0.0.0 — unknown license, no text included
-- prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0 — unknown license, no text included
 - rxjs/ajax@UNKNOWN — unknown license, no text included
 - rxjs/fetch@UNKNOWN — unknown license, no text included
 - rxjs/operators@UNKNOWN — unknown license, no text included
@@ -22145,6 +23651,93 @@ express Statement of Purpose.
  d. Affirmer understands and acknowledges that Creative Commons is not a
     party to this document and has no duty or obligation with respect to
     this CC0 or use of the Work.
+```
+
+(canonical SPDX text — package-specific copyright not located)
+
+### EPL-2.0
+
+```
+Eclipse Public License - v 2.0
+THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICENSE (“AGREEMENT”). ANY USE, REPRODUCTION OR DISTRIBUTION OF THE PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE OF THIS AGREEMENT.
+
+1. DEFINITIONS
+“Contribution” means:
+
+a) in the case of the initial Contributor, the initial content Distributed under this Agreement, and
+b) in the case of each subsequent Contributor:
+i) changes to the Program, and
+ii) additions to the Program;
+where such changes and/or additions to the Program originate from and are Distributed by that particular Contributor. A Contribution “originates” from a Contributor if it was added to the Program by such Contributor itself or anyone acting on such Contributor's behalf. Contributions do not include changes or additions to the Program that are not Modified Works.
+“Contributor” means any person or entity that Distributes the Program.
+
+“Licensed Patents” mean patent claims licensable by a Contributor which are necessarily infringed by the use or sale of its Contribution alone or when combined with the Program.
+
+“Program” means the Contributions Distributed in accordance with this Agreement.
+
+“Recipient” means anyone who receives the Program under this Agreement or any Secondary License (as applicable), including Contributors.
+
+“Derivative Works” shall mean any work, whether in Source Code or other form, that is based on (or derived from) the Program and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship.
+
+“Modified Works” shall mean any work in Source Code or other form that results from an addition to, deletion from, or modification of the contents of the Program, including, for purposes of clarity any new file in Source Code form that contains any contents of the Program. Modified Works shall not include works that contain only declarations, interfaces, types, classes, structures, or files of the Program solely in each case in order to link to, bind by name, or subclass the Program or Modified Works thereof.
+
+“Distribute” means the acts of a) distributing or b) making available in any manner that enables the transfer of a copy.
+
+“Source Code” means the form of a Program preferred for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+“Secondary License” means either the GNU General Public License, Version 2.0, or any later versions of that license, including any exceptions or additional permissions as identified by the initial Contributor.
+
+2. GRANT OF RIGHTS
+a) Subject to the terms of this Agreement, each Contributor hereby grants Recipient a non-exclusive, worldwide, royalty-free copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, Distribute and sublicense the Contribution of such Contributor, if any, and such Derivative Works.
+b) Subject to the terms of this Agreement, each Contributor hereby grants Recipient a non-exclusive, worldwide, royalty-free patent license under Licensed Patents to make, use, sell, offer to sell, import and otherwise transfer the Contribution of such Contributor, if any, in Source Code or other form. This patent license shall apply to the combination of the Contribution and the Program if, at the time the Contribution is added by the Contributor, such addition of the Contribution causes such combination to be covered by the Licensed Patents. The patent license shall not apply to any other combinations which include the Contribution. No hardware per se is licensed hereunder.
+c) Recipient understands that although each Contributor grants the licenses to its Contributions set forth herein, no assurances are provided by any Contributor that the Program does not infringe the patent or other intellectual property rights of any other entity. Each Contributor disclaims any liability to Recipient for claims brought by any other entity based on infringement of intellectual property rights or otherwise. As a condition to exercising the rights and licenses granted hereunder, each Recipient hereby assumes sole responsibility to secure any other intellectual property rights needed, if any. For example, if a third party patent license is required to allow Recipient to Distribute the Program, it is Recipient's responsibility to acquire that license before distributing the Program.
+d) Each Contributor represents that to its knowledge it has sufficient copyright rights in its Contribution, if any, to grant the copyright license set forth in this Agreement.
+e) Notwithstanding the terms of any Secondary License, no Contributor makes additional grants to any Recipient (other than those set forth in this Agreement) as a result of such Recipient's receipt of the Program under the terms of a Secondary License (if permitted under the terms of Section 3).
+3. REQUIREMENTS
+3.1 If a Contributor Distributes the Program in any form, then:
+
+a) the Program must also be made available as Source Code, in accordance with section 3.2, and the Contributor must accompany the Program with a statement that the Source Code for the Program is available under this Agreement, and informs Recipients how to obtain it in a reasonable manner on or through a medium customarily used for software exchange; and
+b) the Contributor may Distribute the Program under a license different than this Agreement, provided that such license:
+i) effectively disclaims on behalf of all other Contributors all warranties and conditions, express and implied, including warranties or conditions of title and non-infringement, and implied warranties or conditions of merchantability and fitness for a particular purpose;
+ii) effectively excludes on behalf of all other Contributors all liability for damages, including direct, indirect, special, incidental and consequential damages, such as lost profits;
+iii) does not attempt to limit or alter the recipients' rights in the Source Code under section 3.2; and
+iv) requires any subsequent distribution of the Program by any party to be under a license that satisfies the requirements of this section 3.
+3.2 When the Program is Distributed as Source Code:
+
+a) it must be made available under this Agreement, or if the Program (i) is combined with other material in a separate file or files made available under a Secondary License, and (ii) the initial Contributor attached to the Source Code the notice described in Exhibit A of this Agreement, then the Program may be made available under the terms of such Secondary Licenses, and
+b) a copy of this Agreement must be included with each copy of the Program.
+3.3 Contributors may not remove or alter any copyright, patent, trademark, attribution notices, disclaimers of warranty, or limitations of liability (‘notices’) contained within the Program from any copy of the Program which they Distribute, provided that Contributors may add their own appropriate notices.
+
+4. COMMERCIAL DISTRIBUTION
+Commercial distributors of software may accept certain responsibilities with respect to end users, business partners and the like. While this license is intended to facilitate the commercial use of the Program, the Contributor who includes the Program in a commercial product offering should do so in a manner which does not create potential liability for other Contributors. Therefore, if a Contributor includes the Program in a commercial product offering, such Contributor (“Commercial Contributor”) hereby agrees to defend and indemnify every other Contributor (“Indemnified Contributor”) against any losses, damages and costs (collectively “Losses”) arising from claims, lawsuits and other legal actions brought by a third party against the Indemnified Contributor to the extent caused by the acts or omissions of such Commercial Contributor in connection with its distribution of the Program in a commercial product offering. The obligations in this section do not apply to any claims or Losses relating to any actual or alleged intellectual property infringement. In order to qualify, an Indemnified Contributor must: a) promptly notify the Commercial Contributor in writing of such claim, and b) allow the Commercial Contributor to control, and cooperate with the Commercial Contributor in, the defense and any related settlement negotiations. The Indemnified Contributor may participate in any such claim at its own expense.
+
+For example, a Contributor might include the Program in a commercial product offering, Product X. That Contributor is then a Commercial Contributor. If that Commercial Contributor then makes performance claims, or offers warranties related to Product X, those performance claims and warranties are such Commercial Contributor's responsibility alone. Under this section, the Commercial Contributor would have to defend claims against the other Contributors related to those performance claims and warranties, and if a court requires any other Contributor to pay any damages as a result, the Commercial Contributor must pay those damages.
+
+5. NO WARRANTY
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, AND TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE PROGRAM IS PROVIDED ON AN “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. Each Recipient is solely responsible for determining the appropriateness of using and distributing the Program and assumes all risks associated with its exercise of rights under this Agreement, including but not limited to the risks and costs of program errors, compliance with applicable laws, damage to or loss of data, programs or equipment, and unavailability or interruption of operations.
+
+6. DISCLAIMER OF LIABILITY
+EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, AND TO THE EXTENT PERMITTED BY APPLICABLE LAW, NEITHER RECIPIENT NOR ANY CONTRIBUTORS SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING WITHOUT LIMITATION LOST PROFITS), HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OR DISTRIBUTION OF THE PROGRAM OR THE EXERCISE OF ANY RIGHTS GRANTED HEREUNDER, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+7. GENERAL
+If any provision of this Agreement is invalid or unenforceable under applicable law, it shall not affect the validity or enforceability of the remainder of the terms of this Agreement, and without further action by the parties hereto, such provision shall be reformed to the minimum extent necessary to make such provision valid and enforceable.
+
+If Recipient institutes patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Program itself (excluding combinations of the Program with other software or hardware) infringes such Recipient's patent(s), then such Recipient's rights granted under Section 2(b) shall terminate as of the date such litigation is filed.
+
+All Recipient's rights under this Agreement shall terminate if it fails to comply with any of the material terms or conditions of this Agreement and does not cure such failure in a reasonable period of time after becoming aware of such noncompliance. If all Recipient's rights under this Agreement terminate, Recipient agrees to cease use and distribution of the Program as soon as reasonably practicable. However, Recipient's obligations under this Agreement and any licenses granted by Recipient relating to the Program shall continue and survive.
+
+Everyone is permitted to copy and distribute copies of this Agreement, but in order to avoid inconsistency the Agreement is copyrighted and may only be modified in the following manner. The Agreement Steward reserves the right to publish new versions (including revisions) of this Agreement from time to time. No one other than the Agreement Steward has the right to modify this Agreement. The Eclipse Foundation is the initial Agreement Steward. The Eclipse Foundation may assign the responsibility to serve as the Agreement Steward to a suitable separate entity. Each new version of the Agreement will be given a distinguishing version number. The Program (including Contributions) may always be Distributed subject to the version of the Agreement under which it was received. In addition, after a new version of the Agreement is published, Contributor may elect to Distribute the Program (including its Contributions) under the new version.
+
+Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives no rights or licenses to the intellectual property of any Contributor under this Agreement, whether expressly, by implication, estoppel or otherwise. All rights in the Program not expressly granted under this Agreement are reserved. Nothing in this Agreement is intended to be enforceable by any entity that is not a Contributor or Recipient. No third-party beneficiary rights are created under this Agreement.
+
+Exhibit A – Form of Secondary Licenses Notice
+“This Source Code may also be made available under the following Secondary Licenses when the conditions for such availability set forth in the Eclipse Public License, v. 2.0 are satisfied: {name license(s), version(s), and exceptions or additional permissions here}.”
+
+Simply including a copy of this Agreement, including this Exhibit A is not sufficient to license the Source Code under Secondary Licenses.
+
+If it is not possible or desirable to put the notice in a particular file, then You may include the notice in a location (such as a LICENSE file in a relevant directory) where a recipient would be likely to look for such a notice.
+
+You may add additional accurate notices of copyright ownership.
 ```
 
 (canonical SPDX text — package-specific copyright not located)
