@@ -65,12 +65,12 @@
       "licenses": [
         {
           "license": {
-            "id": "GPL-2.0-or-later"
+            "id": "GPL-2.0-only"
           }
         },
         {
           "license": {
-            "name": "GPL"
+            "id": "GPL-2.0-or-later"
           }
         },
         {
@@ -80,9 +80,9 @@
         }
       ],
       "name": "base-files",
-      "purl": "pkg:deb/debian/base-files@13.8%2Bdeb13u6?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/base-files@13.8%2Bdeb13u7?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "13.8+deb13u6"
+      "version": "13.8+deb13u7"
     },
     {
       "images": [
@@ -183,9 +183,9 @@
         }
       ],
       "name": "bash",
-      "purl": "pkg:deb/debian/bash@5.2.37-2%2Bb9?arch=amd64&distro=debian-13&upstream=bash%405.2.37-2",
+      "purl": "pkg:deb/debian/bash@5.2.37-2%2Bb10?arch=amd64&distro=debian-13&upstream=bash%405.2.37-2",
       "type": "library",
-      "version": "5.2.37-2+b9"
+      "version": "5.2.37-2+b10"
     },
     {
       "images": [
@@ -417,9 +417,9 @@
         }
       ],
       "name": "curl",
-      "purl": "pkg:deb/debian/curl@8.14.1-2%2Bdeb13u4?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/curl@8.14.1-2%2Bdeb13u5?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "8.14.1-2+deb13u4"
+      "version": "8.14.1-2+deb13u5"
     },
     {
       "images": [
@@ -812,9 +812,9 @@
         }
       ],
       "name": "gzip",
-      "purl": "pkg:deb/debian/gzip@1.13-1?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/gzip@1.13-1%2Bdeb13u1?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "1.13-1"
+      "version": "1.13-1+deb13u1"
     },
     {
       "images": [
@@ -994,9 +994,9 @@
         }
       ],
       "name": "libaudit-common",
-      "purl": "pkg:deb/debian/libaudit-common@1%3A4.0.2-2?arch=all&distro=debian-13&upstream=audit",
+      "purl": "pkg:deb/debian/libaudit-common@1%3A4.0.2-2%2Bdeb13u1?arch=all&distro=debian-13&upstream=audit",
       "type": "library",
-      "version": "1:4.0.2-2"
+      "version": "1:4.0.2-2+deb13u1"
     },
     {
       "images": [
@@ -1020,9 +1020,9 @@
         }
       ],
       "name": "libaudit1",
-      "purl": "pkg:deb/debian/libaudit1@1%3A4.0.2-2%2Bb2?arch=amd64&distro=debian-13&upstream=audit%401%3A4.0.2-2",
+      "purl": "pkg:deb/debian/libaudit1@1%3A4.0.2-2%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=audit",
       "type": "library",
-      "version": "1:4.0.2-2+b2"
+      "version": "1:4.0.2-2+deb13u1"
     },
     {
       "images": [
@@ -1405,9 +1405,9 @@
         }
       ],
       "name": "libc-bin",
-      "purl": "pkg:deb/debian/libc-bin@2.41-12%2Bdeb13u3?arch=amd64&distro=debian-13&upstream=glibc",
+      "purl": "pkg:deb/debian/libc-bin@2.41-12%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=glibc",
       "type": "library",
-      "version": "2.41-12+deb13u3"
+      "version": "2.41-12+deb13u4"
     },
     {
       "images": [
@@ -1576,9 +1576,9 @@
         }
       ],
       "name": "libc6",
-      "purl": "pkg:deb/debian/libc6@2.41-12%2Bdeb13u3?arch=amd64&distro=debian-13&upstream=glibc",
+      "purl": "pkg:deb/debian/libc6@2.41-12%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=glibc",
       "type": "library",
-      "version": "2.41-12+deb13u3"
+      "version": "2.41-12+deb13u4"
     },
     {
       "images": [
@@ -1638,9 +1638,9 @@
         }
       ],
       "name": "libcap2",
-      "purl": "pkg:deb/debian/libcap2@1%3A2.75-10%2Bdeb13u1%2Bb1?arch=amd64&distro=debian-13&upstream=libcap2%401%3A2.75-10%2Bdeb13u1",
+      "purl": "pkg:deb/debian/libcap2@1%3A2.75-10%2Bdeb13u1%2Bb3?arch=amd64&distro=debian-13&upstream=libcap2%401%3A2.75-10%2Bdeb13u1",
       "type": "library",
-      "version": "1:2.75-10+deb13u1+b1"
+      "version": "1:2.75-10+deb13u1+b3"
     },
     {
       "images": [
@@ -1714,9 +1714,9 @@
         }
       ],
       "name": "libcom-err2",
-      "purl": "pkg:deb/debian/libcom-err2@1.47.2-3%2Bb11?arch=amd64&distro=debian-13&upstream=e2fsprogs%401.47.2-3",
+      "purl": "pkg:deb/debian/libcom-err2@1.47.2-3%2Bb12?arch=amd64&distro=debian-13&upstream=e2fsprogs%401.47.2-3",
       "type": "library",
-      "version": "1.47.2-3+b11"
+      "version": "1.47.2-3+b12"
     },
     {
       "images": [
@@ -1791,9 +1791,9 @@
         }
       ],
       "name": "libcurl4t64",
-      "purl": "pkg:deb/debian/libcurl4t64@8.14.1-2%2Bdeb13u4?arch=amd64&distro=debian-13&upstream=curl",
+      "purl": "pkg:deb/debian/libcurl4t64@8.14.1-2%2Bdeb13u5?arch=amd64&distro=debian-13&upstream=curl",
       "type": "library",
-      "version": "8.14.1-2+deb13u4"
+      "version": "8.14.1-2+deb13u5"
     },
     {
       "images": [
@@ -3320,9 +3320,9 @@
         }
       ],
       "name": "libpcre2-8-0",
-      "purl": "pkg:deb/debian/libpcre2-8-0@10.46-1~deb13u1?arch=amd64&distro=debian-13&upstream=pcre2",
+      "purl": "pkg:deb/debian/libpcre2-8-0@10.46-1~deb13u2?arch=amd64&distro=debian-13&upstream=pcre2",
       "type": "library",
-      "version": "10.46-1~deb13u1"
+      "version": "10.46-1~deb13u2"
     },
     {
       "images": [
@@ -3887,9 +3887,9 @@
         }
       ],
       "name": "libsqlite3-0",
-      "purl": "pkg:deb/debian/libsqlite3-0@3.46.1-7%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=sqlite3",
+      "purl": "pkg:deb/debian/libsqlite3-0@3.46.1-7%2Bdeb13u2?arch=amd64&distro=debian-13&upstream=sqlite3",
       "type": "library",
-      "version": "3.46.1-7+deb13u1"
+      "version": "3.46.1-7+deb13u2"
     },
     {
       "images": [
@@ -3908,9 +3908,9 @@
         }
       ],
       "name": "libssh2-1t64",
-      "purl": "pkg:deb/debian/libssh2-1t64@1.11.1-1%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=libssh2",
+      "purl": "pkg:deb/debian/libssh2-1t64@1.11.1-1%2Bdeb13u2?arch=amd64&distro=debian-13&upstream=libssh2",
       "type": "library",
-      "version": "1.11.1-1+deb13u1"
+      "version": "1.11.1-1+deb13u2"
     },
     {
       "images": [
@@ -3939,9 +3939,9 @@
         }
       ],
       "name": "libssl3t64",
-      "purl": "pkg:deb/debian/libssl3t64@3.5.6-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
+      "purl": "pkg:deb/debian/libssl3t64@3.5.7-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -4690,9 +4690,9 @@
         }
       ],
       "name": "openssl-provider-legacy",
-      "purl": "pkg:deb/debian/openssl-provider-legacy@3.5.6-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
+      "purl": "pkg:deb/debian/openssl-provider-legacy@3.5.7-1~deb13u2?arch=amd64&distro=debian-13&upstream=openssl",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -4721,9 +4721,9 @@
         }
       ],
       "name": "openssl",
-      "purl": "pkg:deb/debian/openssl@3.5.6-1~deb13u2?arch=amd64&distro=debian-13",
+      "purl": "pkg:deb/debian/openssl@3.5.7-1~deb13u2?arch=amd64&distro=debian-13",
       "type": "library",
-      "version": "3.5.6-1~deb13u2"
+      "version": "3.5.7-1~deb13u2"
     },
     {
       "images": [
@@ -4878,9 +4878,9 @@
         }
       ],
       "name": "perl-base",
-      "purl": "pkg:deb/debian/perl-base@5.40.1-6?arch=amd64&distro=debian-13&upstream=perl",
+      "purl": "pkg:deb/debian/perl-base@5.40.1-6%2Bdeb13u1?arch=amd64&distro=debian-13&upstream=perl",
       "type": "library",
-      "version": "5.40.1-6"
+      "version": "5.40.1-6+deb13u1"
     },
     {
       "images": [
@@ -5079,9 +5079,9 @@
         }
       ],
       "name": "tzdata",
-      "purl": "pkg:deb/debian/tzdata@2026b-0%2Bdeb13u1?arch=all&distro=debian-13",
+      "purl": "pkg:deb/debian/tzdata@2026c-0%2Bdeb13u1?arch=all&distro=debian-13",
       "type": "library",
-      "version": "2026b-0+deb13u1"
+      "version": "2026c-0+deb13u1"
     },
     {
       "images": [
