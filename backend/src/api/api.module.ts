@@ -30,6 +30,10 @@ import { RoleGuard } from "./authentication/role.guard";
       provide: APP_INTERCEPTOR,
       useClass: interceptors.PrismaConnectionClosedInterceptor,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: interceptors.PrismaSerializationFailureInterceptor,
+    },
     // global filter for Sentry *after* exception filters or interceptors which we don't want to catch
     {
       provide: APP_FILTER,
