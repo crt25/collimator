@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 
 import { PrismaService } from "src/prisma/prisma.service";
+import { runSerializableTransaction } from "src/prisma/transactions";
 import { UserId } from "./dto";
 import { CreateKeyPairDto } from "./dto/create-key-pair.dto";
 
@@ -151,7 +152,7 @@ export class UsersService {
   }
 
   async deleteById(id: UserId): Promise<User> {
-    return this.prisma.$transaction(async (tx) => {
+    return runSerializableTransaction(this.prisma, async (tx) => {
       // BLOCK: Check if user owns any classes
       const ownedClass = await tx.class.findFirst({
         where: { teacherId: id, deletedAt: null },

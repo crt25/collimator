@@ -9,7 +9,6 @@ import {
 import { ApiForbiddenResponse, ApiOkResponse } from "@nestjs/swagger";
 import { User } from "@prisma/client";
 import { AuthorizationService } from "../authorization/authorization.service";
-import { SessionsService } from "../sessions/sessions.service";
 import { AuthenticationService } from "./authentication.service";
 import { AuthenticationRequestDto } from "./dto/authentication-request.dto";
 import { AuthenticationResponseDto } from "./dto/authentication-response.dto";
@@ -25,7 +24,6 @@ export class AuthenticationController {
   constructor(
     private readonly authenticationService: AuthenticationService,
     private readonly authorizationService: AuthorizationService,
-    private readonly sessionsService: SessionsService,
   ) {}
 
   @Get("/public-key/:fingerprint")
@@ -92,18 +90,10 @@ export class AuthenticationController {
   async loginAnonymousStudent(
     @Body() request: AnonymousStudentAuthenticationRequestDto,
   ): Promise<StudentAuthenticationResponseDto> {
-    const session = await this.sessionsService.findByIdAndClassOrThrow(
-      request.sessionId,
-      request.classId,
-    );
-
-    if (!session.isAnonymous) {
-      throw new UnauthorizedException();
-    }
-
     const authenticationToken =
       await this.authenticationService.signInAnonymousStudent(
         request.sessionId,
+        request.classId,
       );
 
     return StudentAuthenticationResponseDto.fromQueryResult({
