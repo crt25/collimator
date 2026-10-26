@@ -1308,6 +1308,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/array-union@2.1.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/arrify@1.0.1": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1506,6 +1512,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:npm/dir-glob@3.0.1": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
     "pkg:npm/dom-serializer@2.0.0": {
       "fetchedFrom": "npm",
       "license": "MIT",
@@ -1615,6 +1627,12 @@
       "via": "version-license"
     },
     "pkg:npm/global-prefix@3.0.0": {
+      "fetchedFrom": "npm",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/globby@11.1.0": {
       "fetchedFrom": "npm",
       "license": "MIT",
       "resolvable": true,
@@ -2205,6 +2223,12 @@
     "pkg:npm/ts-jest@29.4.0": {
       "fetchedFrom": "npm",
       "license": "MIT",
+      "resolvable": true,
+      "via": "version-license"
+    },
+    "pkg:npm/tslib@1.14.1": {
+      "fetchedFrom": "npm",
+      "license": "0BSD",
       "resolvable": true,
       "via": "version-license"
     },
