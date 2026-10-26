@@ -2335,6 +2335,12 @@ License: MIT
 
 - Copyright (c) Emotion team and other contributors
 
+### @eslint-community/eslint-utils@4.10.1
+
+License: MIT
+
+- Copyright (c) 2018 Toru Nagashima
+
 ### @eslint-community/eslint-utils@4.4.1
 
 License: MIT
@@ -2354,6 +2360,12 @@ License: MIT
 - Copyright (c) 2018 Toru Nagashima
 
 ### @eslint-community/eslint-utils@4.9.0
+
+License: MIT
+
+- Copyright (c) 2018 Toru Nagashima
+
+### @eslint-community/eslint-utils@4.9.1
 
 License: MIT
 
@@ -2467,7 +2479,7 @@ License: MIT
 - Copyright (c) Microsoft Corporation
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
-### @formatjs/cli@6.6.3
+### @formatjs/cli@6.16.35
 
 License: MIT
 
@@ -3082,6 +3094,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/diff-sequences@30.5.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/environment@29.7.0
 
 License: MIT
@@ -3124,6 +3142,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/expect-utils@30.5.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/fake-timers@29.7.0
 
 License: MIT
@@ -3142,6 +3166,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### @jest/get-type@30.5.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### @jest/globals@29.7.0
 
 License: MIT
@@ -3155,6 +3185,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/pattern@30.0.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/pattern@30.5.0
 
 License: MIT
 
@@ -3179,6 +3215,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/schemas@30.0.5
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/schemas@30.5.0
 
 License: MIT
 
@@ -3245,6 +3287,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### @jest/types@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### @jest/types@30.5.1
 
 License: MIT
 
@@ -3943,12 +3991,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
-
-### @next/eslint-plugin-next@16.0.10
-
-License: MIT
-
-- Copyright (c) Denis Malinochkin
 
 ### @next/eslint-plugin-next@16.1.1
 
@@ -4921,6 +4963,12 @@ License: MIT
 
 - Copyright (c) 2017-2026 Haydn Paterson
 
+### @sinclair/typebox@0.34.52
+
+License: MIT
+
+- Copyright (c) 2017-2026 Haydn Paterson
+
 ### @sindresorhus/is@0.14.0
 
 License: MIT
@@ -5247,7 +5295,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/archiver@6.0.3
+### @types/archiver@8.0.0
 
 License: MIT
 
@@ -5668,6 +5716,12 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
+### @types/node@26.6.5
+
+License: MIT
+
+- Copyright (c) Microsoft Corporation.
+
 ### @types/node-hid@1.3.4
 
 License: MIT
@@ -5734,17 +5788,11 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation.
 
-### @types/prop-types@15.7.14
-
-License: MIT
-
-- Copyright (c) Microsoft Corporation.
-
 ### @types/prop-types@15.7.15
 
 License: MIT
 
-- Copyright (c) Microsoft Corporation
+- Copyright (c) Microsoft Corporation.
 
 ### @types/qs@6.9.17
 
@@ -6023,6 +6071,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/eslint-plugin@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/parser@8.19.1
 
 License: MIT
@@ -6053,6 +6107,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/parser@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/project-service@8.39.1
 
 License: MIT
@@ -6060,6 +6120,12 @@ License: MIT
 - Copyright (c) 2025 typescript-eslint and other contributors
 
 ### @typescript-eslint/project-service@8.50.0
+
+License: MIT
+
+- Copyright (c) 2025 typescript-eslint and other contributors
+
+### @typescript-eslint/project-service@8.72.0
 
 License: MIT
 
@@ -6101,6 +6167,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/scope-manager@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/tsconfig-utils@8.39.1
 
 License: MIT
@@ -6108,6 +6180,12 @@ License: MIT
 - Copyright (c) 2025 typescript-eslint and other contributors
 
 ### @typescript-eslint/tsconfig-utils@8.50.0
+
+License: MIT
+
+- Copyright (c) 2025 typescript-eslint and other contributors
+
+### @typescript-eslint/tsconfig-utils@8.72.0
 
 License: MIT
 
@@ -6138,6 +6216,12 @@ License: MIT
 - Copyright (c) 2021 typescript-eslint and other contributors
 
 ### @typescript-eslint/type-utils@8.50.0
+
+License: MIT
+
+- Copyright (c) 2021 typescript-eslint and other contributors
+
+### @typescript-eslint/type-utils@8.72.0
 
 License: MIT
 
@@ -6174,6 +6258,12 @@ License: MIT
 - Copyright (c) 2019 typescript-eslint and other contributors
 
 ### @typescript-eslint/types@8.50.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
+### @typescript-eslint/types@8.72.0
 
 License: MIT
 
@@ -6218,6 +6308,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/typescript-estree@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/utils@8.19.1
 
 License: MIT
@@ -6254,6 +6350,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### @typescript-eslint/utils@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### @typescript-eslint/visitor-keys@8.19.1
 
 License: MIT
@@ -6285,6 +6387,12 @@ License: MIT
 - Copyright (c) 2019 typescript-eslint and other contributors
 
 ### @typescript-eslint/visitor-keys@8.50.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
+### @typescript-eslint/visitor-keys@8.72.0
 
 License: MIT
 
@@ -7247,17 +7355,11 @@ License: MIT
 
 - Copyright (c) Kevin Mårtensson &lt;kevinmartensson@gmail.com&gt;
 
-### archiver@7.0.1
+### archiver@8.0.0
 
 License: MIT
 
 - Copyright (c) 2012-2014 Chris Talkington, contributors.
-
-### archiver-utils@5.0.2
-
-License: MIT
-
-- Copyright (c) 2015 Chris Talkington.
 
 ### archy@1.0.0
 
@@ -8292,6 +8394,12 @@ License: MIT
 
 - Copyright (c) 2016 Thomas Watson Steen
 
+### ci-info@4.4.0
+
+License: MIT
+
+- Copyright (c) 2016 Thomas Watson Steen
+
 ### cjs-module-lexer@1.4.1
 
 License: MIT
@@ -8585,7 +8693,7 @@ License: MIT
 
 - Copyright (c) 2014 Component contributors &lt;dev@component.io&gt;
 
-### compress-commons@6.0.2
+### compress-commons@7.0.1
 
 License: MIT
 
@@ -8830,7 +8938,7 @@ License: Apache-2.0
 
 - Copyright (C) 2014-present   SheetJS LLC
 
-### crc32-stream@6.0.0
+### crc32-stream@7.0.1
 
 License: MIT
 
@@ -8865,12 +8973,6 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2017-2025 Kent C. Dodds
-
-### cross-env@7.0.3
-
-License: MIT
-
-- Copyright (c) 2017 Kent C. Dodds
 
 ### cross-fetch@4.1.0
 
@@ -10131,12 +10233,6 @@ License: MIT
 
 Author: Nicholas C. Zakas
 
-### eslint-config-next@16.0.10
-
-License: MIT
-
-- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
-
 ### eslint-config-next@16.1.1
 
 License: MIT
@@ -10227,6 +10323,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### eslint-plugin-react-hooks@7.1.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### eslint-plugin-storybook@10.1.11
 
 License: MIT
@@ -10258,6 +10360,12 @@ License: Apache-2.0
 Author: Toru Nagashima
 
 ### eslint-visitor-keys@4.2.1
+
+License: Apache-2.0
+
+Author: Toru Nagashima
+
+### eslint-visitor-keys@5.0.1
 
 License: Apache-2.0
 
@@ -10385,6 +10493,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### expect@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### expect@30.5.2
 
 License: MIT
 
@@ -11224,6 +11338,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### glob@13.0.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### glob@7.1.2
 
 License: ISC
@@ -11839,6 +11959,12 @@ License: MIT
 - Copyright (c) 2015 Hugh Kennedy
 
 ### ignore@5.3.2
+
+License: MIT
+
+- Copyright (c) 2013 Kael Zhang &lt;i@kael.me&gt;, contributors
+
+### ignore@7.0.14
 
 License: MIT
 
@@ -12534,6 +12660,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### is-stream@4.0.1
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### is-string@1.0.7
 
 License: MIT
@@ -12739,6 +12871,12 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
 
+### istanbul-lib-processinfo@3.0.1
+
+License: ISC
+
+- Copyright (c) Isaac Z. Schlueter and Contributors
+
 ### istanbul-lib-report@3.0.1
 
 License: BSD-3-Clause
@@ -12883,6 +13021,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-diff@30.5.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-docblock@29.7.0
 
 License: MIT
@@ -12991,6 +13135,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-matcher-utils@30.5.2
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-message-util@29.7.0
 
 License: MIT
@@ -13003,6 +13153,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### jest-message-util@30.5.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### jest-mock@29.7.0
 
 License: MIT
@@ -13010,6 +13166,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-mock@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-mock@30.5.2
 
 License: MIT
 
@@ -13034,6 +13196,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-regex-util@30.0.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-regex-util@30.5.0
 
 License: MIT
 
@@ -13106,6 +13274,12 @@ License: MIT
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### jest-util@30.2.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
+### jest-util@30.5.1
 
 License: MIT
 
@@ -13972,6 +14146,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### lru-cache@11.5.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### lru-cache@5.1.1
 
 License: ISC
@@ -14354,6 +14534,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### minimatch@10.2.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### minimatch@3.1.2
 
 License: ISC
@@ -14426,6 +14612,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+### minipass@7.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### minipass-collect@2.0.1
 
@@ -14915,6 +15107,12 @@ License: MIT
 - Copyright (c) 2007-2025 Diego Perini (http://www.iport.it/)
 
 ### nyc@17.1.0
+
+License: ISC
+
+- Copyright (c) 2015, Contributors
+
+### nyc@18.0.0
 
 License: ISC
 
@@ -15456,6 +15654,12 @@ License: BlueOak-1.0.0
 Author: Isaac Z. Schlueter
 
 ### path-scurry@2.0.1
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
+### path-scurry@2.0.2
 
 License: BlueOak-1.0.0
 
@@ -16229,6 +16433,12 @@ License: MIT
 
 - Copyright (c) Meta Platforms, Inc. and affiliates.
 
+### pretty-format@30.5.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### primereact@10.9.4
 
 License: MIT
@@ -16696,6 +16906,12 @@ License: MIT
 
 - Copyright (c) Facebook, Inc. and its affiliates.
 
+### react-is@19.3.1
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
+
 ### react-lifecycles-compat@3.0.4
 
 License: MIT
@@ -16821,7 +17037,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### readdir-glob@1.1.3
+### readdir-glob@3.0.0
 
 License: Apache-2.0
 
@@ -17157,6 +17373,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2011-2023 Isaac Z. Schlueter and Contributors
+
+### rimraf@6.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### rollup@4.53.5
 
@@ -18207,6 +18429,12 @@ License: ISC
 
 - Copyright (c) Isaac Z. Schlueter and Contributors
 
+### spawn-wrap@3.0.0
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### spdx-exceptions@2.5.0
 
 License: CC-BY-3.0
@@ -18854,6 +19082,12 @@ License: ISC
 
 - Copyright (c) 2016, Contributors
 
+### test-exclude@8.0.0
+
+License: ISC
+
+- Copyright (c) 2016, Contributors
+
 ### text-decoder@1.2.1
 
 License: Apache-2.0
@@ -19144,6 +19378,12 @@ License: MIT
 Author: JoshuaKGoldberg
 
 ### ts-api-utils@2.1.0
+
+License: MIT
+
+Author: JoshuaKGoldberg
+
+### ts-api-utils@2.5.0
 
 License: MIT
 
@@ -19480,6 +19720,12 @@ License: MIT
 
 - Copyright (c) 2019 typescript-eslint and other contributors
 
+### typescript-eslint@8.72.0
+
+License: MIT
+
+- Copyright (c) 2019 typescript-eslint and other contributors
+
 ### typestyle@2.4.0
 
 License: MIT
@@ -19569,6 +19815,12 @@ License: MIT
 - Copyright (c) Matteo Collina and Undici contributors
 
 ### undici-types@7.8.0
+
+License: MIT
+
+- Copyright (c) Matteo Collina and Undici contributors
+
+### undici-types@8.9.0
 
 License: MIT
 
@@ -20655,7 +20907,7 @@ License: MIT
 
 - Copyright (c) 2014 Jason Quense
 
-### zip-stream@6.0.1
+### zip-stream@7.0.5
 
 License: MIT
 
@@ -20712,7 +20964,7 @@ No license could be determined for these packages; no license text is included:
 - libphonenumber-js/mobile/metadata@UNKNOWN — unknown license, no text included
 - librtmp1@2.4+20151223.gitfa8646d.1-2+b5 — unknown license, no text included
 - libstdc++6@14.2.0-19 — unknown license, no text included
-- node@22.23.2 — unknown license, no text included
+- node@22.23.4 — unknown license, no text included
 - node-clone@0.1.1 — unknown license, no text included
 - package@0.0.0 — unknown license, no text included
 - prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0 — unknown license, no text included
@@ -20721,7 +20973,7 @@ No license could be determined for these packages; no license text is included:
 - rxjs/operators@UNKNOWN — unknown license, no text included
 - rxjs/testing@UNKNOWN — unknown license, no text included
 - rxjs/webSocket@UNKNOWN — unknown license, no text included
-- tzdata@2026b-0+deb13u1 — unknown license, no text included
+- tzdata@2026e-0+deb13u1 — unknown license, no text included
 
 ## License texts
 
