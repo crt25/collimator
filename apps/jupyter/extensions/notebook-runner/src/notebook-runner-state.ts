@@ -10,12 +10,31 @@ import { KernelMessage } from "@jupyterlab/services";
 import {
   setupKernel,
   executePythonInKernel,
+  resetKernelPreparation,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
 } from "./utils";
 import { installNbConvert, installOtter } from "./packages";
+import { OtterKernelPreparationError } from "./errors/otter-errors";
+import { PythonExecutionError } from "./errors/kernel-errors";
 
 const logModule = "[Jupyter][notebook-runner-state]";
+
+/**
+ * Python exceptions that are raised again if preparing the kernel is retried,
+ * e.g. micropip failing to resolve a version conflict ("Requested ..., but ...
+ * is already installed") or to find a compatible wheel.
+ */
+const permanentPreparationErrors = [
+  "ValueError",
+  "ImportError",
+  "ModuleNotFoundError",
+  "SyntaxError",
+];
+
+const isPermanentPreparationFailure = (error: unknown): boolean =>
+  error instanceof PythonExecutionError &&
+  permanentPreparationErrors.includes(error.ename);
 
 /**
  * A listener that is called when a comm message is received from the kernel.
@@ -31,12 +50,31 @@ export class NotebookRunnerState {
    */
   public static commChannelName = "notebook-runner";
 
+  /**
+   * How often the otter session is (re-)created before giving up. Retrying
+   * forever would leave everything that waits for the otter kernel - such as
+   * saving a task - hanging.
+   */
+  private static maxInitAttempts = 3;
+
+  /**
+   * How often preparing a kernel is attempted before giving up. Failures that
+   * would only happen again (see isPermanentPreparationFailure) are not retried.
+   */
+  private static maxPrepareAttempts = 3;
+
   private _resolveOtterSessionContext: (value: SessionContext) => void =
     () => {};
+  private _rejectOtterSessionContext: (reason: unknown) => void = () => {};
 
+  /**
+   * Resolves once the otter session has been initialized and its kernel prepared.
+   * Rejects with an {@link OtterKernelPreparationError} if that was not possible.
+   */
   public otterSessionContext: Promise<SessionContext> =
-    new Promise<SessionContext>((resolve) => {
+    new Promise<SessionContext>((resolve, reject) => {
       this._resolveOtterSessionContext = resolve;
+      this._rejectOtterSessionContext = reject;
     });
 
   /**
@@ -51,6 +89,11 @@ export class NotebookRunnerState {
     protected readonly notebookTracker: INotebookTracker,
     public allowNextNotebookInParallel: boolean = false,
   ) {
+    // The failure is reported to everyone who awaits the promise (see getOtterKernel).
+    // Mark it as handled so that a failure that happens before anyone awaits it
+    // is not reported as an unhandled promise rejection.
+    this.otterSessionContext.catch(() => {});
+
     this.init();
   }
 
@@ -70,7 +113,7 @@ export class NotebookRunnerState {
     this.commListeners = this.commListeners.filter((l) => l !== listener);
   }
 
-  private async init(): Promise<void> {
+  private async init(attempt: number = 1): Promise<void> {
     let sessionContext: SessionContext | undefined = undefined;
 
     try {
@@ -86,6 +129,8 @@ export class NotebookRunnerState {
           shouldStart: true,
           canStart: true,
           autoStartDefault: true,
+          // a failed attempt disposes the context, which must not leave its kernel running
+          shutdownOnDispose: true,
         },
       });
 
@@ -95,15 +140,9 @@ export class NotebookRunnerState {
 
       console.debug(`${logModule} Adding kernel listeners to otter context...`);
 
-      await setupKernel(sessionContext, async (kernel) => {
-        console.debug(
-          `${logModule} Kernel is ready:`,
-          kernel.name,
-          "attaching listeners...",
-        );
-        this.registerCommTarget(kernel);
-        await this.prepareOtterKernel(kernel);
-      });
+      await setupKernel(sessionContext, (kernel) =>
+        this.setupOtterKernel(kernel),
+      );
 
       console.debug(`${logModule} Otter context initialized:`, sessionContext);
 
@@ -122,12 +161,33 @@ export class NotebookRunnerState {
         await isDisposed;
       }
 
+      // Preparing the kernel has already been retried (see setupOtterKernel),
+      // a fresh session would fail the same way.
+      const isPreparationFailure = e instanceof OtterKernelPreparationError;
+
+      if (
+        !isPreparationFailure &&
+        attempt < NotebookRunnerState.maxInitAttempts
+      ) {
+        console.error(
+          `${logModule} Error initializing otter context (attempt ${attempt}/${NotebookRunnerState.maxInitAttempts}):`,
+          e,
+          ". Restarting...",
+        );
+        return this.init(attempt + 1);
+      }
+
       console.error(
-        `${logModule} Error initializing otter context:`,
+        `${logModule} Error initializing otter context (attempt ${attempt}/${NotebookRunnerState.maxInitAttempts}):`,
         e,
-        ". Restarting...",
+        ". Giving up.",
       );
-      return this.init();
+
+      // Do not retry forever: reject so that everything waiting for the otter
+      // kernel (e.g. saving a task) fails with an error instead of hanging.
+      this._rejectOtterSessionContext(
+        isPreparationFailure ? e : new OtterKernelPreparationError(attempt, e),
+      );
     }
   }
 
@@ -153,6 +213,59 @@ export class NotebookRunnerState {
         );
       };
     });
+  }
+
+  /**
+   * Sets up the given kernel to run Otter, retrying failures that may be
+   * temporary (e.g. a failed download). Everything that waits for the kernel
+   * (see getOtterKernel) is notified about the outcome, also for kernels that
+   * replace the initial one or are restarted.
+   */
+  private async setupOtterKernel(kernel: IKernelConnection): Promise<void> {
+    resetKernelPreparation(kernel);
+
+    let attempt = 0;
+
+    try {
+      console.debug(
+        `${logModule} Kernel is ready:`,
+        kernel.name,
+        "attaching listeners...",
+      );
+      this.registerCommTarget(kernel);
+
+      for (;;) {
+        attempt++;
+
+        try {
+          await this.prepareOtterKernel(kernel);
+          return;
+        } catch (error) {
+          if (
+            attempt >= NotebookRunnerState.maxPrepareAttempts ||
+            isPermanentPreparationFailure(error)
+          ) {
+            throw error;
+          }
+
+          console.error(
+            `${logModule} Error preparing the otter kernel (attempt ${attempt}/${NotebookRunnerState.maxPrepareAttempts}):`,
+            error,
+            ". Retrying...",
+          );
+        }
+      }
+    } catch (error) {
+      // Let everything that waits for this kernel fail instead of waiting for
+      // a kernel that will never be prepared.
+      const failure = new OtterKernelPreparationError(
+        Math.max(attempt, 1),
+        error,
+      );
+      setKernelIsPrepared(kernel, false, failure);
+
+      throw failure;
+    }
   }
 
   private async prepareOtterKernel(kernel: IKernelConnection): Promise<void> {
@@ -190,6 +303,10 @@ from otter.run import main as run
     await sessionContext.restartKernel();
   }
 
+  /**
+   * Resolves with the prepared otter kernel.
+   * Rejects with an {@link OtterKernelPreparationError} if it could not be prepared.
+   */
   public async getOtterKernel(): Promise<IKernelConnection> {
     const sessionContext = await this.otterSessionContext;
 

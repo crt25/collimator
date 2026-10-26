@@ -4,13 +4,21 @@ import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
+import { PythonExecutionError } from "./errors/kernel-errors";
 
 const logModule = "[Jupyter][utils]";
 
 const isPreparedKey = "__isPrepared";
 const preparedKey = "__prepared";
+const preparedSettledKey = "__preparedSettled";
 const preparedResolveKey = "__preparedResolve";
 const preparedRejectKey = "__preparedReject";
+
+type KernelChangedArgs = IChangedArgs<
+  IKernelConnection | null,
+  IKernelConnection | null,
+  "kernel"
+>;
 
 export const executePythonInKernel = async (parameters: {
   kernel: IKernelConnection;
@@ -30,9 +38,7 @@ export const executePythonInKernel = async (parameters: {
       throw new AssignNotebookFormatException(reply.content.evalue);
     }
 
-    throw new Error(
-      `Error executing code: ${reply.content.ename}: ${reply.content.evalue}`,
-    );
+    throw new PythonExecutionError(reply.content.ename, reply.content.evalue);
   }
 
   return reply;
@@ -43,27 +49,58 @@ const isPatched = (kernel: IKernelConnection): boolean => {
   return typeof kernel[isPreparedKey] !== "undefined";
 };
 
-export const ensureKernelIsPatched = (kernel: IKernelConnection): void => {
-  if (isPatched(kernel)) {
-    return;
-  }
-
+const createPreparedPromise = (kernel: IKernelConnection): void => {
   // @ts-expect-error This is a custom property
   kernel[isPreparedKey] = false;
+  // @ts-expect-error This is a custom property
+  kernel[preparedSettledKey] = false;
 
   let resolve: () => void;
-  let reject: () => void;
+  let reject: (reason?: unknown) => void;
 
-  // @ts-expect-error This is a custom property
-  kernel[preparedKey] = new Promise<void>((res, rej) => {
+  const prepared = new Promise<void>((res, rej) => {
     resolve = res;
     reject = rej;
   });
+
+  // A failed preparation is reported to whoever waits for the kernel to be
+  // prepared. Mark the promise as handled so that a failure nobody is waiting
+  // for (yet) is not reported as an unhandled promise rejection.
+  prepared.catch(() => {});
+
+  // @ts-expect-error This is a custom property
+  kernel[preparedKey] = prepared;
 
   // @ts-expect-error This is a custom property
   kernel[preparedResolveKey] = resolve;
   // @ts-expect-error This is a custom property
   kernel[preparedRejectKey] = reject;
+};
+
+export const ensureKernelIsPatched = (kernel: IKernelConnection): void => {
+  if (isPatched(kernel)) {
+    return;
+  }
+
+  createPreparedPromise(kernel);
+};
+
+/**
+ * Marks the kernel as being (re-)prepared. Call this before preparing a kernel
+ * so that a kernel connection that is prepared again (e.g. after a restart)
+ * does not keep reporting the outcome of its previous preparation.
+ * If nobody has settled the current preparation yet, it is kept so that those
+ * already waiting for it are notified about the outcome of this preparation.
+ */
+export const resetKernelPreparation = (kernel: IKernelConnection): void => {
+  // @ts-expect-error This is a custom property
+  if (!isPatched(kernel) || kernel[preparedSettledKey]) {
+    createPreparedPromise(kernel);
+    return;
+  }
+
+  // @ts-expect-error This is a custom property
+  kernel[isPreparedKey] = false;
 };
 
 export const isKernelPrepared = async (
@@ -84,14 +121,22 @@ export const waitForKernelToBePrepared = async (
   await kernel[preparedKey];
 };
 
+/**
+ * Marks the kernel as prepared (or as having failed to be prepared), which
+ * resolves (or rejects with the given reason) the promise returned by
+ * {@link waitForKernelToBePrepared}.
+ */
 export const setKernelIsPrepared = (
   kernel: IKernelConnection,
   isPrepared: boolean = true,
+  reason?: unknown,
 ): void => {
   ensureKernelIsPatched(kernel);
 
   // @ts-expect-error This is a custom property
   kernel[isPreparedKey] = isPrepared;
+  // @ts-expect-error This is a custom property
+  kernel[preparedSettledKey] = true;
 
   if (isPrepared) {
     // @ts-expect-error This is a custom property
@@ -99,8 +144,8 @@ export const setKernelIsPrepared = (
     resolve();
   } else {
     // @ts-expect-error This is a custom property
-    const reject = kernel[preparedRejectKey] as () => void;
-    reject();
+    const reject = kernel[preparedRejectKey] as (reason?: unknown) => void;
+    reject(reason);
   }
 };
 
@@ -133,13 +178,9 @@ export const setupKernel = async (
   await kernel.info;
   await setup(kernel);
 
-  const restartListener = async (
+  const handleKernelChanged = async (
     sessionCtx: ISessionContext,
-    change: IChangedArgs<
-      IKernelConnection | null,
-      IKernelConnection | null,
-      "kernel"
-    >,
+    change: KernelChangedArgs,
   ): Promise<void> => {
     let kernel = change.newValue;
     if (kernel === null) {
@@ -174,6 +215,22 @@ export const setupKernel = async (
     await kernel.info;
 
     return setup(kernel);
+  };
+
+  // Signals ignore the promise returned by their slots, so a failure while
+  // setting up the new kernel would surface as an unhandled promise rejection.
+  // Report it here instead; callers that depend on the setup are notified
+  // through the state that `setup` records on the kernel.
+  const restartListener = (
+    sessionCtx: ISessionContext,
+    change: KernelChangedArgs,
+  ): void => {
+    handleKernelChanged(sessionCtx, change).catch((error) => {
+      console.error(
+        `${logModule} Error setting up the kernel after it changed:`,
+        error,
+      );
+    });
   };
 
   sessionContext.kernelChanged.connect(restartListener);
