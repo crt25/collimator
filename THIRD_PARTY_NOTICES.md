@@ -3328,6 +3328,12 @@ License: MIT
 
 - Copyright 2024 Justin Ridgewell &lt;justin@ridgewell.name&gt;
 
+### @jridgewell/sourcemap-codec@1.6.0
+
+License: MIT
+
+- Copyright 2024 Justin Ridgewell &lt;justin@ridgewell.name&gt;
+
 ### @jridgewell/trace-mapping@0.3.25
 
 License: MIT
@@ -3841,7 +3847,7 @@ License: MIT
 
 - Copyright (c) Microsoft Corporation
 
-### @microsoft/tsdoc@0.16.0
+### @microsoft/tsdoc@0.17.0
 
 License: MIT
 
@@ -3872,43 +3878,43 @@ License: MIT
 
 - Copyright (c) 2017-2025
 
-### @nestjs/common@11.1.11
+### @nestjs/common@12.1.3
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/config@4.0.2
-
-License: MIT
-
-- Copyright (c) 2020-2022 Kamil Mysliwiec
-
-### @nestjs/core@11.1.11
-
-License: MIT
-
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
-
-### @nestjs/mapped-types@2.1.0
+### @nestjs/config@12.0.1
 
 License: MIT
 
 - Copyright (c) 2020-2022 Kamil Mysliwiec
 
-### @nestjs/platform-express@11.1.11
+### @nestjs/core@12.1.3
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/platform-socket.io@11.1.11
+### @nestjs/mapped-types@12.0.0
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2020-2022 Kamil Mysliwiec
 
-### @nestjs/schedule@6.1.0
+### @nestjs/platform-express@12.1.3
+
+License: MIT
+
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+
+### @nestjs/platform-socket.io@12.1.3
+
+License: MIT
+
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+
+### @nestjs/schedule@12.0.2
 
 License: MIT
 
@@ -3926,7 +3932,7 @@ License: MIT
 
 - Copyright (c) 2018-2022 nestjs
 
-### @nestjs/swagger@11.2.4
+### @nestjs/swagger@12.0.2
 
 License: MIT
 
@@ -3938,11 +3944,11 @@ License: MIT
 
 - Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
-### @nestjs/websockets@11.1.11
+### @nestjs/websockets@12.1.3
 
 License: MIT
 
-- Copyright (c) 2017-2025 Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
+- Copyright (c) 2017-present Kamil Mysliwiec &lt;https://kamilmysliwiec.com&gt;
 
 ### @next/eslint-plugin-next@16.0.10
 
@@ -4017,12 +4023,6 @@ License: ISC
 
 Author: GitHub Inc.
 
-### @nuxt/opencollective@0.4.1
-
-License: MIT
-
-- Copyright (c) 2018 Nuxt Community
-
 ### @open-draft/logger@0.3.0
 
 License: MIT
@@ -4041,13 +4041,13 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/api-logs@0.208.0
+### @opentelemetry/api@1.9.1
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/api-logs@0.209.0
+### @opentelemetry/api-logs@0.208.0
 
 License: Apache-2.0
 
@@ -4059,31 +4059,13 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/context-async-hooks@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/core@2.2.0
 
 License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/core@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/instrumentation@0.208.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
-### @opentelemetry/instrumentation@0.209.0
 
 License: Apache-2.0
 
@@ -4197,12 +4179,6 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/instrumentation-nestjs-core@0.55.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/instrumentation-pg@0.61.0
 
 License: Apache-2.0
@@ -4239,25 +4215,7 @@ License: Apache-2.0
 
 Author: OpenTelemetry Authors
 
-### @opentelemetry/resources@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
 ### @opentelemetry/sdk-trace-base@2.2.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
-### @opentelemetry/sdk-trace-base@2.3.0
-
-License: Apache-2.0
-
-Author: OpenTelemetry Authors
-
-### @opentelemetry/semantic-conventions@1.28.0
 
 License: Apache-2.0
 
@@ -4289,6 +4247,13 @@ License: MIT
 - Copyright (c) 2018-2021 Josh Junon
 - Copyright (c) 2020 Evan Wallace
 - Copyright 2018 Stoplight, Inc.
+
+### @oxc-project/types@0.152.0
+
+License: MIT
+
+- Copyright (c) 2024-present VoidZero Inc. & Contributors
+- Copyright (c) 2023 Boshen
 
 ### @pandacss/is-valid-prop@1.4.3
 
@@ -4424,7 +4389,7 @@ License: MIT
 
 - Copyright (c) 2019 Federico Zivolo
 
-### @prisma/client@6.19.1
+### @prisma/client@7.10.1
 
 License: Apache-2.0
 
@@ -4664,12 +4629,6 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
-### @sentry-internal/node-cpu-profiler@2.2.0
-
-License: MIT
-
-- Copyright (c) 2022 Functional Software, Inc. dba Sentry
-
 ### @sentry-internal/replay@10.31.0
 
 License: MIT
@@ -4736,6 +4695,12 @@ License: BSD-3-Clause AND MIT
 
 - Copyright (c) 2022, Sentry
 
+### @sentry/bundler-plugins@11.8.0
+
+License: MIT
+
+- Copyright (c) 2022 Functional Software, Inc. dba Sentry
+
 ### @sentry/cli@2.43.0
 
 License: BSD-3-Clause
@@ -4748,7 +4713,7 @@ License: FSL-1.1-MIT
 
 - Copyright 2008-2025 Functional Software, Inc. dba Sentry
 
-### @sentry/cli@3.0.3
+### @sentry/cli@3.8.0
 
 License: FSL-1.1-MIT
 
@@ -4760,6 +4725,12 @@ License: BSD-3-Clause
 
 - Copyright 1995-2024 Jean-loup Gailly and Mark Adler
 - Copyright 1995-2024 Mark Adler
+
+### @sentry/conventions@0.27.0
+
+License: MIT
+
+- Copyright (c) 2023-2025 Functional Software, Inc. dba Sentry
 
 ### @sentry/core@10.31.0
 
@@ -4773,13 +4744,19 @@ License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
+### @sentry/core@11.8.0
+
+License: MIT
+
+- Copyright (c) 2019 Functional Software, Inc. dba Sentry
+
 ### @sentry/core@9.11.0
 
 License: MIT
 
 - Copyright (c) 2019 Functional Software, Inc. dba Sentry
 
-### @sentry/nestjs@10.32.1
+### @sentry/nestjs@11.8.0
 
 License: MIT
 
@@ -4809,6 +4786,12 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
+### @sentry/node@11.8.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
 ### @sentry/node-core@10.31.0
 
 License: MIT
@@ -4820,6 +4803,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2025 Functional Software, Inc. dba Sentry
+
+### @sentry/node-cpu-profiler@2.4.4
+
+License: MIT
+
+- Copyright (c) 2022 Functional Software, Inc. dba Sentry
 
 ### @sentry/opentelemetry@10.31.0
 
@@ -4833,7 +4822,13 @@ License: MIT
 
 - Copyright (c) 2023 Functional Software, Inc. dba Sentry
 
-### @sentry/profiling-node@10.32.1
+### @sentry/opentelemetry@11.8.0
+
+License: MIT
+
+- Copyright (c) 2023 Functional Software, Inc. dba Sentry
+
+### @sentry/profiling-node@11.8.0
 
 License: MIT
 
@@ -7168,6 +7163,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### ansi-regex@6.4.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### ansi-styles@2.2.1
 
 License: MIT
@@ -7874,7 +7875,7 @@ License: MIT
 - Copyright (c) 2014 Jonathan Ong &lt;me@jongleberry.com&gt;
 - Copyright (c) 2014-2015 Douglas Christopher Wilson &lt;doug@somethingdoug.com&gt;
 
-### body-parser@2.2.2
+### body-parser@2.3.0
 
 License: MIT
 
@@ -8316,7 +8317,7 @@ License: MIT
 
 - Copyright (c) 2015-2020 TypeStack
 
-### class-validator@0.14.3
+### class-validator@0.15.1
 
 License: MIT
 
@@ -8623,12 +8624,6 @@ License: MIT
 
 - Copyright (c) 2013 Max Ogden
 
-### concat-stream@2.0.0
-
-License: MIT
-
-- Copyright (c) 2013 Max Ogden
-
 ### configstore@5.0.1
 
 License: BSD-2-Clause
@@ -8656,27 +8651,25 @@ License: MIT
 
 - Copyright (c) 2013 intesso
 
-### consola@3.4.0
-
-License: MIT
-
-- Copyright (c) Pooya Parsa &lt;pooya@pi0.io&gt;
-- Copyright (c) Nate Moore
-- Copyright © Jorge Bucaran &lt;https://jorgebucaran.com&gt;
-
 ### content-disposition@0.5.4
 
 License: MIT
 
 - Copyright (c) 2014-2017 Douglas Christopher Wilson
 
-### content-disposition@1.0.0
+### content-disposition@1.1.0
 
 License: MIT
 
 - Copyright (c) 2014-2017 Douglas Christopher Wilson
 
 ### content-type@1.0.5
+
+License: MIT
+
+- Copyright (c) 2015 Douglas Christopher Wilson
+
+### content-type@2.1.0
 
 License: MIT
 
@@ -8794,6 +8787,12 @@ License: MIT
 
 - Copyright (c) 2013 Troy Goode &lt;troygoode@gmail.com&gt;
 
+### cors@2.8.6
+
+License: MIT
+
+- Copyright (c) 2013 Troy Goode &lt;troygoode@gmail.com&gt;
+
 ### corser@2.0.1
 
 License: MIT
@@ -8854,7 +8853,7 @@ License: MIT
 
 - Copyright (c) 2020 by Marijn Haverbeke
 
-### cron@4.3.5
+### cron@4.4.0
 
 License: MIT
 
@@ -9604,6 +9603,18 @@ License: BSD-2-Clause
 
 - Copyright (c) 2015, Scott Motte
 
+### dotenv@17.4.2
+
+License: BSD-2-Clause
+
+- Copyright (c) 2015, Scott Motte
+
+### dotenv@18.0.3
+
+License: BSD-2-Clause
+
+- Copyright (c) 2015, Scott Motte
+
 ### dotenv-cli@11.0.0
 
 License: MIT
@@ -9622,13 +9633,13 @@ License: BSD-2-Clause
 
 - Copyright (c) 2016, Scott Motte
 
-### dotenv-expand@12.0.1
+### dotenv-expand@12.0.3
 
 License: BSD-2-Clause
 
 - Copyright (c) 2016, Scott Motte
 
-### dotenv-expand@12.0.3
+### dotenv-expand@13.0.0
 
 License: BSD-2-Clause
 
@@ -10032,6 +10043,56 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2015 Jordan Harband
+
+### es-toolkit@1.52.0
+
+License: MIT
+
+- Copyright (c) 2024 Viva Republica, Inc.
+
+NOTICE:
+
+```
+es-toolkit
+
+Parts of the test suite and compatibility layer in es-toolkit/compat are
+derived from Lodash (https://github.com/lodash/lodash).
+
+Lodash copyright notice and MIT permission notice:
+
+Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+
+Based on Underscore.js, copyright Jeremy Ashkenas,
+DocumentCloud and Investigative Reporters & Editors <http://underscorejs.org/>
+
+This software consists of voluntary contributions made by many
+individuals. For exact contribution history, see the revision history
+available at https://github.com/lodash/lodash
+
+The following license applies to all parts of this software except as
+documented below:
+
+====
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
 
 ### es6-error@4.1.1
 
@@ -10669,7 +10730,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
-### file-type@21.2.0
+### file-type@22.1.1
 
 License: MIT
 
@@ -11080,6 +11141,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### get-east-asian-width@1.7.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### get-intrinsic@1.2.4
 
 License: MIT
@@ -11224,6 +11291,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### glob@13.0.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### glob@7.1.2
 
 License: ISC
@@ -11319,7 +11392,7 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
-### globals@17.0.0
+### globals@17.13.0
 
 License: MIT
 
@@ -11808,6 +11881,12 @@ License: MIT
 
 - Copyright (c) 2011 Alexander Shtuchkin
 
+### iconv-lite@0.7.3
+
+License: MIT
+
+- Copyright (c) 2011 Alexander Shtuchkin
+
 ### icss-utils@5.1.0
 
 License: ISC
@@ -11899,55 +11978,6 @@ License: MIT
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
 ### import-in-the-middle@2.0.0
-
-License: Apache-2.0
-
-- require,module-details-from-path,MIT,Copyright 2016 Thomas Watson Steen
-- dev,c8,ISC,"Copyright (c) 2017, Contributors"
-- dev,imhotap,MIT,Copyright (c) 2019 Bryan English.
-- Copyright 2024 Node.js contributors. All rights reserved.
-- Copyright 2021 Datadog, Inc.
-
-NOTICE:
-
-```
-import-in-the-middle is licensed for use as follows:
-
-Copyright 2024 Node.js contributors. All rights reserved.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
-This license applies to parts of import-in-the-middle originating from the
-https://github.com/DataDog/import-in-the-middle repository:
-
-    This product includes software developed at Datadog (https://www.datadoghq.com/).
-
-    Copyright 2021 Datadog, Inc.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-```
-
-### import-in-the-middle@2.0.1
 
 License: Apache-2.0
 
@@ -13185,7 +13215,7 @@ License: MIT
 
 - Copyright (c) 2018 Filip Skokan
 
-### jose@6.1.3
+### jose@6.2.12
 
 License: MIT
 
@@ -13234,6 +13264,12 @@ License: MIT
 - Copyright (C) 2011-2015 by Vitaly Puzrin
 
 ### js-yaml@4.1.1
+
+License: MIT
+
+- Copyright (C) 2011-2015 by Vitaly Puzrin
+
+### js-yaml@5.4.2
 
 License: MIT
 
@@ -14020,6 +14056,12 @@ License: MIT
 
 - Copyright 2018 Rich Harris
 
+### magic-string@1.4.3
+
+License: MIT
+
+- Copyright 2018 Rich Harris
+
 ### magicast@0.5.1
 
 License: MIT
@@ -14354,6 +14396,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### minimatch@10.2.6
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### minimatch@3.1.2
 
 License: ISC
@@ -14426,6 +14474,12 @@ License: ISC
 License: ISC
 
 - Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
+
+### minipass@7.1.3
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
 
 ### minipass-collect@2.0.1
 
@@ -14572,7 +14626,7 @@ License: MIT
 
 - Copyright (c) 2018–present Artem Zakharchenko
 
-### multer@2.0.2
+### multer@2.4.0
 
 License: MIT
 
@@ -15183,6 +15237,13 @@ License: MIT
 
 - Copyright (c) 2024 Jordan Harband
 
+### oxc-parser@0.152.0
+
+License: MIT
+
+- Copyright (c) 2024-present VoidZero Inc. & Contributors
+- Copyright (c) 2023 Boshen
+
 ### p-cancelable@0.4.1
 
 License: MIT
@@ -15461,6 +15522,12 @@ License: BlueOak-1.0.0
 
 Author: Isaac Z. Schlueter
 
+### path-scurry@2.0.2
+
+License: BlueOak-1.0.0
+
+Author: Isaac Z. Schlueter
+
 ### path-to-regexp@0.1.12
 
 License: MIT
@@ -15479,7 +15546,7 @@ License: MIT
 
 - Copyright (c) 2014 Blake Embrey (hello@blakeembrey.com)
 
-### path-to-regexp@8.3.0
+### path-to-regexp@8.4.2
 
 License: MIT
 
@@ -15685,11 +15752,11 @@ License: MIT
 
 - Copyright (c) 2016-2018 Ari Porad
 
-### piscina@5.1.4
+### piscina@5.3.2
 
 License: MIT
 
-- Copyright (c) 2020 James M Snell and the Piscina contributors
+- Copyright (c) 2026 James M Snell and the Piscina contributors
 
 ### pixelmatch@7.1.0
 
@@ -16337,6 +16404,12 @@ License: MIT
 
 - Copyright (c) 2014-2016 Douglas Christopher Wilson
 
+### proxy-addr@2.0.8
+
+License: MIT
+
+- Copyright (c) 2014-2016 Douglas Christopher Wilson
+
 ### proxy-compare@3.0.1
 
 License: MIT
@@ -16506,7 +16579,7 @@ License: BSD-3-Clause
 
 - Copyright (c) 2014, Nathan LaFreniere and other \[contributors\](https://github.com/ljharb/qs/graphs/contributors)
 
-### qs@6.14.1
+### qs@6.16.1
 
 License: BSD-3-Clause
 
@@ -17741,6 +17814,124 @@ License: BSD-3-Clause
 
 - Copyright (c) 2017, Virgil Dupras
 
+### sentry@0.45.0
+
+License: Apache-2.0
+
+- Copyright 2025 Functional Software, Inc. dba Sentry
+
+Verbatim license text:
+
+```
+# Functional Source License, Version 1.1, Apache 2.0 Future License
+
+## Abbreviation
+
+FSL-1.1-Apache-2.0
+
+## Notice
+
+Copyright 2025 Functional Software, Inc. dba Sentry
+
+## Terms and Conditions
+
+### Licensor ("We")
+
+The party offering the Software under these Terms and Conditions.
+
+### The Software
+
+The "Software" is each version of the software that we make available under
+these Terms and Conditions, as indicated by our inclusion of these Terms and
+Conditions with the Software.
+
+### License Grant
+
+Subject to your compliance with this License Grant and the Patents,
+Redistribution and Trademark clauses below, we hereby grant you the right to
+use, copy, modify, create derivative works, publicly perform, publicly display
+and redistribute the Software for any Permitted Purpose identified below.
+
+### Permitted Purpose
+
+A Permitted Purpose is any purpose other than a Competing Use. A Competing Use
+means making the Software available to others in a commercial product or
+service that:
+
+1. substitutes for the Software;
+
+2. substitutes for any other product or service we offer using the Software
+   that exists as of the date we make the Software available; or
+
+3. offers the same or substantially similar functionality as the Software.
+
+Permitted Purposes specifically include using the Software:
+
+1. for your internal use and access;
+
+2. for non-commercial education;
+
+3. for non-commercial research; and
+
+4. in connection with professional services that you provide to a licensee
+   using the Software in accordance with these Terms and Conditions.
+
+### Patents
+
+To the extent your use for a Permitted Purpose would necessarily infringe our
+patents, the license grant above includes a license under our patents. If you
+make a claim against any party that the Software infringes or contributes to
+the infringement of any patent, then your patent license to the Software ends
+immediately.
+
+### Redistribution
+
+The Terms and Conditions apply to all copies, modifications and derivatives of
+the Software.
+
+If you redistribute any copies, modifications or derivatives of the Software,
+you must include a copy of or a link to these Terms and Conditions and not
+remove any copyright notices provided in or with the Software.
+
+### Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING WITHOUT LIMITATION WARRANTIES OF FITNESS FOR A PARTICULAR
+PURPOSE, MERCHANTABILITY, TITLE OR NON-INFRINGEMENT.
+
+IN NO EVENT WILL WE HAVE ANY LIABILITY TO YOU ARISING OUT OF OR RELATED TO THE
+SOFTWARE, INCLUDING INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES,
+EVEN IF WE HAVE BEEN INFORMED OF THEIR POSSIBILITY IN ADVANCE.
+
+### Trademarks
+
+Except for displaying the License Details and identifying us as the origin of
+the Software, you have no right under these Terms and Conditions to use our
+trademarks, trade names, service marks or product names.
+
+## Grant of Future License
+
+We hereby irrevocably grant you an additional license to use the Software under
+the Apache License, Version 2.0 that is effective on the second anniversary of
+the date we make the Software available. On or after that date, you may use the
+Software under the Apache License, Version 2.0, in which case the following
+will apply:
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License.
+
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied. See the License for the
+specific language governing permissions and limitations under the License.
+
+<!-- packages/cli/LICENSE.md is a copy of ../LICENSE.md (the canonical source in this repo). Both files must remain byte-identical. -->
+```
+
 ### serialize-javascript@6.0.2
 
 License: BSD-3-Clause
@@ -17929,7 +18120,19 @@ License: MIT
 
 - Copyright (c) 2019 Jordan Harband
 
+### side-channel@1.1.1
+
+License: MIT
+
+- Copyright (c) 2019 Jordan Harband
+
 ### side-channel-list@1.0.0
+
+License: MIT
+
+- Copyright (c) 2024 Jordan Harband
+
+### side-channel-list@1.0.1
 
 License: MIT
 
@@ -18020,7 +18223,7 @@ License: MIT
 
 - Copyright (c) 2013-2017 Josh Glazebrook
 
-### socket.io@4.8.3
+### socket.io@4.8.4
 
 License: MIT
 
@@ -18406,6 +18609,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### string-width@8.3.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### string-width-cjs@4.2.3
 
 License: MIT
@@ -18484,6 +18693,12 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
 
+### strip-ansi@7.2.0
+
+License: MIT
+
+- Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (https://sindresorhus.com)
+
 ### strip-ansi-cjs@6.0.1
 
 License: MIT
@@ -18550,11 +18765,11 @@ License: MIT
 
 - Copyright (c) Sindre Sorhus &lt;sindresorhus@gmail.com&gt; (sindresorhus.com)
 
-### strtok3@10.3.4
+### strtok3@10.6.2
 
 License: MIT
 
-- Copyright © 2025 Borewit
+- Copyright © 2026 Borewit
 
 ### style-loader@3.3.4
 
@@ -18687,7 +18902,7 @@ License: MIT
 - Copyright (c) 2014 Athan Reines
 - Copyright (c) 2014. Athan Reines
 
-### swagger-ui-dist@5.31.0
+### swagger-ui-dist@5.33.0
 
 License: Apache-2.0
 
@@ -19194,7 +19409,7 @@ License: MIT
 
 - Copyright (c) 2021 Gabriel Vergnaud
 
-### ts-pattern@5.9.0
+### ts-pattern@5.9.2
 
 License: MIT
 
@@ -19347,7 +19562,7 @@ License: MIT
 - Copyright (c) 2014 Jonathan Ong &lt;me@jongleberry.com&gt;
 - Copyright (c) 2014-2015 Douglas Christopher Wilson &lt;doug@somethingdoug.com&gt;
 
-### type-is@2.0.1
+### type-is@2.1.0
 
 License: MIT
 
@@ -19513,7 +19728,7 @@ License: MIT
 
 - Copyright (c) Luke Edwards &lt;luke.edwards05@gmail.com&gt; (lukeed.com)
 
-### uint8array-extras@1.5.0
+### uint8array-extras@1.6.0
 
 License: MIT
 
@@ -19917,6 +20132,12 @@ License: MIT
 - Copyright (c) 2014. Athan Reines
 
 ### validator@13.15.26
+
+License: MIT
+
+- Copyright (c) 2018 Chris O'Hara &lt;cohara87@gmail.com&gt;
+
+### validator@13.15.35
 
 License: MIT
 
@@ -20589,7 +20810,7 @@ License: MIT
 
 - Copyright 2010 James Halliday (mail@substack.net); Modified work Copyright 2014 Contributors (ben@npmjs.com)
 
-### yargs@18.0.0
+### yargs@18.2.0
 
 License: MIT
 
@@ -20712,16 +20933,15 @@ No license could be determined for these packages; no license text is included:
 - libphonenumber-js/mobile/metadata@UNKNOWN — unknown license, no text included
 - librtmp1@2.4+20151223.gitfa8646d.1-2+b5 — unknown license, no text included
 - libstdc++6@14.2.0-19 — unknown license, no text included
-- node@22.23.2 — unknown license, no text included
+- node@22.23.4 — unknown license, no text included
 - node-clone@0.1.1 — unknown license, no text included
 - package@0.0.0 — unknown license, no text included
-- prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0 — unknown license, no text included
 - rxjs/ajax@UNKNOWN — unknown license, no text included
 - rxjs/fetch@UNKNOWN — unknown license, no text included
 - rxjs/operators@UNKNOWN — unknown license, no text included
 - rxjs/testing@UNKNOWN — unknown license, no text included
 - rxjs/webSocket@UNKNOWN — unknown license, no text included
-- tzdata@2026b-0+deb13u1 — unknown license, no text included
+- tzdata@2026e-0+deb13u1 — unknown license, no text included
 
 ## License texts
 
