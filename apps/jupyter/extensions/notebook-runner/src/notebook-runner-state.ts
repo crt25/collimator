@@ -7,13 +7,12 @@ import {
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { KernelMessage } from "@jupyterlab/services";
+import { setupKernel, executePythonInKernel } from "./utils";
 import {
-  setupKernel,
-  executePythonInKernel,
   resetKernelPreparation,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
-} from "./utils";
+} from "./kernel/kernel-preparation";
 import { installNbConvert, installOtter } from "./packages";
 import { OtterKernelPreparationError } from "./errors/otter-errors";
 
