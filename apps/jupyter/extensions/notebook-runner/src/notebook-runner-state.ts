@@ -90,7 +90,45 @@ export class NotebookRunnerState {
     this.commListeners = this.commListeners.filter((l) => l !== listener);
   }
 
-  private async init(attempt: number = 1): Promise<void> {
+  private async init(): Promise<void> {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        this._resolveOtterSessionContext(
+          await this.createOtterSessionContext(),
+        );
+        return;
+      } catch (e) {
+        // Installing the packages is deterministic, a fresh session would fail the same way.
+        const isPreparationFailure = e instanceof OtterKernelPreparationError;
+        const willRetry =
+          !isPreparationFailure &&
+          attempt < NotebookRunnerState.maxInitAttempts;
+
+        console.error(
+          `${logModule} Error initializing otter context (attempt ${attempt}/${NotebookRunnerState.maxInitAttempts}):`,
+          e,
+          willRetry ? ". Restarting..." : ". Giving up.",
+        );
+
+        if (!willRetry) {
+          // Do not retry forever: reject so that everything waiting for the otter
+          // kernel (e.g. saving a task) fails with an error instead of hanging.
+          this._rejectOtterSessionContext(
+            isPreparationFailure
+              ? e
+              : new OtterKernelPreparationError(attempt, e),
+          );
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Creates the otter session and prepares its kernel.
+   * A session that cannot be set up is disposed before the error is rethrown.
+   */
+  private async createOtterSessionContext(): Promise<SessionContext> {
     let sessionContext: SessionContext | undefined = undefined;
 
     try {
@@ -123,9 +161,7 @@ export class NotebookRunnerState {
 
       console.debug(`${logModule} Otter context initialized:`, sessionContext);
 
-      this._resolveOtterSessionContext(sessionContext);
-
-      return;
+      return sessionContext;
     } catch (e) {
       if (sessionContext) {
         let disposed: () => void = () => {};
@@ -138,32 +174,7 @@ export class NotebookRunnerState {
         await isDisposed;
       }
 
-      // Installing the packages is deterministic, a fresh session would fail the same way.
-      const isPreparationFailure = e instanceof OtterKernelPreparationError;
-
-      if (
-        !isPreparationFailure &&
-        attempt < NotebookRunnerState.maxInitAttempts
-      ) {
-        console.error(
-          `${logModule} Error initializing otter context (attempt ${attempt}/${NotebookRunnerState.maxInitAttempts}):`,
-          e,
-          ". Restarting...",
-        );
-        return this.init(attempt + 1);
-      }
-
-      console.error(
-        `${logModule} Error initializing otter context (attempt ${attempt}/${NotebookRunnerState.maxInitAttempts}):`,
-        e,
-        ". Giving up.",
-      );
-
-      // Do not retry forever: reject so that everything waiting for the otter
-      // kernel (e.g. saving a task) fails with an error instead of hanging.
-      this._rejectOtterSessionContext(
-        isPreparationFailure ? e : new OtterKernelPreparationError(attempt, e),
-      );
+      throw e;
     }
   }
 

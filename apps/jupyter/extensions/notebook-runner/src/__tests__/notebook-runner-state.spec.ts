@@ -186,6 +186,25 @@ describe("NotebookRunnerState", () => {
     expect(kernel).toBe(MockedSessionContext.instances[1].session?.kernel);
   });
 
+  it("gives up if the session can never be initialized", async () => {
+    const noKernel = new Error("no kernel");
+    jest
+      .spyOn(MockedSessionContext.prototype, "initialize")
+      .mockRejectedValue(noKernel);
+
+    const state = createState();
+
+    const error = await state.getOtterKernel().catch((e) => e);
+
+    expect(error).toBeInstanceOf(OtterKernelPreparationError);
+    expect(error.cause).toBe(noKernel);
+    expect(error.attempts).toBe(MockedSessionContext.instances.length);
+    expect(MockedSessionContext.instances.length).toBeGreaterThan(1);
+    expect(
+      MockedSessionContext.instances.every((context) => context.isDisposed),
+    ).toBe(true);
+  });
+
   it("shuts the kernel of a disposed session down", async () => {
     await createState().getOtterKernel();
 
