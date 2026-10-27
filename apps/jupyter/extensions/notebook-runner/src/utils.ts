@@ -5,6 +5,10 @@ import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
 import { PythonExecutionError } from "./errors/kernel-errors";
+import {
+  resetKernelPreparation,
+  setKernelIsPrepared,
+} from "./kernel/kernel-preparation";
 
 const logModule = "[Jupyter][utils]";
 
@@ -38,10 +42,27 @@ export const executePythonInKernel = async (parameters: {
   return reply;
 };
 
+/**
+ * Runs `setup` on the kernel of the session and on every kernel that replaces
+ * it or is restarted. The outcome of each setup is recorded on the kernel, so
+ * callers can wait for it with `waitForKernelToBePrepared`.
+ */
 export const setupKernel = async (
   sessionContext: ISessionContext,
   setup: (kernel: IKernelConnection) => Promise<void>,
 ): Promise<void> => {
+  const prepare = async (kernel: IKernelConnection): Promise<void> => {
+    resetKernelPreparation(kernel);
+
+    try {
+      await setup(kernel);
+      setKernelIsPrepared(kernel);
+    } catch (error) {
+      setKernelIsPrepared(kernel, false, error);
+      throw error;
+    }
+  };
+
   console.debug(`${logModule} Waiting for session context to be ready...`);
   await sessionContext.ready;
 
@@ -65,7 +86,7 @@ export const setupKernel = async (
   }
 
   await kernel.info;
-  await setup(kernel);
+  await prepare(kernel);
 
   const handleKernelChanged = async (
     sessionCtx: ISessionContext,
@@ -103,7 +124,7 @@ export const setupKernel = async (
     console.debug(`${logModule} Kernel changed:`, kernel.name);
     await kernel.info;
 
-    return setup(kernel);
+    return prepare(kernel);
   };
 
   // Signals ignore the promise returned by their slots, so a failure while

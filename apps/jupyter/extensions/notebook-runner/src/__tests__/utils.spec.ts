@@ -2,6 +2,7 @@ import { ISessionContext } from "@jupyterlab/apputils";
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import { executePythonInKernel, setupKernel } from "../utils";
 import { PythonExecutionError } from "../errors/kernel-errors";
+import { waitForKernelToBePrepared } from "../kernel/kernel-preparation";
 
 type Slot = (sender: unknown, args: unknown) => unknown;
 
@@ -77,6 +78,44 @@ describe("setupKernel", () => {
     await expect(
       setupKernel(sessionContext, () => Promise.reject(error)),
     ).rejects.toBe(error);
+  });
+
+  it("marks the kernel as prepared once the setup succeeds", async () => {
+    const kernel = createKernel();
+    const { sessionContext } = createSessionContext(kernel);
+    const waiting = waitForKernelToBePrepared(kernel);
+
+    await setupKernel(sessionContext, () => Promise.resolve());
+
+    await expect(waiting).resolves.toBeUndefined();
+  });
+
+  it("lets those waiting for the kernel fail if the setup fails", async () => {
+    const kernel = createKernel();
+    const { sessionContext } = createSessionContext(kernel);
+    const error = new Error("setup failed");
+
+    await setupKernel(sessionContext, () => Promise.reject(error)).catch(
+      () => {},
+    );
+
+    await expect(waitForKernelToBePrepared(kernel)).rejects.toBe(error);
+  });
+
+  it("records the outcome of the setup of a replacement kernel", async () => {
+    const { sessionContext, slots } = createSessionContext(createKernel());
+    const error = new Error("setup failed");
+    const setup = jest
+      .fn<Promise<void>, [IKernelConnection]>()
+      .mockResolvedValueOnce(undefined)
+      .mockRejectedValueOnce(error);
+
+    await setupKernel(sessionContext, setup);
+
+    const replacement = createKernel();
+    [...slots][0](sessionContext, { newValue: replacement });
+
+    await expect(waitForKernelToBePrepared(replacement)).rejects.toBe(error);
   });
 
   it("reports a failing setup of a replacement kernel instead of leaving an unhandled rejection", async () => {

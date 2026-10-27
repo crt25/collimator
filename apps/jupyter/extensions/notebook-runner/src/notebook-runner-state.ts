@@ -8,11 +8,7 @@ import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { KernelMessage } from "@jupyterlab/services";
 import { setupKernel, executePythonInKernel } from "./utils";
-import {
-  resetKernelPreparation,
-  setKernelIsPrepared,
-  waitForKernelToBePrepared,
-} from "./kernel/kernel-preparation";
+import { waitForKernelToBePrepared } from "./kernel/kernel-preparation";
 import { installNbConvert, installOtter } from "./packages";
 import { OtterKernelPreparationError } from "./errors/otter-errors";
 
@@ -213,13 +209,11 @@ export class NotebookRunnerState {
   }
 
   /**
-   * Sets up the given kernel to run Otter. Everything that waits for the kernel
-   * (see getOtterKernel) is notified about the outcome, also for kernels that
-   * replace the initial one or are restarted.
+   * Sets up the given kernel to run Otter. setupKernel records the outcome on
+   * the kernel, so everything that waits for it (see getOtterKernel) fails with
+   * an {@link OtterKernelPreparationError} if it could not be prepared.
    */
   private async setupOtterKernel(kernel: IKernelConnection): Promise<void> {
-    resetKernelPreparation(kernel);
-
     try {
       console.debug(
         `${logModule} Kernel is ready:`,
@@ -230,12 +224,7 @@ export class NotebookRunnerState {
 
       await this.prepareOtterKernel(kernel);
     } catch (error) {
-      // Let everything that waits for this kernel fail instead of waiting for
-      // a kernel that will never be prepared.
-      const failure = new OtterKernelPreparationError(1, error);
-      setKernelIsPrepared(kernel, false, failure);
-
-      throw failure;
+      throw new OtterKernelPreparationError(1, error);
     }
   }
 
@@ -265,7 +254,6 @@ from otter.run import main as run
     });
 
     console.debug(`${logModule} Otter Grader is ready to be used!`, kernel);
-    setKernelIsPrepared(kernel);
   }
 
   public async restartOtterKernel(): Promise<void> {
