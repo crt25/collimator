@@ -172,18 +172,6 @@ describe("NotebookRunnerState", () => {
     expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
   });
 
-  it("retries the preparation if it fails temporarily", async () => {
-    mockedInstallOtter.mockRejectedValueOnce(temporaryFailure);
-
-    const state = createState();
-
-    const kernel = await state.getOtterKernel();
-
-    expect(MockedSessionContext.instances).toHaveLength(1);
-    expect(mockedInstallOtter).toHaveBeenCalledTimes(2);
-    expect(kernel).toBe(MockedSessionContext.instances[0].session?.kernel);
-  });
-
   it("retries with a fresh session if the session cannot be initialized", async () => {
     jest
       .spyOn(MockedSessionContext.prototype, "initialize")
@@ -207,7 +195,7 @@ describe("NotebookRunnerState", () => {
     ).toBe(true);
   });
 
-  it("gives up right away if the preparation would fail again", async () => {
+  it("gives up if the preparation fails", async () => {
     mockedInstallOtter.mockRejectedValue(packagingConflict);
 
     const state = createState();
@@ -229,7 +217,7 @@ describe("NotebookRunnerState", () => {
     await expect(state.getOtterKernel()).rejects.toBe(error);
   });
 
-  it("rejects instead of hanging if the preparation keeps failing", async () => {
+  it("does not retry a failed preparation", async () => {
     mockedInstallOtter.mockRejectedValue(temporaryFailure);
 
     const state = createState();
@@ -239,12 +227,9 @@ describe("NotebookRunnerState", () => {
     expect(error).toBeInstanceOf(OtterKernelPreparationError);
     expect(error.cause).toBe(temporaryFailure);
 
-    // gave up after a bounded number of attempts and cleaned up
-    expect(error.attempts).toBeGreaterThan(1);
-    expect(mockedInstallOtter).toHaveBeenCalledTimes(error.attempts);
-    expect(
-      MockedSessionContext.instances.every((context) => context.isDisposed),
-    ).toBe(true);
+    expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
+    expect(MockedSessionContext.instances).toHaveLength(1);
+    expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
   });
 
   it("does not need anyone to be waiting when the preparation fails", async () => {
@@ -296,16 +281,13 @@ describe("NotebookRunnerState", () => {
       expect(error.cause).toBe(packagingConflict);
     });
 
-    it("retries the preparation if it fails temporarily", async () => {
-      mockedInstallOtter
-        .mockResolvedValueOnce(undefined)
-        .mockRejectedValueOnce(temporaryFailure);
+    it("provides the replacement once it is prepared", async () => {
       const state = createState();
 
       const replacement = await replaceKernel(state);
 
       await expect(state.getOtterKernel()).resolves.toBe(replacement);
-      expect(mockedInstallOtter).toHaveBeenCalledTimes(3);
+      expect(mockedInstallOtter).toHaveBeenCalledTimes(2);
     });
   });
 

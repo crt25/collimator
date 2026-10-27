@@ -16,25 +16,8 @@ import {
 } from "./utils";
 import { installNbConvert, installOtter } from "./packages";
 import { OtterKernelPreparationError } from "./errors/otter-errors";
-import { PythonExecutionError } from "./errors/kernel-errors";
 
 const logModule = "[Jupyter][notebook-runner-state]";
-
-/**
- * Python exceptions that are raised again if preparing the kernel is retried,
- * e.g. micropip failing to resolve a version conflict ("Requested ..., but ...
- * is already installed") or to find a compatible wheel.
- */
-const permanentPreparationErrors = [
-  "ValueError",
-  "ImportError",
-  "ModuleNotFoundError",
-  "SyntaxError",
-];
-
-const isPermanentPreparationFailure = (error: unknown): boolean =>
-  error instanceof PythonExecutionError &&
-  permanentPreparationErrors.includes(error.ename);
 
 /**
  * A listener that is called when a comm message is received from the kernel.
@@ -56,12 +39,6 @@ export class NotebookRunnerState {
    * saving a task - hanging.
    */
   private static maxInitAttempts = 3;
-
-  /**
-   * How often preparing a kernel is attempted before giving up. Failures that
-   * would only happen again (see isPermanentPreparationFailure) are not retried.
-   */
-  private static maxPrepareAttempts = 3;
 
   private _resolveOtterSessionContext: (value: SessionContext) => void =
     () => {};
@@ -161,8 +138,7 @@ export class NotebookRunnerState {
         await isDisposed;
       }
 
-      // Preparing the kernel has already been retried (see setupOtterKernel),
-      // a fresh session would fail the same way.
+      // Installing the packages is deterministic, a fresh session would fail the same way.
       const isPreparationFailure = e instanceof OtterKernelPreparationError;
 
       if (
@@ -216,15 +192,12 @@ export class NotebookRunnerState {
   }
 
   /**
-   * Sets up the given kernel to run Otter, retrying failures that may be
-   * temporary (e.g. a failed download). Everything that waits for the kernel
+   * Sets up the given kernel to run Otter. Everything that waits for the kernel
    * (see getOtterKernel) is notified about the outcome, also for kernels that
    * replace the initial one or are restarted.
    */
   private async setupOtterKernel(kernel: IKernelConnection): Promise<void> {
     resetKernelPreparation(kernel);
-
-    let attempt = 0;
 
     try {
       console.debug(
@@ -234,34 +207,11 @@ export class NotebookRunnerState {
       );
       this.registerCommTarget(kernel);
 
-      for (;;) {
-        attempt++;
-
-        try {
-          await this.prepareOtterKernel(kernel);
-          return;
-        } catch (error) {
-          if (
-            attempt >= NotebookRunnerState.maxPrepareAttempts ||
-            isPermanentPreparationFailure(error)
-          ) {
-            throw error;
-          }
-
-          console.error(
-            `${logModule} Error preparing the otter kernel (attempt ${attempt}/${NotebookRunnerState.maxPrepareAttempts}):`,
-            error,
-            ". Retrying...",
-          );
-        }
-      }
+      await this.prepareOtterKernel(kernel);
     } catch (error) {
       // Let everything that waits for this kernel fail instead of waiting for
       // a kernel that will never be prepared.
-      const failure = new OtterKernelPreparationError(
-        Math.max(attempt, 1),
-        error,
-      );
+      const failure = new OtterKernelPreparationError(1, error);
       setKernelIsPrepared(kernel, false, failure);
 
       throw failure;
