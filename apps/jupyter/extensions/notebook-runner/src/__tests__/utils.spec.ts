@@ -14,8 +14,13 @@ const createKernel = (): IKernelConnection =>
 
 const createSessionContext = (
   kernel: IKernelConnection,
-): { sessionContext: ISessionContext; slots: Set<Slot> } => {
+): {
+  sessionContext: ISessionContext;
+  slots: Set<Slot>;
+  statusSlots: Set<Slot>;
+} => {
   const slots = new Set<Slot>();
+  const statusSlots = new Set<Slot>();
 
   const sessionContext = {
     ready: Promise.resolve(),
@@ -30,9 +35,15 @@ const createSessionContext = (
         return true;
       },
     },
+    statusChanged: {
+      connect: (slot: Slot): boolean => {
+        statusSlots.add(slot);
+        return true;
+      },
+    },
   } as unknown as ISessionContext;
 
-  return { sessionContext, slots };
+  return { sessionContext, slots, statusSlots };
 };
 
 describe("executePythonInKernel", () => {
@@ -100,6 +111,21 @@ describe("setupKernel", () => {
     );
 
     await expect(waitForKernelToBePrepared(kernel)).rejects.toBe(error);
+  });
+
+  it("stops reporting the kernel as prepared as soon as it restarts", async () => {
+    const kernel = createKernel();
+    const { sessionContext, statusSlots } = createSessionContext(kernel);
+
+    await setupKernel(sessionContext, () => Promise.resolve());
+
+    [...statusSlots][0](sessionContext, "restarting");
+
+    const prepared = jest.fn();
+    waitForKernelToBePrepared(kernel).then(prepared);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(prepared).not.toHaveBeenCalled();
   });
 
   it("records the outcome of the setup of a replacement kernel", async () => {

@@ -26,6 +26,7 @@ interface MockSignal {
 
 interface MockSessionContextInstance {
   kernelChanged: MockSignal;
+  statusChanged: MockSignal;
   isDisposed: boolean;
   options: { kernelPreference?: { shutdownOnDispose?: boolean } };
   session: { kernel: MockKernel } | null;
@@ -85,6 +86,7 @@ jest.mock("@jupyterlab/apputils", () => {
     }
 
     readonly kernelChanged = createSignal();
+    readonly statusChanged = createSignal();
     readonly disposed = createSignal();
     readonly ready = Promise.resolve();
 
@@ -110,7 +112,11 @@ jest.mock("@jupyterlab/apputils", () => {
     }
 
     // like the real thing, a restart signals the same kernel connection again
+    // once it is done
     async restartKernel(): Promise<void> {
+      this.statusChanged.emit("restarting");
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+
       this.kernelChanged.emit({
         oldValue: this.session?.kernel,
         newValue: this.session?.kernel,
@@ -311,6 +317,28 @@ describe("NotebookRunnerState", () => {
   });
 
   describe("after the kernel was restarted", () => {
+    it("does not provide the kernel while it is being restarted", async () => {
+      const state = createState();
+      await state.getOtterKernel();
+
+      let restarted = false;
+      const restarting = state.restartOtterKernel().then(() => {
+        restarted = true;
+      });
+
+      // asked for while the restart is still in progress
+      const kernel = state.getOtterKernel().then((kernel) => {
+        expect(restarted).toBe(true);
+        return kernel;
+      });
+
+      await restarting;
+      await expect(kernel).resolves.toBe(
+        MockedSessionContext.instances[0].session?.kernel,
+      );
+      expect(mockedInstallOtter).toHaveBeenCalledTimes(2);
+    });
+
     it("does not provide the kernel if it could not be prepared again", async () => {
       mockedInstallOtter
         .mockResolvedValueOnce(undefined)

@@ -1,6 +1,9 @@
 import { ISessionContext } from "@jupyterlab/apputils";
 import { IChangedArgs } from "@jupyterlab/coreutils";
-import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
+import {
+  IKernelConnection,
+  Status,
+} from "@jupyterlab/services/lib/kernel/kernel";
 import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
@@ -144,6 +147,19 @@ export const setupKernel = async (
   };
 
   sessionContext.kernelChanged.connect(restartListener);
+
+  // A restart keeps the kernel connection and only signals it again once the
+  // restart is done. Reset its preparation as soon as the restart starts so
+  // that nobody is handed the kernel before it is prepared again.
+  const handleStatusChanged = (_: ISessionContext, status: Status): void => {
+    const kernel = sessionContext.session?.kernel;
+
+    if (kernel && (status === "restarting" || status === "autorestarting")) {
+      resetKernelPreparation(kernel);
+    }
+  };
+
+  sessionContext.statusChanged.connect(handleStatusChanged);
 };
 
 /**
