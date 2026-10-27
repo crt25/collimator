@@ -46,26 +46,13 @@ export const executePythonInKernel = async (parameters: {
 };
 
 /**
- * Runs `setup` on the kernel of the session and on every kernel that replaces
- * it or is restarted. The outcome of each setup is recorded on the kernel, so
- * callers can wait for it with `waitForKernelToBePrepared`.
+ * Resolves with the kernel of the session once it has one.
+ * This is a separate function so that the slots that setupKernel keeps connected
+ * for the lifetime of the session do not keep the initial kernel alive.
  */
-export const setupKernel = async (
+const waitForKernel = async (
   sessionContext: ISessionContext,
-  setup: (kernel: IKernelConnection) => Promise<void>,
-): Promise<void> => {
-  const prepare = async (kernel: IKernelConnection): Promise<void> => {
-    resetKernelPreparation(kernel);
-
-    try {
-      await setup(kernel);
-      setKernelIsPrepared(kernel);
-    } catch (error) {
-      setKernelIsPrepared(kernel, false, error);
-      throw error;
-    }
-  };
-
+): Promise<IKernelConnection> => {
   console.debug(`${logModule} Waiting for session context to be ready...`);
   await sessionContext.ready;
 
@@ -87,6 +74,32 @@ export const setupKernel = async (
       }
     });
   }
+
+  return kernel;
+};
+
+/**
+ * Runs `setup` on the kernel of the session and on every kernel that replaces
+ * it or is restarted. The outcome of each setup is recorded on the kernel, so
+ * callers can wait for it with `waitForKernelToBePrepared`.
+ */
+export const setupKernel = async (
+  sessionContext: ISessionContext,
+  setup: (kernel: IKernelConnection) => Promise<void>,
+): Promise<void> => {
+  const prepare = async (kernel: IKernelConnection): Promise<void> => {
+    resetKernelPreparation(kernel);
+
+    try {
+      await setup(kernel);
+      setKernelIsPrepared(kernel);
+    } catch (error) {
+      setKernelIsPrepared(kernel, false, error);
+      throw error;
+    }
+  };
+
+  const kernel = await waitForKernel(sessionContext);
 
   await kernel.info;
   await prepare(kernel);
