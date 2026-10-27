@@ -40,6 +40,13 @@ export class NotebookRunnerState {
    */
   private static maxInitAttempts = 3;
 
+  /**
+   * How long to wait before re-creating the otter session, multiplied by the
+   * number of failed attempts. Retrying right away would likely hit the same
+   * temporary problem (e.g. a failed download).
+   */
+  private static initRetryDelayMs = 500;
+
   private _resolveOtterSessionContext: (value: SessionContext) => void =
     () => {};
   private _rejectOtterSessionContext: (reason: unknown) => void = () => {};
@@ -120,6 +127,10 @@ export class NotebookRunnerState {
           );
           return;
         }
+
+        await new Promise((resolve) =>
+          setTimeout(resolve, NotebookRunnerState.initRetryDelayMs * attempt),
+        );
       }
     }
   }
