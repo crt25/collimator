@@ -26,10 +26,9 @@ let _setPackagesReady: () => void = () => {};
 let _setPackagesFailed: (error: unknown) => void = () => {};
 
 /**
- * this resolves when the student task notebook is ready to run cells against.
- * this exists because the install runs asynchronously in the background as
- * soon as the panel opens, but the user can click 'run all' at any point
- * during that window.
+ * this resolves when the student task notebook is ready to run cells against
+ * and drives the loading state of the page. running cells waits for the
+ * kernel of its own notebook instead (see waitForKernelToBePrepared).
  */
 const _packagesReady = new Promise<void>((resolve, reject) => {
   _setPackagesReady = resolve;
@@ -63,52 +62,45 @@ const autoInstallPackages =
       }
     });
 
-    try {
-      console.debug(`${logModule} Installing packages...`, kernel.id);
-      await installOtter(kernel);
-      console.debug(`${logModule} Finished installing packages`, kernel.id);
+    console.debug(`${logModule} Installing packages...`, kernel.id);
+    await installOtter(kernel);
+    console.debug(`${logModule} Finished installing packages`, kernel.id);
 
-      const isStudentNotebook =
-        // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
-        // the two checks here.
-        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
-        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
+    const isStudentNotebook =
+      // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
+      // the two checks here.
+      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
+      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
 
-      if (isStudentNotebook) {
-        console.debug(
-          `${logModule} Opened student notebook - copying notebook to the virtual filesystem to make tests available.`,
-        );
+    if (isStudentNotebook) {
+      console.debug(
+        `${logModule} Opened student notebook - copying notebook to the virtual filesystem to make tests available.`,
+      );
 
-        let notebook: Contents.IModel | null = null;
-        try {
-          notebook = await contentsManager.get(notebookPath, { content: true });
-        } catch (error) {
-          throw new Error(
-            `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
-          );
-        }
-
-        console.debug(
-          `${logModule} Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
-          kernel.id,
-        );
-
-        await writeJsonToVirtualFilesystem(
-          kernel,
-          EmbeddedPythonCallbacks.studentTaskLocation,
-          notebook.content,
-          studentWorkingDirectory,
-        );
-        console.debug(
-          `${logModule} Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
-          kernel.id,
+      let notebook: Contents.IModel | null = null;
+      try {
+        notebook = await contentsManager.get(notebookPath, { content: true });
+      } catch (error) {
+        throw new Error(
+          `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
         );
       }
 
-      _setPackagesReady();
-    } catch (error) {
-      _setPackagesFailed(error);
-      throw error;
+      console.debug(
+        `${logModule} Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+        kernel.id,
+      );
+
+      await writeJsonToVirtualFilesystem(
+        kernel,
+        EmbeddedPythonCallbacks.studentTaskLocation,
+        notebook.content,
+        studentWorkingDirectory,
+      );
+      console.debug(
+        `${logModule} Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+        kernel.id,
+      );
     }
   };
 
@@ -144,7 +136,10 @@ const trackSession = async (
   return setupKernel(
     sessionContext,
     autoInstallPackages(contentsManager, notebookPath),
-  );
+  ).then(_setPackagesReady, (error) => {
+    _setPackagesFailed(error);
+    throw error;
+  });
 };
 
 /**
