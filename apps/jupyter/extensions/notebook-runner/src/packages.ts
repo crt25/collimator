@@ -26,9 +26,10 @@ let _setPackagesReady: () => void = () => {};
 let _setPackagesFailed: (error: unknown) => void = () => {};
 
 /**
- * this resolves when the student task notebook is ready to run cells against
- * and drives the loading state of the page. running cells waits for the
- * kernel of its own notebook instead (see waitForKernelToBePrepared).
+ * this resolves when the student task notebook is ready to run cells against.
+ * this exists because the install runs asynchronously in the background as
+ * soon as the panel opens, but the user can click 'run all' at any point
+ * during that window.
  */
 const _packagesReady = new Promise<void>((resolve, reject) => {
   _setPackagesReady = resolve;

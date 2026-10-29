@@ -2,7 +2,7 @@ import { JupyterFrontEnd } from "@jupyterlab/application";
 import { INotebookTracker, NotebookActions } from "@jupyterlab/notebook";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { runAllCellsCommand } from "../command";
-import { waitForKernelToBePrepared } from "../kernel/kernel-preparation";
+import { waitForPackagesReady } from "../packages";
 import { sendMessage } from "../send-message";
 import { messages } from "../i18n/messages";
 import { formatMessage } from "../i18n/intl";
@@ -31,15 +31,7 @@ export const registerRunAllCellsCommand = (
       );
 
       try {
-        const { sessionContext } = currentNotebook;
-        await sessionContext.ready;
-
-        const kernel = sessionContext.session?.kernel;
-        if (!kernel) {
-          throw new Error("The notebook has no kernel to run cells in");
-        }
-
-        await waitForKernelToBePrepared(kernel);
+        await waitForPackagesReady();
       } catch (error) {
         console.error(
           `${logModule} Cannot run cells, package installation failed:`,
