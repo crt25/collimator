@@ -210,7 +210,7 @@ describe("NotebookRunnerState", () => {
     });
   });
 
-  it("shuts the kernel of a disposed session down", async () => {
+  it("creates the session so that disposing it shuts its kernel down", async () => {
     await createState().getOtterKernel();
 
     expect(
