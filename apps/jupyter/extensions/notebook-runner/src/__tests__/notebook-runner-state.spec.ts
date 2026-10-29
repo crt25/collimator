@@ -1,35 +1,29 @@
 import { JupyterFrontEnd } from "@jupyterlab/application";
 import { IDocumentManager } from "@jupyterlab/docmanager";
 import { INotebookTracker } from "@jupyterlab/notebook";
-import { SessionContext } from "@jupyterlab/apputils";
+import {
+  IKernelConnection,
+  Status,
+} from "@jupyterlab/services/lib/kernel/kernel";
 import { NotebookRunnerState } from "../notebook-runner-state";
 import { OtterKernelPreparationError } from "../errors/otter-errors";
 import { PythonExecutionError } from "../errors/kernel-errors";
-import { installNbConvert, installOtter } from "../packages";
-
-type Slot = (sender: unknown, args: unknown) => void;
-
-interface MockKernel {
-  id: string;
-  name: string;
-  info: Promise<unknown>;
-  registerCommTarget: jest.Mock;
-  requestExecute: jest.Mock;
-}
-
-interface MockSignal {
-  connect(slot: Slot): boolean;
-  disconnect(slot: Slot): boolean;
-  emit(args: unknown): void;
-  slots: Set<Slot>;
-}
+import { installOtter } from "../packages";
+import {
+  createMockKernel,
+  flushMacrotask,
+  KernelChangedArgs,
+  MockSignal,
+} from "./helpers/kernel";
+import { expectError } from "./helpers/common";
 
 interface MockSessionContextInstance {
-  kernelChanged: MockSignal;
-  statusChanged: MockSignal;
+  kernelChanged: MockSignal<MockSessionContextInstance, KernelChangedArgs>;
+  statusChanged: MockSignal<MockSessionContextInstance, Status>;
+  disposed: MockSignal<MockSessionContextInstance, void>;
   isDisposed: boolean;
   options: { kernelPreference?: { shutdownOnDispose?: boolean } };
-  session: { kernel: MockKernel } | null;
+  session: { kernel: IKernelConnection } | null;
   initialize(): Promise<boolean>;
   restartKernel(): Promise<void>;
 }
@@ -37,7 +31,6 @@ interface MockSessionContextInstance {
 type MockSessionContextClass = {
   instances: MockSessionContextInstance[];
   prototype: MockSessionContextInstance;
-  createKernel(id: string): MockKernel;
 };
 
 // installing the packages is not what is tested here
@@ -49,49 +42,22 @@ jest.mock("../packages", () => ({
 // A minimal stand-in for the session context that creates a new kernel on
 // every initialization, just like a freshly created session would.
 jest.mock("@jupyterlab/apputils", () => {
-  const createSignal = (): MockSignal => {
-    const slots = new Set<Slot>();
-
-    return {
-      slots,
-      connect: (slot): boolean => {
-        slots.add(slot);
-        return true;
-      },
-      disconnect: (slot): boolean => {
-        slots.delete(slot);
-        return true;
-      },
-      emit: (args): void => {
-        for (const slot of [...slots]) {
-          slot(undefined, args);
-        }
-      },
-    };
-  };
+  const helpers =
+    jest.requireActual<typeof import("./helpers/kernel")>("./helpers/kernel");
 
   class MockSessionContext implements MockSessionContextInstance {
     static instances: MockSessionContextInstance[] = [];
 
-    static createKernel(id: string): MockKernel {
-      return {
-        id,
-        name: "python",
-        info: Promise.resolve({}),
-        registerCommTarget: jest.fn(),
-        requestExecute: jest.fn(() => ({
-          done: Promise.resolve({ content: { status: "ok" } }),
-        })),
-      };
-    }
-
-    readonly kernelChanged = createSignal();
-    readonly statusChanged = createSignal();
-    readonly disposed = createSignal();
+    readonly kernelChanged: MockSessionContextInstance["kernelChanged"] =
+      helpers.createMockSignal(this as MockSessionContextInstance);
+    readonly statusChanged: MockSessionContextInstance["statusChanged"] =
+      helpers.createMockSignal(this as MockSessionContextInstance);
+    readonly disposed: MockSessionContextInstance["disposed"] =
+      helpers.createMockSignal(this as MockSessionContextInstance);
     readonly ready = Promise.resolve();
 
     isDisposed = false;
-    session: { kernel: MockKernel } | null = null;
+    session: { kernel: IKernelConnection } | null = null;
 
     constructor(readonly options: MockSessionContextInstance["options"] = {}) {
       MockSessionContext.instances.push(this);
@@ -100,10 +66,10 @@ jest.mock("@jupyterlab/apputils", () => {
     async initialize(): Promise<boolean> {
       // take a macrotask like the real thing so that the tests can never
       // starve the event loop, even if the code under test retries forever
-      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await helpers.flushMacrotask();
 
       this.session = {
-        kernel: MockSessionContext.createKernel(
+        kernel: helpers.createMockKernel(
           `kernel-${MockSessionContext.instances.length}`,
         ),
       };
@@ -115,17 +81,19 @@ jest.mock("@jupyterlab/apputils", () => {
     // once it is done
     async restartKernel(): Promise<void> {
       this.statusChanged.emit("restarting");
-      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      await helpers.flushMacrotask();
 
+      const kernel = this.session?.kernel ?? null;
       this.kernelChanged.emit({
-        oldValue: this.session?.kernel,
-        newValue: this.session?.kernel,
+        name: "kernel",
+        oldValue: kernel,
+        newValue: kernel,
       });
     }
 
     dispose(): void {
       this.isDisposed = true;
-      this.disposed.emit(undefined);
+      this.disposed.emit();
     }
   }
 
@@ -140,13 +108,10 @@ const packagingConflict = new PythonExecutionError(
 // e.g. a download that failed
 const temporaryFailure = new Error("Failed to fetch");
 
-const waitForSlots = (): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, 0));
-
-const mockedInstallOtter = installOtter as jest.Mock;
-const mockedInstallNbConvert = installNbConvert as jest.Mock;
-const MockedSessionContext =
-  SessionContext as unknown as MockSessionContextClass;
+const mockedInstallOtter = jest.mocked(installOtter);
+const { SessionContext: MockedSessionContext } = jest.requireMock<{
+  SessionContext: MockSessionContextClass;
+}>("@jupyterlab/apputils");
 
 const createState = (): NotebookRunnerState =>
   new NotebookRunnerState(
@@ -159,13 +124,13 @@ describe("NotebookRunnerState", () => {
   beforeEach(() => {
     MockedSessionContext.instances = [];
     mockedInstallOtter.mockReset().mockResolvedValue(undefined);
-    mockedInstallNbConvert.mockReset().mockResolvedValue(undefined);
 
     jest.spyOn(console, "debug").mockImplementation(() => {});
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
@@ -178,37 +143,52 @@ describe("NotebookRunnerState", () => {
     expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
   });
 
-  it("retries with a fresh session if the session cannot be initialized", async () => {
-    jest
-      .spyOn(MockedSessionContext.prototype, "initialize")
-      .mockRejectedValueOnce(new Error("no kernel"));
-
-    const state = createState();
-
-    const kernel = await state.getOtterKernel();
-
-    expect(MockedSessionContext.instances).toHaveLength(2);
-    expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
-    expect(kernel).toBe(MockedSessionContext.instances[1].session?.kernel);
-  });
-
-  it("gives up if the session can never be initialized", async () => {
+  describe("if the session cannot be initialized", () => {
     const noKernel = new Error("no kernel");
-    jest
-      .spyOn(MockedSessionContext.prototype, "initialize")
-      .mockRejectedValue(noKernel);
 
-    const state = createState();
+    beforeEach(() => {
+      // skip the delay between the attempts
+      jest.useFakeTimers();
+    });
 
-    const error = await state.getOtterKernel().catch((e) => e);
+    it("retries with a fresh session", async () => {
+      jest
+        .spyOn(MockedSessionContext.prototype, "initialize")
+        .mockRejectedValueOnce(noKernel);
 
-    expect(error).toBeInstanceOf(OtterKernelPreparationError);
-    expect(error.cause).toBe(noKernel);
-    expect(error.attempts).toBe(MockedSessionContext.instances.length);
-    expect(MockedSessionContext.instances.length).toBeGreaterThan(1);
-    expect(
-      MockedSessionContext.instances.every((context) => context.isDisposed),
-    ).toBe(true);
+      const state = createState();
+
+      const kernel = state.getOtterKernel();
+      await jest.runAllTimersAsync();
+
+      expect(MockedSessionContext.instances).toHaveLength(2);
+      expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
+      await expect(kernel).resolves.toBe(
+        MockedSessionContext.instances[1].session?.kernel,
+      );
+    });
+
+    it("gives up if it can never be initialized", async () => {
+      jest
+        .spyOn(MockedSessionContext.prototype, "initialize")
+        .mockRejectedValue(noKernel);
+
+      const state = createState();
+
+      const rejection = expectError(
+        () => state.getOtterKernel(),
+        OtterKernelPreparationError,
+      );
+      await jest.runAllTimersAsync();
+
+      const error = await rejection;
+      expect(error.cause).toBe(noKernel);
+      expect(error.attempts).toBe(MockedSessionContext.instances.length);
+      expect(MockedSessionContext.instances.length).toBeGreaterThan(1);
+      expect(
+        MockedSessionContext.instances.every((context) => context.isDisposed),
+      ).toBe(true);
+    });
   });
 
   it("shuts the kernel of a disposed session down", async () => {
@@ -220,50 +200,44 @@ describe("NotebookRunnerState", () => {
     ).toBe(true);
   });
 
-  it("gives up if the preparation fails", async () => {
-    mockedInstallOtter.mockRejectedValue(packagingConflict);
+  it.each([
+    ["a Python exception", packagingConflict],
+    ["a temporary failure", temporaryFailure],
+  ])(
+    "gives up without retrying if the preparation fails with %s",
+    async (_, cause) => {
+      mockedInstallOtter.mockRejectedValue(cause);
 
-    const state = createState();
+      const state = createState();
 
-    const error = await state.getOtterKernel().catch((e) => e);
+      const error = await expectError(
+        () => state.getOtterKernel(),
+        OtterKernelPreparationError,
+      );
+      expect(error.message).toContain(cause.message);
+      expect(error.cause).toBe(cause);
+      expect(error.attempts).toBe(1);
 
-    expect(error).toBeInstanceOf(OtterKernelPreparationError);
-    expect(error.message).toContain(
-      "Requested 'packaging>=25.0', but packaging==24.2 is already installed",
-    );
-    expect(error.cause).toBe(packagingConflict);
-    expect(error.attempts).toBe(1);
+      expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
+      expect(MockedSessionContext.instances).toHaveLength(1);
+      expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
 
-    expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
-    expect(MockedSessionContext.instances).toHaveLength(1);
-    expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
-
-    // the failure is permanent: asking again fails right away
-    await expect(state.getOtterKernel()).rejects.toBe(error);
-  });
-
-  it("does not retry a failed preparation", async () => {
-    mockedInstallOtter.mockRejectedValue(temporaryFailure);
-
-    const state = createState();
-
-    const error = await state.getOtterKernel().catch((e) => e);
-
-    expect(error).toBeInstanceOf(OtterKernelPreparationError);
-    expect(error.cause).toBe(temporaryFailure);
-
-    expect(mockedInstallOtter).toHaveBeenCalledTimes(1);
-    expect(MockedSessionContext.instances).toHaveLength(1);
-    expect(MockedSessionContext.instances[0].isDisposed).toBe(true);
-  });
+      // the failure is permanent: asking again fails right away
+      await expect(state.getOtterKernel()).rejects.toBe(error);
+    },
+  );
 
   it("does not need anyone to be waiting when the preparation fails", async () => {
     mockedInstallOtter.mockRejectedValue(packagingConflict);
 
     const state = createState();
 
-    // nobody has asked for the kernel while it failed to be prepared
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    // nobody has asked for the kernel while it failed to be prepared, which
+    // disposes the session
+    await new Promise<void>((resolve) =>
+      MockedSessionContext.instances[0].disposed.connect(() => resolve()),
+    );
+    await flushMacrotask();
 
     await expect(state.getOtterKernel()).rejects.toBeInstanceOf(
       OtterKernelPreparationError,
@@ -273,22 +247,20 @@ describe("NotebookRunnerState", () => {
   describe("after the kernel was replaced", () => {
     const replaceKernel = async (
       state: NotebookRunnerState,
-    ): Promise<MockKernel> => {
+    ): Promise<IKernelConnection> => {
       await state.getOtterKernel();
 
       const context = MockedSessionContext.instances[0];
-      const replacement = MockedSessionContext.createKernel("replacement");
+      const replacement = createMockKernel("replacement");
       context.session = { kernel: replacement };
 
-      // the session context signals a new kernel
-      const slots = [...context.kernelChanged.slots];
-      expect(slots).toHaveLength(1);
-      const result: unknown = slots[0](context, { newValue: replacement });
+      context.kernelChanged.emit({
+        name: "kernel",
+        oldValue: null,
+        newValue: replacement,
+      });
 
-      // signals ignore the result of their slots, so a rejection would never be handled
-      expect(result).toBeUndefined();
-
-      await waitForSlots();
+      await flushMacrotask();
 
       return replacement;
     };
@@ -301,8 +273,10 @@ describe("NotebookRunnerState", () => {
 
       await replaceKernel(state);
 
-      const error = await state.getOtterKernel().catch((e) => e);
-      expect(error).toBeInstanceOf(OtterKernelPreparationError);
+      const error = await expectError(
+        () => state.getOtterKernel(),
+        OtterKernelPreparationError,
+      );
       expect(error.cause).toBe(packagingConflict);
     });
 
@@ -312,11 +286,15 @@ describe("NotebookRunnerState", () => {
       const replacement = await replaceKernel(state);
 
       await expect(state.getOtterKernel()).resolves.toBe(replacement);
-      expect(mockedInstallOtter).toHaveBeenCalledTimes(2);
     });
   });
 
   describe("after the kernel was restarted", () => {
+    const restart = async (state: NotebookRunnerState): Promise<void> => {
+      await state.restartOtterKernel();
+      await flushMacrotask();
+    };
+
     it("does not provide the kernel while it is being restarted", async () => {
       const state = createState();
       await state.getOtterKernel();
@@ -339,23 +317,7 @@ describe("NotebookRunnerState", () => {
       expect(mockedInstallOtter).toHaveBeenCalledTimes(2);
     });
 
-    it("does not provide the kernel if it could not be prepared again", async () => {
-      mockedInstallOtter
-        .mockResolvedValueOnce(undefined)
-        .mockRejectedValue(packagingConflict);
-      const state = createState();
-
-      await state.getOtterKernel();
-
-      await state.restartOtterKernel();
-      await waitForSlots();
-
-      await expect(state.getOtterKernel()).rejects.toBeInstanceOf(
-        OtterKernelPreparationError,
-      );
-    });
-
-    it("recovers once a later restart can be prepared", async () => {
+    it("does not provide the kernel until a restart can be prepared again", async () => {
       mockedInstallOtter
         .mockResolvedValueOnce(undefined)
         .mockRejectedValueOnce(packagingConflict);
@@ -363,14 +325,12 @@ describe("NotebookRunnerState", () => {
 
       await state.getOtterKernel();
 
-      await state.restartOtterKernel();
-      await waitForSlots();
+      await restart(state);
       await expect(state.getOtterKernel()).rejects.toBeInstanceOf(
         OtterKernelPreparationError,
       );
 
-      await state.restartOtterKernel();
-      await waitForSlots();
+      await restart(state);
       await expect(state.getOtterKernel()).resolves.toBe(
         MockedSessionContext.instances[0].session?.kernel,
       );

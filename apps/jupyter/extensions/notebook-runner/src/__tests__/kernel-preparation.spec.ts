@@ -1,15 +1,15 @@
-import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 import {
   resetKernelPreparation,
   setKernelIsPrepared,
   waitForKernelToBePrepared,
 } from "../kernel/kernel-preparation";
+import { createMockKernel } from "./helpers/kernel";
 
-const createKernel = (): IKernelConnection => ({}) as IKernelConnection;
+const reason = new Error("installing Otter failed");
 
 describe("waitForKernelToBePrepared", () => {
   it("resolves once the kernel is prepared", async () => {
-    const kernel = createKernel();
+    const kernel = createMockKernel();
     const waiting = waitForKernelToBePrepared(kernel);
 
     setKernelIsPrepared(kernel);
@@ -18,8 +18,7 @@ describe("waitForKernelToBePrepared", () => {
   });
 
   it("rejects with the reason if the kernel could not be prepared", async () => {
-    const kernel = createKernel();
-    const reason = new Error("installing Otter failed");
+    const kernel = createMockKernel();
     const waiting = waitForKernelToBePrepared(kernel);
 
     setKernelIsPrepared(kernel, false, reason);
@@ -28,8 +27,7 @@ describe("waitForKernelToBePrepared", () => {
   });
 
   it("keeps rejecting for those who start waiting after the failure", async () => {
-    const kernel = createKernel();
-    const reason = new Error("installing Otter failed");
+    const kernel = createMockKernel();
 
     // nobody is waiting yet
     setKernelIsPrepared(kernel, false, reason);
@@ -40,8 +38,8 @@ describe("waitForKernelToBePrepared", () => {
 
 describe("resetKernelPreparation", () => {
   it("reports the outcome of the next preparation after a failed one", async () => {
-    const kernel = createKernel();
-    setKernelIsPrepared(kernel, false, new Error("installing Otter failed"));
+    const kernel = createMockKernel();
+    setKernelIsPrepared(kernel, false, reason);
 
     resetKernelPreparation(kernel);
     const waiting = waitForKernelToBePrepared(kernel);
@@ -51,8 +49,7 @@ describe("resetKernelPreparation", () => {
   });
 
   it("reports the outcome of the next preparation after a successful one", async () => {
-    const kernel = createKernel();
-    const reason = new Error("installing Otter failed");
+    const kernel = createMockKernel();
     setKernelIsPrepared(kernel);
 
     resetKernelPreparation(kernel);
@@ -62,7 +59,7 @@ describe("resetKernelPreparation", () => {
   });
 
   it("keeps those already waiting informed if nothing was reported yet", async () => {
-    const kernel = createKernel();
+    const kernel = createMockKernel();
     const waiting = waitForKernelToBePrepared(kernel);
 
     resetKernelPreparation(kernel);
