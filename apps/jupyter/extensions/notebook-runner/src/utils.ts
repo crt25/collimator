@@ -91,6 +91,7 @@ export const setupKernel = async (
     resetKernelPreparation(kernel);
 
     try {
+      await kernel.info;
       await setup(kernel);
       setKernelIsPrepared(kernel);
     } catch (error) {
@@ -101,7 +102,6 @@ export const setupKernel = async (
 
   const kernel = await waitForKernel(sessionContext);
 
-  await kernel.info;
   await prepare(kernel);
 
   const handleKernelChanged = async (
@@ -138,7 +138,6 @@ export const setupKernel = async (
     }
 
     console.debug(`${logModule} Kernel changed:`, kernel.name);
-    await kernel.info;
 
     return prepare(kernel);
   };

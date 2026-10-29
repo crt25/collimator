@@ -110,6 +110,26 @@ describe("setupKernel", () => {
       );
     });
 
+    it("records the failure if the replacement does not respond", async () => {
+      const { kernelChanged } = await setUpKernel();
+      const noInfo = new Error("kernel died");
+      const info = Promise.reject(noInfo);
+      info.catch(() => {});
+      const unresponsive = Object.assign(createMockKernel("unresponsive"), {
+        info,
+      });
+
+      kernelChanged.emit({
+        name: "kernel",
+        oldValue: null,
+        newValue: unresponsive,
+      });
+
+      await expect(waitForKernelToBePrepared(unresponsive)).rejects.toBe(
+        noInfo,
+      );
+    });
+
     it("reports a failing setup instead of leaving an unhandled rejection", async () => {
       const { sessionContext, kernelChanged } = await setUpKernel();
 
