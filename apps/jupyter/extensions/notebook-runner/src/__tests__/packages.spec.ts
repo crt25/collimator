@@ -41,7 +41,7 @@ describe("installOtter", () => {
 
     const pins: string[] = JSON.parse(constraints);
     // sphinx is the dependency whose new release broke installing Otter
-    expect(pins).toContainEqual(expect.stringMatching(/^sphinx==/));
+    expect(pins).toContain("sphinx==9.1.1");
     // names the pins that are not exact versions if there are any
     expect(pins.filter((pin) => !/^[\w.-]+==[\w.]+$/.test(pin))).toEqual([]);
   });
