@@ -122,6 +122,7 @@ const trackSession = async (
       notebookPath,
       error,
     );
+    _setPackagesFailed(error);
 
     return;
   }
