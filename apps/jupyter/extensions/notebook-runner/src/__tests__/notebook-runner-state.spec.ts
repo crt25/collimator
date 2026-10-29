@@ -189,6 +189,25 @@ describe("NotebookRunnerState", () => {
         MockedSessionContext.instances.every((context) => context.isDisposed),
       ).toBe(true);
     });
+
+    it("counts the failed sessions if the preparation fails afterwards", async () => {
+      jest
+        .spyOn(MockedSessionContext.prototype, "initialize")
+        .mockRejectedValueOnce(noKernel);
+      mockedInstallOtter.mockRejectedValue(packagingConflict);
+
+      const state = createState();
+
+      const rejection = expectError(
+        () => state.getOtterKernel(),
+        OtterKernelPreparationError,
+      );
+      await jest.runAllTimersAsync();
+
+      const error = await rejection;
+      expect(error.cause).toBe(packagingConflict);
+      expect(error.attempts).toBe(2);
+    });
   });
 
   it("shuts the kernel of a disposed session down", async () => {

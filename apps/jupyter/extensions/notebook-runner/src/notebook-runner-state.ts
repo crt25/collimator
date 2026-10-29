@@ -116,9 +116,10 @@ export class NotebookRunnerState {
           // Do not retry forever: reject so that everything waiting for the otter
           // kernel (e.g. saving a task) fails with an error instead of hanging.
           this._rejectOtterSessionContext(
-            isPreparationFailure
-              ? e
-              : new OtterKernelPreparationError(attempt, e),
+            new OtterKernelPreparationError(
+              attempt,
+              isPreparationFailure ? e.cause : e,
+            ),
           );
           return;
         }
