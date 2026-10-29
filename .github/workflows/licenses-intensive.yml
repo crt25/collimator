@@ -12,8 +12,7 @@ jobs:
   licenses:
     # Never gate refresh PRs themselves, or a failed refresh would recurse.
     if: startsWith(github.head_ref, 'licenses-refresh/') == false
-    # TODO: go back to ubuntu-latest once Playwright is upgraded, 1.60 cannot install its browsers on Ubuntu 26.04
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 4800 # the intensive scan can take a long time for large repos
 
     # Postgres is required because `task setup` runs `db:migrate:deploy`.

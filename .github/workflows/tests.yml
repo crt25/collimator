@@ -14,8 +14,7 @@ permissions:
 
 jobs:
   unit-tests:
-    # TODO: go back to ubuntu-latest once Playwright is upgraded, 1.60 cannot install its browsers on Ubuntu 26.04
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     # Postgres is required because `task setup` runs `db:migrate:deploy`.
     services: &services
@@ -100,8 +99,7 @@ jobs:
           if-no-files-found: ignore
 
   app-tests:
-    # TODO: go back to ubuntu-latest once Playwright is upgraded, 1.60 cannot install its browsers on Ubuntu 26.04
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     services: *services
     env: *job_env
 
@@ -148,8 +146,7 @@ jobs:
           if-no-files-found: ignore
 
   e2e-tests:
-    # TODO: go back to ubuntu-latest once Playwright is upgraded, 1.60 cannot install its browsers on Ubuntu 26.04
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     services: *services
     env: *job_env
 

@@ -78,8 +78,7 @@ on:
 
 jobs:
   deploy:
-    # TODO: go back to ubuntu-latest once Playwright is upgraded, 1.60 cannot install its browsers on Ubuntu 26.04
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
     permissions:
