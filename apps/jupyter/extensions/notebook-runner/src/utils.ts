@@ -15,6 +15,11 @@ import {
 
 const logModule = "[Jupyter][utils]";
 
+const restartingStatuses: ReadonlySet<Status> = new Set<Status>([
+  "restarting",
+  "autorestarting",
+]);
+
 type KernelChangedArgs = IChangedArgs<
   IKernelConnection | null,
   IKernelConnection | null,
@@ -166,7 +171,7 @@ export const setupKernel = async (
   const handleStatusChanged = (_: ISessionContext, status: Status): void => {
     const kernel = sessionContext.session?.kernel;
 
-    if (kernel && (status === "restarting" || status === "autorestarting")) {
+    if (kernel && restartingStatuses.has(status)) {
       resetKernelPreparation(kernel);
     }
   };

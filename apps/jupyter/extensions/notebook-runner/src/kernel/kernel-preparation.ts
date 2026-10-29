@@ -1,6 +1,10 @@
 import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
 
-type PreparationState = "pending" | "prepared" | "failed";
+enum PreparationState {
+  Pending = "Pending",
+  Prepared = "Prepared",
+  Failed = "Failed",
+}
 
 interface Preparation {
   state: PreparationState;
@@ -27,7 +31,7 @@ const createPreparation = (kernel: IKernelConnection): Preparation => {
   promise.catch(() => {});
 
   const preparation: Preparation = {
-    state: "pending",
+    state: PreparationState.Pending,
     promise,
     resolve,
     reject,
@@ -48,7 +52,7 @@ const getPreparation = (kernel: IKernelConnection): Preparation =>
  * waiting for it are notified about the outcome of this preparation.
  */
 export const resetKernelPreparation = (kernel: IKernelConnection): void => {
-  if (getPreparation(kernel).state !== "pending") {
+  if (getPreparation(kernel).state !== PreparationState.Pending) {
     createPreparation(kernel);
   }
 };
@@ -70,10 +74,10 @@ export const setKernelIsPrepared = (
   const preparation = getPreparation(kernel);
 
   if (isPrepared) {
-    preparation.state = "prepared";
+    preparation.state = PreparationState.Prepared;
     preparation.resolve();
   } else {
-    preparation.state = "failed";
+    preparation.state = PreparationState.Failed;
     preparation.reject(reason);
   }
 };
