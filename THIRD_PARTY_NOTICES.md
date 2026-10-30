@@ -451,6 +451,12 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/helper-plugin-utils@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/helper-remap-async-to-generator@7.25.9
 
 License: MIT
@@ -1344,6 +1350,18 @@ License: MIT
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
 ### @babel/plugin-transform-property-literals@7.27.1
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-transform-react-jsx-self@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
+### @babel/plugin-transform-react-jsx-source@7.29.7
 
 License: MIT
 
@@ -4368,21 +4386,21 @@ License: MIT
 
 - Copyright (c) 2017-present Devon Govett
 
-### @playwright/experimental-ct-core@1.62.1
+### @playwright/experimental-ct-core@1.61.1
 
 License: Apache-2.0
 
 - Portions Copyright (c) Microsoft Corporation.
 - Portions Copyright 2017 Google Inc.
 
-### @playwright/experimental-ct-react@1.62.1
+### @playwright/experimental-ct-react@1.61.1
 
 License: Apache-2.0
 
 - Portions Copyright (c) Microsoft Corporation.
 - Portions Copyright 2017 Google Inc.
 
-### @playwright/test@1.62.1
+### @playwright/test@1.61.1
 
 License: Apache-2.0
 
@@ -4580,11 +4598,11 @@ License: Apache-2.0
 
 - Copyright 2015-2024 rjsf-team
 
-### @rolldown/pluginutils@1.0.1
+### @rolldown/pluginutils@1.0.0-beta.27
 
 License: MIT
 
-- Copyright (c) 2026-present, rolldown/plugins repository contributors
+- Copyright (c) 2024-present VoidZero Inc. & Contributors
 
 ### @rollup/plugin-commonjs@28.0.1
 
@@ -6314,7 +6332,7 @@ License: BSD-3-Clause
 
 - Copyright (c) 2019, Vernier Software & Technology
 
-### @vitejs/plugin-react@6.1.2
+### @vitejs/plugin-react@4.7.0
 
 License: MIT
 
@@ -15733,7 +15751,7 @@ License: MIT
 
 - Copyright (c) 2010-202x The platformdirs developers
 
-### playwright@1.62.1
+### playwright@1.61.1
 
 License: Apache-2.0
 
@@ -15769,7 +15787,7 @@ This software contains code derived from the Puppeteer project (https://github.c
 available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/blob/master/LICENSE).
 ```
 
-### playwright-core@1.62.1
+### playwright-core@1.61.1
 
 License: Apache-2.0
 
@@ -16769,6 +16787,12 @@ License: MIT
 License: MIT
 
 - Copyright (c) 2015-present Dan Abramov
+
+### react-refresh@0.17.0
+
+License: MIT
+
+- Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### react-remove-scroll@2.7.2
 
