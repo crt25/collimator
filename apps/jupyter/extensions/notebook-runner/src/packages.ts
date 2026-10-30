@@ -162,11 +162,11 @@ const trackSessionAndReportFailure = (
   });
 };
 
-export const preInstallPackages = async (
+export const preInstallPackages = (
   _app: JupyterFrontEnd,
   contentsManager: ContentsManager,
   notebookTracker: INotebookTracker,
-): Promise<void> => {
+): void => {
   notebookTracker.forEach((panel) =>
     trackSessionAndReportFailure(contentsManager, panel),
   );
@@ -184,9 +184,7 @@ export const installPackagesWithLoadingState = async (
 ): Promise<void> => {
   await loadingStateManager.startLoading();
 
-  preInstallPackages(app, contentsManager, notebookTracker).catch((error) => {
-    console.error(`${logModule} preInstallPackages failed:`, error);
-  });
+  preInstallPackages(app, contentsManager, notebookTracker);
 
   waitForPackagesReady()
     .then(() => loadingStateManager.finishLoading(true))
