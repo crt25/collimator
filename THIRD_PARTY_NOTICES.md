@@ -451,6 +451,12 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
+### @babel/helper-plugin-utils@7.29.7
+
+License: MIT
+
+- Copyright (c) 2014-present Sebastian McKenzie and other contributors
+
 ### @babel/helper-remap-async-to-generator@7.25.9
 
 License: MIT
@@ -1349,13 +1355,13 @@ License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-react-jsx-self@7.25.9
+### @babel/plugin-transform-react-jsx-self@7.29.7
 
 License: MIT
 
 - Copyright (c) 2014-present Sebastian McKenzie and other contributors
 
-### @babel/plugin-transform-react-jsx-source@7.25.9
+### @babel/plugin-transform-react-jsx-source@7.29.7
 
 License: MIT
 
@@ -4380,21 +4386,39 @@ License: MIT
 
 - Copyright (c) 2017-present Devon Govett
 
-### @playwright/experimental-ct-core@1.60.0
+### @playwright/experimental-ct-core@1.61.1
 
 License: Apache-2.0
 
 - Portions Copyright (c) Microsoft Corporation.
 - Portions Copyright 2017 Google Inc.
 
-### @playwright/experimental-ct-react@1.60.0
+### @playwright/experimental-ct-react@1.61.1
 
 License: Apache-2.0
 
 - Portions Copyright (c) Microsoft Corporation.
 - Portions Copyright 2017 Google Inc.
 
-### @playwright/test@1.60.0
+### @playwright/test@1.61.1
+
+License: Apache-2.0
+
+- Portions Copyright (c) Microsoft Corporation.
+- Portions Copyright 2017 Google Inc.
+- Copyright (c) Microsoft Corporation
+
+NOTICE:
+
+```
+Playwright
+Copyright (c) Microsoft Corporation
+
+This software contains code derived from the Puppeteer project (https://github.com/puppeteer/puppeteer),
+available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/blob/master/LICENSE).
+```
+
+### @playwright/test@1.64.1
 
 License: Apache-2.0
 
@@ -4573,6 +4597,12 @@ License: Apache-2.0
 License: Apache-2.0
 
 - Copyright 2015-2024 rjsf-team
+
+### @rolldown/pluginutils@1.0.0-beta.27
+
+License: MIT
+
+- Copyright (c) 2024-present VoidZero Inc. & Contributors
 
 ### @rollup/plugin-commonjs@28.0.1
 
@@ -6302,7 +6332,7 @@ License: BSD-3-Clause
 
 - Copyright (c) 2019, Vernier Software & Technology
 
-### @vitejs/plugin-react@4.3.4
+### @vitejs/plugin-react@4.7.0
 
 License: MIT
 
@@ -15721,7 +15751,7 @@ License: MIT
 
 - Copyright (c) 2010-202x The platformdirs developers
 
-### playwright@1.60.0
+### playwright@1.61.1
 
 License: Apache-2.0
 
@@ -15739,7 +15769,43 @@ This software contains code derived from the Puppeteer project (https://github.c
 available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/blob/master/LICENSE).
 ```
 
-### playwright-core@1.60.0
+### playwright@1.64.1
+
+License: Apache-2.0
+
+- Portions Copyright (c) Microsoft Corporation.
+- Portions Copyright 2017 Google Inc.
+- Copyright (c) Microsoft Corporation
+
+NOTICE:
+
+```
+Playwright
+Copyright (c) Microsoft Corporation
+
+This software contains code derived from the Puppeteer project (https://github.com/puppeteer/puppeteer),
+available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/blob/master/LICENSE).
+```
+
+### playwright-core@1.61.1
+
+License: Apache-2.0
+
+- Portions Copyright (c) Microsoft Corporation.
+- Portions Copyright 2017 Google Inc.
+- Copyright (c) Microsoft Corporation
+
+NOTICE:
+
+```
+Playwright
+Copyright (c) Microsoft Corporation
+
+This software contains code derived from the Puppeteer project (https://github.com/puppeteer/puppeteer),
+available under the Apache 2.0 license (https://github.com/puppeteer/puppeteer/blob/master/LICENSE).
+```
+
+### playwright-core@1.64.1
 
 License: Apache-2.0
 
@@ -16722,11 +16788,11 @@ License: MIT
 
 - Copyright (c) 2015-present Dan Abramov
 
-### react-refresh@0.14.2
+### react-refresh@0.17.0
 
 License: MIT
 
-- Copyright (c) Facebook, Inc. and its affiliates.
+- Copyright (c) Meta Platforms, Inc. and affiliates.
 
 ### react-remove-scroll@2.7.2
 
@@ -20712,7 +20778,7 @@ No license could be determined for these packages; no license text is included:
 - libphonenumber-js/mobile/metadata@UNKNOWN — unknown license, no text included
 - librtmp1@2.4+20151223.gitfa8646d.1-2+b5 — unknown license, no text included
 - libstdc++6@14.2.0-19 — unknown license, no text included
-- node@22.23.2 — unknown license, no text included
+- node@22.23.4 — unknown license, no text included
 - node-clone@0.1.1 — unknown license, no text included
 - package@0.0.0 — unknown license, no text included
 - prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0 — unknown license, no text included
@@ -20721,7 +20787,7 @@ No license could be determined for these packages; no license text is included:
 - rxjs/operators@UNKNOWN — unknown license, no text included
 - rxjs/testing@UNKNOWN — unknown license, no text included
 - rxjs/webSocket@UNKNOWN — unknown license, no text included
-- tzdata@2026b-0+deb13u1 — unknown license, no text included
+- tzdata@2026e-0+deb13u1 — unknown license, no text included
 
 ## License texts
 

@@ -1,16 +1,30 @@
 import { ISessionContext } from "@jupyterlab/apputils";
 import { IChangedArgs } from "@jupyterlab/coreutils";
-import { IKernelConnection } from "@jupyterlab/services/lib/kernel/kernel";
+import {
+  IKernelConnection,
+  Status,
+} from "@jupyterlab/services/lib/kernel/kernel";
 import { IExecuteReplyMsg } from "@jupyterlab/services/lib/kernel/messages";
 import { FileNotFoundError } from "./errors/task-errors";
 import { AssignNotebookFormatException } from "./errors/otter-errors";
+import { PythonExecutionError } from "./errors/kernel-errors";
+import {
+  resetKernelPreparation,
+  setKernelIsPrepared,
+} from "./kernel/kernel-preparation";
 
 const logModule = "[Jupyter][utils]";
 
-const isPreparedKey = "__isPrepared";
-const preparedKey = "__prepared";
-const preparedResolveKey = "__preparedResolve";
-const preparedRejectKey = "__preparedReject";
+const restartingStatuses: ReadonlySet<Status> = new Set<Status>([
+  "restarting",
+  "autorestarting",
+]);
+
+type KernelChangedArgs = IChangedArgs<
+  IKernelConnection | null,
+  IKernelConnection | null,
+  "kernel"
+>;
 
 export const executePythonInKernel = async (parameters: {
   kernel: IKernelConnection;
@@ -30,84 +44,20 @@ export const executePythonInKernel = async (parameters: {
       throw new AssignNotebookFormatException(reply.content.evalue);
     }
 
-    throw new Error(
-      `Error executing code: ${reply.content.ename}: ${reply.content.evalue}`,
-    );
+    throw new PythonExecutionError(reply.content.ename, reply.content.evalue);
   }
 
   return reply;
 };
 
-const isPatched = (kernel: IKernelConnection): boolean => {
-  // @ts-expect-error This is a custom property
-  return typeof kernel[isPreparedKey] !== "undefined";
-};
-
-export const ensureKernelIsPatched = (kernel: IKernelConnection): void => {
-  if (isPatched(kernel)) {
-    return;
-  }
-
-  // @ts-expect-error This is a custom property
-  kernel[isPreparedKey] = false;
-
-  let resolve: () => void;
-  let reject: () => void;
-
-  // @ts-expect-error This is a custom property
-  kernel[preparedKey] = new Promise<void>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-
-  // @ts-expect-error This is a custom property
-  kernel[preparedResolveKey] = resolve;
-  // @ts-expect-error This is a custom property
-  kernel[preparedRejectKey] = reject;
-};
-
-export const isKernelPrepared = async (
-  kernel: IKernelConnection,
-): Promise<boolean> => {
-  ensureKernelIsPatched(kernel);
-
-  // @ts-expect-error This is a custom property
-  return kernel[isPreparedKey];
-};
-
-export const waitForKernelToBePrepared = async (
-  kernel: IKernelConnection,
-): Promise<void> => {
-  ensureKernelIsPatched(kernel);
-
-  // @ts-expect-error This is a custom property
-  await kernel[preparedKey];
-};
-
-export const setKernelIsPrepared = (
-  kernel: IKernelConnection,
-  isPrepared: boolean = true,
-): void => {
-  ensureKernelIsPatched(kernel);
-
-  // @ts-expect-error This is a custom property
-  kernel[isPreparedKey] = isPrepared;
-
-  if (isPrepared) {
-    // @ts-expect-error This is a custom property
-    const resolve = kernel[preparedResolveKey] as () => void;
-    resolve();
-  } else {
-    // @ts-expect-error This is a custom property
-    const reject = kernel[preparedRejectKey] as () => void;
-    reject();
-  }
-};
-
-export const setupKernel = async (
+/**
+ * Resolves with the kernel of the session once it has one.
+ * This is a separate function so that the slots that setupKernel keeps connected
+ * for the lifetime of the session do not keep the initial kernel alive.
+ */
+const waitForKernel = async (
   sessionContext: ISessionContext,
-  setup: (kernel: IKernelConnection) => Promise<void>,
-): Promise<void> => {
+): Promise<IKernelConnection> => {
   console.debug(`${logModule} Waiting for session context to be ready...`);
   await sessionContext.ready;
 
@@ -130,16 +80,38 @@ export const setupKernel = async (
     });
   }
 
-  await kernel.info;
-  await setup(kernel);
+  return kernel;
+};
 
-  const restartListener = async (
+/**
+ * Runs `setup` on the kernel of the session and on every kernel that replaces
+ * it or is restarted. The outcome of each setup is recorded on the kernel, so
+ * callers can wait for it with `waitForKernelToBePrepared`.
+ */
+export const setupKernel = async (
+  sessionContext: ISessionContext,
+  setup: (kernel: IKernelConnection) => Promise<void>,
+): Promise<void> => {
+  const prepare = async (kernel: IKernelConnection): Promise<void> => {
+    resetKernelPreparation(kernel);
+
+    try {
+      await kernel.info;
+      await setup(kernel);
+      setKernelIsPrepared(kernel);
+    } catch (error) {
+      setKernelIsPrepared(kernel, false, error);
+      throw error;
+    }
+  };
+
+  const kernel = await waitForKernel(sessionContext);
+
+  await prepare(kernel);
+
+  const handleKernelChanged = async (
     sessionCtx: ISessionContext,
-    change: IChangedArgs<
-      IKernelConnection | null,
-      IKernelConnection | null,
-      "kernel"
-    >,
+    change: KernelChangedArgs,
   ): Promise<void> => {
     let kernel = change.newValue;
     if (kernel === null) {
@@ -171,12 +143,40 @@ export const setupKernel = async (
     }
 
     console.debug(`${logModule} Kernel changed:`, kernel.name);
-    await kernel.info;
 
-    return setup(kernel);
+    return prepare(kernel);
+  };
+
+  // Signals ignore the promise returned by their slots, so a failure while
+  // setting up the new kernel would surface as an unhandled promise rejection.
+  // Report it here instead; callers that depend on the setup are notified
+  // through the state that `setup` records on the kernel.
+  const restartListener = (
+    sessionCtx: ISessionContext,
+    change: KernelChangedArgs,
+  ): void => {
+    handleKernelChanged(sessionCtx, change).catch((error) => {
+      console.error(
+        `${logModule} Error setting up the kernel after it changed:`,
+        error,
+      );
+    });
   };
 
   sessionContext.kernelChanged.connect(restartListener);
+
+  // A restart keeps the kernel connection and only signals it again once the
+  // restart is done. Reset its preparation as soon as the restart starts so
+  // that nobody is handed the kernel before it is prepared again.
+  const handleStatusChanged = (_: ISessionContext, status: Status): void => {
+    const kernel = sessionContext.session?.kernel;
+
+    if (kernel && restartingStatuses.has(status)) {
+      resetKernelPreparation(kernel);
+    }
+  };
+
+  sessionContext.statusChanged.connect(handleStatusChanged);
 };
 
 /**
