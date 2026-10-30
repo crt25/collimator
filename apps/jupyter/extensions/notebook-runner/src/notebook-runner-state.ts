@@ -20,7 +20,7 @@ const logModule = "[Jupyter][notebook-runner-state]";
 export type CommListener = (
   comm: IComm,
   message: KernelMessage.ICommMsgMsg<"shell" | "iopub">,
-) => Promise<void>;
+) => void | Promise<void>;
 
 export class NotebookRunnerState {
   /**
@@ -342,7 +342,7 @@ comm.send(data={'results': base64_content})
       rejectResults(new Error(`Timeout waiting for reading ${path}`));
     }, 1000 * 60);
 
-    const commListener: CommListener = async (comm, msg) => {
+    const commListener: CommListener = (comm, msg) => {
       clearTimeout(resultTimeout);
       this.removeCommListener(commListener);
 
