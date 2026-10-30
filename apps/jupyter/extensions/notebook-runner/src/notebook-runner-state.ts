@@ -73,7 +73,7 @@ export class NotebookRunnerState {
     // is not reported as an unhandled promise rejection.
     this.otterSessionContext.catch(() => {});
 
-    this.init();
+    void this.init();
   }
 
   /**
