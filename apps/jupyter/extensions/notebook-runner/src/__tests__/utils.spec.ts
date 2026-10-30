@@ -110,7 +110,7 @@ describe("setupKernel", () => {
       );
     });
 
-    it("records the failure if the replacement does not respond", async () => {
+    it("records the failure if the kernel info of the replacement is rejected", async () => {
       const { kernelChanged } = await setUpKernel();
       const noInfo = new Error("kernel died");
       const info = Promise.reject(noInfo);
