@@ -25542,7 +25542,7 @@
   ],
   "dockerImages": [
     {
-      "digest": "sbomlet-scan/backend-dockerfile-fed51f49@sha256:85cf8de2d1310f3fa2e985d7549be1d6b8dd8eccd10483dd70190daae42d7c90",
+      "digest": "sbomlet-scan/backend-dockerfile-fed51f49@sha256:0e269c83c6395d7f634ee56a4942492123ef7c664c38f5d402f99825f47ff84d",
       "image": "sbomlet-scan/backend-dockerfile-fed51f49",
       "source": "backend/Dockerfile"
     }
