@@ -2400,6 +2400,12 @@
       "resolvable": true,
       "via": "version-license"
     },
+    "pkg:pypi/alabaster@1.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/annotated-types@0.7.0": {
       "fetchedFrom": "pypi",
       "license": "MIT",
@@ -2526,6 +2532,12 @@
       "resolvable": true,
       "via": "license-field"
     },
+    "pkg:pypi/dill@0.4.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
     "pkg:pypi/doit@0.37.0": {
       "fetchedFrom": "pypi",
       "license": "MIT",
@@ -2547,6 +2559,18 @@
     "pkg:pypi/fastjsonschema@2.21.2": {
       "fetchedFrom": "pypi",
       "license": "BSD",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/fastjsonschema@2.22.2": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/fica@0.4.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
       "resolvable": true,
       "via": "license-field"
     },
@@ -2592,11 +2616,29 @@
       "resolvable": true,
       "via": "license-expression"
     },
+    "pkg:pypi/imagesize@2.0.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/importlib-metadata@10.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "Apache-2.0",
+      "resolvable": true,
+      "via": "license-expression"
+    },
     "pkg:pypi/ipykernel@7.2.0": {
       "fetchedFrom": "pypi",
       "license": "BSD-3-Clause",
       "resolvable": true,
       "via": "license-expression"
+    },
+    "pkg:pypi/ipylab@1.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
     },
     "pkg:pypi/ipython-pygments-lexers@1.1.1": {
       "fetchedFrom": "pypi",
@@ -2609,6 +2651,12 @@
       "license": "BSD-3-Clause",
       "resolvable": true,
       "via": "license-expression"
+    },
+    "pkg:pypi/ipywidgets@8.1.9": {
+      "fetchedFrom": "pypi",
+      "license": "BSD 3-Clause License",
+      "resolvable": true,
+      "via": "license-field"
     },
     "pkg:pypi/isoduration@20.11.0": {
       "fetchedFrom": "pypi",
@@ -2664,6 +2712,12 @@
       "resolvable": true,
       "via": "license-expression"
     },
+    "pkg:pypi/jupyter-client@8.10.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/jupyter-client@8.8.0": {
       "fetchedFrom": "pypi",
       "license": "BSD License",
@@ -2718,6 +2772,12 @@
       "resolvable": true,
       "via": "classifier"
     },
+    "pkg:pypi/jupyterlab-widgets@3.0.17": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/jupyterlab@4.5.4": {
       "fetchedFrom": "pypi",
       "license": "BSD License",
@@ -2736,6 +2796,12 @@
       "resolvable": true,
       "via": "classifier"
     },
+    "pkg:pypi/jupytext@1.19.6": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/lark@1.3.1": {
       "fetchedFrom": "pypi",
       "license": "MIT",
@@ -2747,6 +2813,12 @@
       "license": "CC0",
       "resolvable": true,
       "via": "license-field"
+    },
+    "pkg:pypi/markdown-it-py@4.2.0": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
     },
     "pkg:pypi/markupsafe@3.0.3": {
       "fetchedFrom": "pypi",
@@ -2760,7 +2832,25 @@
       "resolvable": false,
       "via": "unresolved"
     },
+    "pkg:pypi/mdit-py-plugins@0.6.1": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/mdurl@0.1.2": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/mistune@3.2.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/mistune@3.4.0": {
       "fetchedFrom": "pypi",
       "license": "BSD-3-Clause",
       "resolvable": true,
@@ -2778,7 +2868,19 @@
       "resolvable": true,
       "via": "classifier"
     },
+    "pkg:pypi/nbconvert@7.17.2": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
     "pkg:pypi/nbformat@5.10.4": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/nbformat@5.11.1": {
       "fetchedFrom": "pypi",
       "license": "BSD License",
       "resolvable": true,
@@ -2910,6 +3012,12 @@
       "resolvable": true,
       "via": "license-field"
     },
+    "pkg:pypi/python-on-whales@0.81.0": {
+      "fetchedFrom": "pypi",
+      "license": null,
+      "resolvable": false,
+      "via": "unresolved"
+    },
     "pkg:pypi/pywin32@311": {
       "fetchedFrom": "pypi",
       "license": "PSF",
@@ -2970,6 +3078,12 @@
       "resolvable": true,
       "via": "license-expression"
     },
+    "pkg:pypi/roman-numerals@4.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "0BSD OR CC0-1.0",
+      "resolvable": true,
+      "via": "license-expression"
+    },
     "pkg:pypi/rpds-py@0.30.0": {
       "fetchedFrom": "pypi",
       "license": "MIT",
@@ -2994,11 +3108,59 @@
       "resolvable": true,
       "via": "license-field"
     },
+    "pkg:pypi/snowballstemmer@3.1.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-3-Clause",
+      "resolvable": true,
+      "via": "license-field"
+    },
     "pkg:pypi/soupsieve@2.8.3": {
       "fetchedFrom": "pypi",
       "license": "MIT",
       "resolvable": true,
       "via": "license-expression"
+    },
+    "pkg:pypi/sphinx@9.1.1": {
+      "fetchedFrom": "pypi",
+      "license": "BSD-2-Clause",
+      "resolvable": true,
+      "via": "license-expression"
+    },
+    "pkg:pypi/sphinxcontrib-applehelp@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/sphinxcontrib-devhelp@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/sphinxcontrib-htmlhelp@2.1.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/sphinxcontrib-jsmath@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/sphinxcontrib-qthelp@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/sphinxcontrib-serializinghtml@2.0.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
     },
     "pkg:pypi/stack-data@0.6.3": {
       "fetchedFrom": "pypi",
@@ -3013,6 +3175,12 @@
       "via": "classifier"
     },
     "pkg:pypi/tinycss2@1.4.0": {
+      "fetchedFrom": "pypi",
+      "license": "BSD License",
+      "resolvable": true,
+      "via": "classifier"
+    },
+    "pkg:pypi/tinycss2@1.5.1": {
       "fetchedFrom": "pypi",
       "license": "BSD License",
       "resolvable": true,
@@ -3083,6 +3251,18 @@
       "license": "Apache-2.0",
       "resolvable": true,
       "via": "license-field"
+    },
+    "pkg:pypi/widgetsnbextension@4.0.16": {
+      "fetchedFrom": "pypi",
+      "license": "BSD 3-Clause License",
+      "resolvable": true,
+      "via": "license-field"
+    },
+    "pkg:pypi/zipp@4.1.2": {
+      "fetchedFrom": "pypi",
+      "license": "MIT",
+      "resolvable": true,
+      "via": "license-expression"
     }
   },
   "version": 1

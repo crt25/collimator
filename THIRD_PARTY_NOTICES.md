@@ -20782,12 +20782,13 @@ No license could be determined for these packages; no license text is included:
 - node-clone@0.1.1 — unknown license, no text included
 - package@0.0.0 — unknown license, no text included
 - prisma-client-e3c9e71d7bab75aea1f0ac6a9cccfb7ad286eb7d05a7417b0e75a210a5c29844@6.6.0 — unknown license, no text included
+- python-on-whales@0.81.0 — unknown license, no text included
 - rxjs/ajax@UNKNOWN — unknown license, no text included
 - rxjs/fetch@UNKNOWN — unknown license, no text included
 - rxjs/operators@UNKNOWN — unknown license, no text included
 - rxjs/testing@UNKNOWN — unknown license, no text included
 - rxjs/webSocket@UNKNOWN — unknown license, no text included
-- tzdata@2026e-0+deb13u1 — unknown license, no text included
+- tzdata@2026f-0+deb13u1 — unknown license, no text included
 
 ## License texts
 
