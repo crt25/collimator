@@ -203,7 +203,9 @@ export class NotebookRunnerState {
       // Handle the comm message
       comm.onMsg = async (msg): Promise<void> => {
         await Promise.all(
-          this.commListeners.map((listener) => listener(comm, msg)),
+          this.commListeners.map((listener) =>
+            Promise.resolve(listener(comm, msg)),
+          ),
         );
       };
     });
