@@ -17,7 +17,8 @@ vars:
   PORT: '{{.PORT | default "8000"}}'
   BASE_URL: '{{.BASE_URL | default "/jupyter/"}}'
   OTTER_DIST: 'dist/otter_grader-{{.OTTER_VERSION}}-py3-none-any.whl'
-  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+  PYODIDE_WHEELS_DIR: 'dist/wheels'
+  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST}} --piplite-wheels=./{{.PYODIDE_WHEELS_DIR}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
 
 tasks:
   setup:
@@ -26,6 +27,7 @@ tasks:
       - task: submodules:init
       - task: deps:install
       - task: build:otter
+      - task: build:wheels
       - task: exts:setup
 
   submodules:init:
@@ -192,6 +194,16 @@ tasks:
       - task: build:otter:check-submodule
       - pip wheel ./otter-grader -w dist --no-deps
       - task: build:otter:check-wheel
+
+  build:wheels:
+    desc: Download the wheels of the packages that the kernel installs, so that they are not fetched from PyPI at runtime
+    deps: [deps:install]
+    sources:
+      - pyodide-requirements.txt
+    generates:
+      - '{{.PYODIDE_WHEELS_DIR}}/*.whl'
+    cmds:
+      - pip download --no-deps --only-binary=:all: --platform any --python-version 3.13 -r pyodide-requirements.txt -d {{.PYODIDE_WHEELS_DIR}}
 
   build:otter:check-submodule:
     internal: true

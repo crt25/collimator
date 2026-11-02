@@ -94,6 +94,14 @@ This creates a custom wheel file (`otter_grader-6.1.3-py3-none-any.whl`) in the 
 
 Re-run this command whenever the otter submodule changes (the task tracks `otter-grader/**/*` as sources, so it is a no-op otherwise).
 
+```bash
+task build:wheels
+```
+
+This downloads the wheels of the packages listed in `pyodide-requirements.txt` into `dist/wheels/`. They are shipped with the app and the kernel installs Otter's and nbconvert's dependencies from them instead of PyPI (the PyPI fallback is disabled in `jupyter-lite.json`).
+
+Update `pyodide-requirements.txt` whenever Otter, nbconvert or `jupyterlite-pyodide-kernel` (and with it Pyodide) is upgraded. A package that is missing from it makes installing Otter fail in the browser.
+
 #### 4. Initialize and build jupyter extensions
 
 ```bash

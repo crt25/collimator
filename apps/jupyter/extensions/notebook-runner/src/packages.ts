@@ -197,61 +197,20 @@ export const installPackagesWithLoadingState = async (
     });
 };
 
-/**
- * The versions of Otter's dependencies that are not part of the Pyodide
- * distribution and are therefore resolved against PyPI when the kernel starts.
- * Without these, any new release of one of them changes what gets installed,
- * e.g. sphinx 9.2 requires packaging>=25.0 while Pyodide preloads packaging 24.2.
- * Dependencies that ship with Pyodide are already pinned by its version.
- * Update this list together with the Otter wheel or the Pyodide version.
- */
-const otterDependencyConstraints = [
-  "alabaster==1.0.0",
-  "babel==2.18.0",
-  "comm==0.2.3",
-  "dill==0.4.1",
-  "fastjsonschema==2.22.2",
-  "fica==0.4.1",
-  "imagesize==2.0.1",
-  "ipylab==1.1.0",
-  "ipywidgets==8.1.9",
-  "jupyter_core==5.9.1",
-  "jupyterlab_widgets==3.0.17",
-  "jupytext==1.19.6",
-  "markdown-it-py==4.2.0",
-  "mdit-py-plugins==0.6.1",
-  "mdurl==0.1.2",
-  "nbformat==5.11.1",
-  "python-on-whales==0.81.0",
-  "roman-numerals==4.1.0",
-  "snowballstemmer==3.1.1",
-  "sphinx==9.1.1",
-  "sphinxcontrib-applehelp==2.0.0",
-  "sphinxcontrib-devhelp==2.0.0",
-  "sphinxcontrib-htmlhelp==2.1.0",
-  "sphinxcontrib-jsmath==2.0.0",
-  "sphinxcontrib-qthelp==2.0.0",
-  "sphinxcontrib-serializinghtml==2.0.0",
-  "typing-inspection==0.4.2",
-  "widgetsnbextension==4.0.16",
-];
-
 export const installOtter = async (
   kernel: IKernelConnection,
 ): Promise<void> => {
   console.debug(`${logModule} Installing Otter Grader...`);
   await executePythonInKernel({
     kernel,
-    // The constraints keep the dependencies compatible with the packages that
-    // Pyodide preloads. Should they still require a newer version of such a
-    // package, reinstall=True allows micropip to replace it instead of failing
-    // with 'Requested ..., but ... is already installed'.
+    // piplite installs the dependencies from the bundled wheels (see
+    // pyodide-requirements.txt), PyPI is disabled in jupyter-lite.json.
+    // reinstall=True lets them replace packages that Pyodide preloads.
     code: `
-import micropip
-await micropip.install(
+import piplite
+await piplite.install(
   "/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl",
   reinstall=True,
-  constraints=${JSON.stringify(otterDependencyConstraints)},
 )
       `,
 
@@ -265,15 +224,15 @@ export const installNbConvert = async (
   console.debug(`${logModule} Installing nbconvert...`);
   await executePythonInKernel({
     kernel,
-    // Micropip by default installs all dependencies including tornado which is not mandatory,
+    // piplite (like micropip) by default installs all dependencies including tornado which is not mandatory,
     // especially for the codepaths we need. Since trying to install tornado in jupyterlite will fail,
     // we disable dependency installation and install the required dependencies manually below.
     // The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
     code: `
-import micropip
+import piplite
 
-await micropip.install("nbconvert", deps=False)
-await micropip.install("jupyter_client", deps=False)
+await piplite.install("nbconvert", deps=False)
+await piplite.install("jupyter_client", deps=False)
       `,
     disposeOnDone: true,
   });
@@ -282,9 +241,9 @@ await micropip.install("jupyter_client", deps=False)
   await executePythonInKernel({
     kernel,
     code: `
-import micropip
+import piplite
 
-await micropip.install([
+await piplite.install([
   "beautifulsoup4",
   "bleach[css]!=5.0.0",
   "defusedxml",
