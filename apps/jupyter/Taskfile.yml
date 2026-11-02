@@ -203,7 +203,7 @@ tasks:
     generates:
       - '{{.PYODIDE_WHEELS_DIR}}/*.whl'
     cmds:
-      - pip download --no-deps --only-binary=:all: --platform any --python-version 3.13 -r pyodide-requirements.txt -d {{.PYODIDE_WHEELS_DIR}}
+      - 'pip download --no-deps --only-binary=:all: --platform any --python-version 3.13 -r pyodide-requirements.txt -d {{.PYODIDE_WHEELS_DIR}}'
 
   build:otter:check-submodule:
     internal: true
