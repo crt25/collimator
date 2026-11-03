@@ -96,7 +96,7 @@ Re-run this command whenever the otter submodule changes (the task tracks `otter
 
 It also runs `task build:wheels`, which downloads the wheels of the packages listed in `pyodide-requirements.txt` into `dist/wheels/`. They are shipped with the app and the kernel installs Otter's and nbconvert's dependencies from them instead of PyPI (the PyPI fallback is disabled in `jupyter-lite.json`).
 
-Update `pyodide-requirements.txt` whenever Otter, nbconvert or `jupyterlite-pyodide-kernel` (and with it Pyodide) is upgraded. A package that is missing from it makes installing Otter fail in the browser.
+Update `pyodide-requirements.txt` whenever Otter, nbconvert or `jupyterlite-pyodide-kernel` (and with it Pyodide) is upgraded. A package that is missing from it makes installing Otter fail in the browser. `pyodide-requirements.spec.ts` in the notebook-runner extension fails until the file has been updated after such an upgrade.
 
 #### 4. Initialize and build jupyter extensions
 
