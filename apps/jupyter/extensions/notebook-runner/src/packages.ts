@@ -204,7 +204,7 @@ export const installOtter = async (
   await executePythonInKernel({
     kernel,
     // piplite installs the dependencies from the bundled wheels (see
-    // pyodide-requirements.txt), PyPI is disabled in jupyter-lite.json.
+    // pyodide-requirements.txt) before falling back to PyPI.
     // reinstall=True lets them replace packages that Pyodide preloads.
     code: `
 import piplite
