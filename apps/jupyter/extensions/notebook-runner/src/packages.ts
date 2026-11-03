@@ -287,9 +287,11 @@ sys.modules["nbclient.exceptions"] = nbclient_exceptions
     // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
     // this is because we cannot import the execute module in JupyterLite
     code: `
+from importlib.util import find_spec
 from pathlib import Path
 
-preprocessors = Path("/lib/python3.13/site-packages/nbconvert/preprocessors/__init__.py")
+nbconvert_dir = Path(find_spec("nbconvert").submodule_search_locations[0])
+preprocessors = nbconvert_dir / "preprocessors" / "__init__.py"
 preprocessors.write_text(
   preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
 )
