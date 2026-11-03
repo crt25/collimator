@@ -27,7 +27,6 @@ tasks:
       - task: submodules:init
       - task: deps:install
       - task: build:otter
-      - task: build:wheels
       - task: exts:setup
 
   submodules:init:
@@ -184,8 +183,8 @@ tasks:
   #############################
 
   build:otter:
-    desc: Build the customized otter grader wheel
-    deps: [submodules:init, deps:install]
+    desc: Build the customized otter grader wheel and download the wheels of its dependencies
+    deps: [submodules:init, deps:install, build:wheels]
     sources:
       - otter-grader/**/*
     generates:
@@ -203,6 +202,11 @@ tasks:
     generates:
       - '{{.PYODIDE_WHEELS_DIR}}/*.whl'
     cmds:
+      # drops the wheels of older pins, piplite would pick the highest version
+      - cmd: pwsh -Command "if (Test-Path {{.PYODIDE_WHEELS_DIR}}) { rm -r -fo {{.PYODIDE_WHEELS_DIR}} }"
+        platforms: [windows]
+      - cmd: rm -rf {{.PYODIDE_WHEELS_DIR}}
+        platforms: [linux, darwin]
       - 'pip download --no-deps --only-binary=:all: --platform any --python-version 3.13 -r pyodide-requirements.txt -d {{.PYODIDE_WHEELS_DIR}}'
 
   build:otter:check-submodule:
