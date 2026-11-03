@@ -5079,9 +5079,9 @@
         }
       ],
       "name": "tzdata",
-      "purl": "pkg:deb/debian/tzdata@2026e-0%2Bdeb13u1?arch=all&distro=debian-13",
+      "purl": "pkg:deb/debian/tzdata@2026f-0%2Bdeb13u1?arch=all&distro=debian-13",
       "type": "library",
-      "version": "2026e-0+deb13u1"
+      "version": "2026f-0+deb13u1"
     },
     {
       "images": [
@@ -25542,7 +25542,7 @@
   ],
   "dockerImages": [
     {
-      "digest": "sbomlet-scan/backend-dockerfile-fed51f49@sha256:0e269c83c6395d7f634ee56a4942492123ef7c664c38f5d402f99825f47ff84d",
+      "digest": "sbomlet-scan/backend-dockerfile-fed51f49@sha256:bc9fa8b782c7e6b73cc42995c4ce9884a327aa9e4c2beabaf683d331f8c72550",
       "image": "sbomlet-scan/backend-dockerfile-fed51f49",
       "source": "backend/Dockerfile"
     }
