@@ -10,15 +10,14 @@ x-jupyter-ext-files: &jupyter_ext_files
   - ./*
 
 vars:
-  OTTER_VERSION: '6.1.3'
   PIPX_VERSION: '1.12.0'
   POETRY_VERSION: '2.4.1'
   OUTPUT_DIR: '{{.OUTPUT_DIR | default "./dist/app"}}'
   PORT: '{{.PORT | default "8000"}}'
   BASE_URL: '{{.BASE_URL | default "/jupyter/"}}'
-  OTTER_DIST: 'dist/otter_grader-{{.OTTER_VERSION}}-py3-none-any.whl'
+  OTTER_DIST_DIR: 'dist/otter'
   PYODIDE_WHEELS_DIR: 'dist/wheels'
-  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST}} --piplite-wheels=./{{.PYODIDE_WHEELS_DIR}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
+  JUPYTER_LITE_ARGS: '--piplite-wheels=./{{.OTTER_DIST_DIR}} --piplite-wheels=./{{.PYODIDE_WHEELS_DIR}} --apps=lab --output-dir={{.OUTPUT_DIR}} --base-url={{.BASE_URL}} --settings-override=./overrides.json --port={{.PORT}}'
 
 tasks:
   setup:
@@ -188,10 +187,15 @@ tasks:
     sources:
       - otter-grader/**/*
     generates:
-      - dist/otter_grader-*.whl
+      - '{{.OTTER_DIST_DIR}}/*.whl'
     cmds:
       - task: build:otter:check-submodule
-      - pip wheel ./otter-grader -w dist --no-deps
+      # drops the wheels of older versions, piplite would pick the highest version
+      - cmd: pwsh -Command "if (Test-Path {{.OTTER_DIST_DIR}}) { rm -r -fo {{.OTTER_DIST_DIR}} }"
+        platforms: [windows]
+      - cmd: rm -rf {{.OTTER_DIST_DIR}}
+        platforms: [linux, darwin]
+      - pip wheel ./otter-grader -w {{.OTTER_DIST_DIR}} --no-deps
       - task: build:otter:check-wheel
 
   build:wheels:
@@ -220,9 +224,9 @@ tasks:
   build:otter:check-wheel:
     internal: true
     cmds:
-      - cmd: pwsh -Command "Test-Path {{.OTTER_DIST}}"
+      - cmd: pwsh -Command "if (-not (Test-Path {{.OTTER_DIST_DIR}}/otter_grader-*.whl)) { exit 1 }"
         platforms: [windows]
-      - cmd: test -f {{.OTTER_DIST}}
+      - cmd: ls {{.OTTER_DIST_DIR}}/otter_grader-*.whl
         platforms: [linux, darwin]
 
   #############################

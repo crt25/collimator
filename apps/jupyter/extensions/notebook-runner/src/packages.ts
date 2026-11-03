@@ -203,15 +203,12 @@ export const installOtter = async (
   console.debug(`${logModule} Installing Otter Grader...`);
   await executePythonInKernel({
     kernel,
-    // piplite installs the dependencies from the bundled wheels (see
-    // pyodide-requirements.txt) before falling back to PyPI.
+    // piplite installs Otter and its dependencies from the bundled wheels
+    // (see pyodide-requirements.txt) before falling back to PyPI.
     // reinstall=True lets them replace packages that Pyodide preloads.
     code: `
 import piplite
-await piplite.install(
-  "/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl",
-  reinstall=True,
-)
+await piplite.install("otter-grader", reinstall=True)
       `,
 
     disposeOnDone: true,

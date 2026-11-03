@@ -19,7 +19,7 @@ describe("installOtter", () => {
     await installOtter(kernel);
 
     const code = executedCode(kernel).join("\n");
-    expect(code).toMatch(/piplite\.install\(\s*"[^"]*otter_grader[^"]*\.whl"/);
+    expect(code).toMatch(/piplite\.install\("otter-grader"/);
     expect(code).not.toMatch(/micropip\.install/);
   });
 

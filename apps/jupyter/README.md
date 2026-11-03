@@ -90,7 +90,7 @@ Installs `pipx`, `poetry` (pinned versions from `Taskfile.yml`) and then `pipx r
 task build:otter
 ```
 
-This creates a custom wheel file (`otter_grader-6.1.3-py3-none-any.whl`) in the `dist/` directory.
+This creates a custom wheel file (`otter_grader-<version>-py3-none-any.whl`) in the `dist/otter/` directory.
 
 Re-run this command whenever the otter submodule changes (the task tracks `otter-grader/**/*` as sources, so it is a no-op otherwise).
 
