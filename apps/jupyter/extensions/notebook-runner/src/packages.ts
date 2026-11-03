@@ -237,24 +237,26 @@ await piplite.install("jupyter_client", deps=False)
   console.debug(`${logModule} Installing remaining dependencies...`);
   await executePythonInKernel({
     kernel,
+    // The versions come from the bundled wheels (see pyodide-requirements.txt)
+    // or from Pyodide itself.
     code: `
 import piplite
 
 await piplite.install([
   "beautifulsoup4",
-  "bleach[css]!=5.0.0",
+  "bleach",
   "defusedxml",
-  "importlib_metadata>=3.6",
-  "jinja2>=3.0",
-  "jupyter_core>=4.7",
+  "importlib_metadata",
+  "jinja2",
+  "jupyter_core",
   "jupyterlab_pygments",
-  "MarkupSafe>=2.0",
-  "mistune>=2.0.3,<4",
-  "nbformat>=5.7",
+  "MarkupSafe",
+  "mistune",
+  "nbformat",
   "packaging",
-  "pandocfilters>=1.4.1",
-  "pygments>=2.4.1",
-  "traitlets>=5.1",
+  "pandocfilters",
+  "pygments",
+  "traitlets",
   "tinycss2"
 ])
 `,
