@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import { InvalidTaskBlobError, TaskError } from "../../errors/task-errors";
+import { InvalidTaskBlobError } from "../../errors/task-errors";
 import * as TaskImporter from "../../task-converter";
 import { CrtInternalFiles, GenericNotebookFiles } from "../../task-format";
 import { NoErrorThrownError } from "../errors";
@@ -175,7 +175,7 @@ export const mockTaskConverterExports = (): (() => void) => {
   };
 };
 
-export const expectError = async <TError extends TaskError>(
+export const expectError = async <TError extends Error>(
   call: () => unknown,
   errorType: new (...args: never[]) => TError,
 ): Promise<TError> => {

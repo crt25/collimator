@@ -63,52 +63,45 @@ const autoInstallPackages =
       }
     });
 
-    try {
-      console.debug(`${logModule} Installing packages...`, kernel.id);
-      await installOtter(kernel);
-      console.debug(`${logModule} Finished installing packages`, kernel.id);
+    console.debug(`${logModule} Installing packages...`, kernel.id);
+    await installOtter(kernel);
+    console.debug(`${logModule} Finished installing packages`, kernel.id);
 
-      const isStudentNotebook =
-        // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
-        // the two checks here.
-        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
-        notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
+    const isStudentNotebook =
+      // JupyterLite seems to sometimes use a leading slash and sometimes not, hence
+      // the two checks here.
+      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation ||
+      notebookPath === EmbeddedPythonCallbacks.studentTaskLocation.slice(1);
 
-      if (isStudentNotebook) {
-        console.debug(
-          `${logModule} Opened student notebook - copying notebook to the virtual filesystem to make tests available.`,
-        );
+    if (isStudentNotebook) {
+      console.debug(
+        `${logModule} Opened student notebook - copying notebook to the virtual filesystem to make tests available.`,
+      );
 
-        let notebook: Contents.IModel | null = null;
-        try {
-          notebook = await contentsManager.get(notebookPath, { content: true });
-        } catch (error) {
-          throw new Error(
-            `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
-          );
-        }
-
-        console.debug(
-          `${logModule} Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
-          kernel.id,
-        );
-
-        await writeJsonToVirtualFilesystem(
-          kernel,
-          EmbeddedPythonCallbacks.studentTaskLocation,
-          notebook.content,
-          studentWorkingDirectory,
-        );
-        console.debug(
-          `${logModule} Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
-          kernel.id,
+      let notebook: Contents.IModel | null = null;
+      try {
+        notebook = await contentsManager.get(notebookPath, { content: true });
+      } catch (error) {
+        throw new Error(
+          `Error reading notebook at ${notebookPath} after auto-installing packages: ${JSON.stringify(error)}`,
         );
       }
 
-      _setPackagesReady();
-    } catch (error) {
-      _setPackagesFailed(error);
-      throw error;
+      console.debug(
+        `${logModule} Finished reading notebook content, writing to virtual filesystem and changing working directory to ${studentWorkingDirectory}...`,
+        kernel.id,
+      );
+
+      await writeJsonToVirtualFilesystem(
+        kernel,
+        EmbeddedPythonCallbacks.studentTaskLocation,
+        notebook.content,
+        studentWorkingDirectory,
+      );
+      console.debug(
+        `${logModule} Finished copying notebook to the virtual filesystem and changing working directory to ${studentWorkingDirectory}`,
+        kernel.id,
+      );
     }
   };
 
@@ -129,6 +122,7 @@ const trackSession = async (
       notebookPath,
       error,
     );
+    _setPackagesFailed(error);
 
     return;
   }
@@ -144,18 +138,41 @@ const trackSession = async (
   return setupKernel(
     sessionContext,
     autoInstallPackages(contentsManager, notebookPath),
-  );
+  ).then(_setPackagesReady, (error) => {
+    _setPackagesFailed(error);
+    throw error;
+  });
 };
 
-export const preInstallPackages = async (
+/**
+ * Starts tracking the session of the given panel without ever rejecting.
+ * Nothing awaits the tracking, so a failure (which is also reported through
+ * `waitForPackagesReady`) would otherwise surface as an unhandled promise rejection.
+ */
+const trackSessionAndReportFailure = (
+  contentsManager: ContentsManager,
+  panel: NotebookPanel,
+): void => {
+  trackSession(contentsManager, panel).catch((error) => {
+    console.error(
+      `${logModule} Failed to set up the kernel of`,
+      panel.context.path,
+      error,
+    );
+  });
+};
+
+export const preInstallPackages = (
   _app: JupyterFrontEnd,
   contentsManager: ContentsManager,
   notebookTracker: INotebookTracker,
-): Promise<void> => {
-  notebookTracker.forEach((panel) => trackSession(contentsManager, panel));
+): void => {
+  notebookTracker.forEach((panel) =>
+    trackSessionAndReportFailure(contentsManager, panel),
+  );
 
   notebookTracker.widgetAdded.connect((_, panel) => {
-    trackSession(contentsManager, panel);
+    trackSessionAndReportFailure(contentsManager, panel);
   });
 };
 
@@ -167,9 +184,7 @@ export const installPackagesWithLoadingState = async (
 ): Promise<void> => {
   await loadingStateManager.startLoading();
 
-  preInstallPackages(app, contentsManager, notebookTracker).catch((error) => {
-    console.error(`${logModule} preInstallPackages failed:`, error);
-  });
+  preInstallPackages(app, contentsManager, notebookTracker);
 
   waitForPackagesReady()
     .then(() => loadingStateManager.finishLoading(true))
@@ -188,9 +203,12 @@ export const installOtter = async (
   console.debug(`${logModule} Installing Otter Grader...`);
   await executePythonInKernel({
     kernel,
+    // piplite installs Otter and its dependencies from the bundled wheels
+    // (see pyodide-requirements.txt) before falling back to PyPI.
+    // reinstall=True lets them replace packages that Pyodide preloads.
     code: `
-import micropip
-await micropip.install("/jupyter/pypi/otter_grader-6.1.3-py3-none-any.whl")
+import piplite
+await piplite.install("otter-grader", reinstall=True)
       `,
 
     disposeOnDone: true,
@@ -203,15 +221,15 @@ export const installNbConvert = async (
   console.debug(`${logModule} Installing nbconvert...`);
   await executePythonInKernel({
     kernel,
-    // Micropip by default installs all dependencies including tornado which is not mandatory,
+    // piplite (like micropip) by default installs all dependencies including tornado which is not mandatory,
     // especially for the codepaths we need. Since trying to install tornado in jupyterlite will fail,
     // we disable dependency installation and install the required dependencies manually below.
     // The list of dependencies can be seen here: https://github.com/jupyter/nbconvert/blob/main/pyproject.toml#L28
     code: `
-import micropip
+import piplite
 
-await micropip.install("nbconvert", deps=False)
-await micropip.install("jupyter_client", deps=False)
+await piplite.install("nbconvert", deps=False)
+await piplite.install("jupyter_client", deps=False)
       `,
     disposeOnDone: true,
   });
@@ -219,24 +237,26 @@ await micropip.install("jupyter_client", deps=False)
   console.debug(`${logModule} Installing remaining dependencies...`);
   await executePythonInKernel({
     kernel,
+    // The versions come from the bundled wheels (see pyodide-requirements.txt)
+    // or from Pyodide itself.
     code: `
-import micropip
+import piplite
 
-await micropip.install([
+await piplite.install([
   "beautifulsoup4",
-  "bleach[css]!=5.0.0",
+  "bleach",
   "defusedxml",
-  "importlib_metadata>=3.6",
-  "jinja2>=3.0",
-  "jupyter_core>=4.7",
+  "importlib_metadata",
+  "jinja2",
+  "jupyter_core",
   "jupyterlab_pygments",
-  "MarkupSafe>=2.0",
-  "mistune>=2.0.3,<4",
-  "nbformat>=5.7",
+  "MarkupSafe",
+  "mistune",
+  "nbformat",
   "packaging",
-  "pandocfilters>=1.4.1",
-  "pygments>=2.4.1",
-  "traitlets>=5.1",
+  "pandocfilters",
+  "pygments",
+  "traitlets",
   "tinycss2"
 ])
 `,
@@ -269,9 +289,11 @@ sys.modules["nbclient.exceptions"] = nbclient_exceptions
     // make nbconvert.preprocessors available without importing execute, copied from https://gist.github.com/bollwyvl/6b3cb4c46b1764c6d9ae1e5831f86d7a#file-nbconvert-in-jupyterlite-ipynb
     // this is because we cannot import the execute module in JupyterLite
     code: `
+from importlib.util import find_spec
 from pathlib import Path
 
-preprocessors = Path("/lib/python3.13/site-packages/nbconvert/preprocessors/__init__.py")
+nbconvert_dir = Path(find_spec("nbconvert").submodule_search_locations[0])
+preprocessors = nbconvert_dir / "preprocessors" / "__init__.py"
 preprocessors.write_text(
   preprocessors.read_text().replace('\\nfrom .execute', '\\n# from .execute')
 )

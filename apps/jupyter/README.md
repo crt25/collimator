@@ -45,7 +45,7 @@ All build automation lives in [`Taskfile.yml`](./Taskfile.yml). Run `task --list
 
    - Initializes git submodules (otter-grader)
    - Installs all required Python dependencies via `pipx`/`poetry`
-   - Builds the custom otter grader wheel
+   - Builds the custom otter grader wheel and downloads the wheels of its dependencies
    - Bootstraps the JupyterLab extensions (symlinks, version stamping, `pip install -e`, `jupyter labextension develop/link`)
 
 2. **Build the application**:
@@ -90,9 +90,13 @@ Installs `pipx`, `poetry` (pinned versions from `Taskfile.yml`) and then `pipx r
 task build:otter
 ```
 
-This creates a custom wheel file (`otter_grader-6.1.3-py3-none-any.whl`) in the `dist/` directory.
+This creates a custom wheel file (`otter_grader-<version>-py3-none-any.whl`) in the `dist/otter/` directory.
 
 Re-run this command whenever the otter submodule changes (the task tracks `otter-grader/**/*` as sources, so it is a no-op otherwise).
+
+It also runs `task build:wheels`, which downloads the wheels of the packages listed in `pyodide-requirements.txt` into `dist/wheels/`. They are shipped with the app and the kernel installs Otter's and nbconvert's dependencies from them instead of PyPI.
+
+Update `pyodide-requirements.txt` whenever Otter, nbconvert or `jupyterlite-pyodide-kernel` (and with it Pyodide) is upgraded. A package that is missing from it is fetched from PyPI at runtime, in its latest version, which can break installing Otter. `pyodide-requirements.spec.ts` in the notebook-runner extension fails until the file has been updated after such an upgrade.
 
 #### 4. Initialize and build jupyter extensions
 
