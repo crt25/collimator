@@ -19,6 +19,7 @@
     "prisma:generate": "dotenv -c -- prisma generate --sql",
     "prisma:seed": "dotenv -c -- prisma db seed",
     "prisma:seed:e2e": "dotenv -c -- ts-node --project tsconfig.seed.json prisma/seed/e2e/index.ts",
+    "prisma:seed:prod": "dotenv -c -- ts-node --project tsconfig.seed.json prisma/seed/production/index.ts",
     "prisma:seed:all": "yarn prisma:seed && yarn prisma:seed:e2e",
     "start:prod": "node dist/main",
     "api:generate": "node dist/main --generate-swagger-only",
