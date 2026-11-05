@@ -9,6 +9,7 @@ import {
   StudentSolution,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { runSerializableTransaction } from "src/prisma/transactions";
 import {
   deleteStudentSolutions,
   getCurrentAnalysesWithActivities,
@@ -446,7 +447,7 @@ export class SolutionsService {
       ...(includeSoftDelete ? {} : { deletedAt: null }),
     };
 
-    await this.prisma.$transaction(async (tx) => {
+    await runSerializableTransaction(this.prisma, async (tx) => {
       const targetSolutions = await tx.solution.findMany({
         select: { hash: true },
         where: {

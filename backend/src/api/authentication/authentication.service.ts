@@ -1,5 +1,10 @@
 import { randomBytes } from "crypto";
-import { ExecutionContext, Injectable, Logger } from "@nestjs/common";
+import {
+  ExecutionContext,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from "@nestjs/common";
 import {
   AnonymousStudent,
   AuthenticatedStudent,
@@ -498,45 +503,69 @@ export class AuthenticationService {
   }
 
   /**
-   * Create a new authentication token for a student with the given pseudonym and class id.
-   * @param sessionId The id of the session the student is signed in to.
+   * Create a new authentication token for an anonymous student joining the
+   * given session. The session eligibility check (exists, not soft-deleted,
+   * isAnonymous) and the student/token creation all run inside the same
+   * SERIALIZABLE transaction, so a concurrent restrictive update that disables
+   * anonymous access will conflict at commit time and one of the two operations
+   * will be retried or rejected.
+   *
+   * @param sessionId The id of the session the student is signing in to.
+   * @param classId The id of the class owning the session, used to scope the lookup.
    * @returns A new authentication token with the student id.
+   * @throws UnauthorizedException if the session does not admit anonymous students.
    */
   async signInAnonymousStudent(
     sessionId: number,
+    classId: number,
   ): Promise<AuthTokenWithStudentId> {
     this.logger.debug(
       `Anonymous student sign-in attempt for session (id: ${sessionId})`,
     );
 
-    const student = await this.prisma.student.create({
-      data: {
-        anonymousStudent: {
-          create: {
-            sessionId,
-          },
-        },
-      },
-    });
-
-    const randomToken = generateToken();
-
     // before signing in, delete all expired tokens
     await this.deleteExpiredTokens();
 
-    const authToken = await this.prisma.authenticationToken.create({
-      data: {
-        token: randomToken,
-        studentId: student.id,
-        lastUsedAt: new Date(),
-      },
+    const result = await runSerializableTransaction(this.prisma, async (tx) => {
+      const session = await tx.session.findUnique({
+        where: { classId, id: sessionId, deletedAt: null },
+        select: { isAnonymous: true },
+      });
+
+      if (!session?.isAnonymous) {
+        return null;
+      }
+
+      const student = await tx.student.create({
+        data: {
+          anonymousStudent: {
+            create: {
+              sessionId,
+            },
+          },
+        },
+      });
+
+      const authToken = await tx.authenticationToken.create({
+        data: {
+          token: generateToken(),
+          studentId: student.id,
+          lastUsedAt: new Date(),
+        },
+      });
+
+      return { token: authToken.token, studentId: student.id };
     });
 
+    if (!result) {
+      throw new UnauthorizedException();
+    }
+
     this.logger.log(
-      `Anonymous student sign-in successful (student id: ${student.id})`,
+      `Anonymous student sign-in successful (student id: ${result.studentId})`,
     );
 
-    return { token: authToken.token, studentId: student.id };
+    return result;
   }
 
   async findUserByAuthTokenOrThrow(token: AuthToken): Promise<User | Student> {

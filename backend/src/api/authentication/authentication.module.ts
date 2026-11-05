@@ -3,14 +3,13 @@ import { APP_GUARD } from "@nestjs/core";
 import { PrismaModule } from "src/prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 import { AuthorizationModule } from "../authorization/authorization.module";
-import { SessionsModule } from "../sessions/sessions.module";
 import { AuthenticationController } from "./authentication.controller";
 import { AuthenticationService } from "./authentication.service";
 import { RoleGuard } from "./role.guard";
 import { AuthenticationGateway } from "./authentication.gateway";
 
 @Module({
-  imports: [PrismaModule, ConfigModule, AuthorizationModule, SessionsModule],
+  imports: [PrismaModule, ConfigModule, AuthorizationModule],
   controllers: [AuthenticationController],
   providers: [
     AuthenticationService,

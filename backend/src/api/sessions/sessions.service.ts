@@ -2,6 +2,7 @@ import { ConflictException, Injectable, Logger } from "@nestjs/common";
 import { Session, Prisma, SessionStatus } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { getCurrentStudentSolutions } from "@prisma/client/sql";
+import { runSerializableTransaction } from "src/prisma/transactions";
 import { PrismaTransactionClient } from "src/prisma/types";
 import { ClassId } from "../classes/dto";
 import { StudentId } from "../solutions/solutions.service";
@@ -119,13 +120,7 @@ export class SessionsService {
     classId?: number,
     includeSoftDelete = false,
   ): Promise<Session> {
-    // FIXME: CRT-450 -> At READ COMMITTED, this interactive transaction does not
-    // prevent a student from joining after the student check but before the
-    // update commits. Move all transactions to the planned SERIALIZABLE
-    // transaction() wrapper so joining and updating participate in the same
-    // concurrency protocol. Similar read-then-write races may exist elsewhere;
-    // that broader risk is accepted until the migration is complete.
-    const update = await this.prisma.$transaction(async (tx) => {
+    const update = await runSerializableTransaction(this.prisma, async (tx) => {
       // ensure the session exists and hasn't started yet
       const existing = await tx.session.findUniqueOrThrow({
         where: includeSoftDelete
@@ -330,7 +325,7 @@ export class SessionsService {
     targetClassId: number,
     includeSoftDelete = false,
   ): Promise<Session> {
-    return this.prisma.$transaction(async (tx) => {
+    return runSerializableTransaction(this.prisma, async (tx) => {
       const sourceSession = await tx.session.findUniqueOrThrow({
         where: includeSoftDelete
           ? { id: sourceSessionId }

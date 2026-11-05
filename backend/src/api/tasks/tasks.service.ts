@@ -8,6 +8,7 @@ import {
   SolutionTest,
 } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
+import { runSerializableTransaction } from "src/prisma/transactions";
 import { Modify } from "src/utilities/modify";
 import { PrismaTransactionClient } from "src/prisma/types";
 import { ReferenceSolutionId } from "../solutions/dto";
@@ -204,7 +205,7 @@ export class TasksService {
   ): Promise<TaskWithoutData> {
     this.logger.log(`Creating task with title: ${task.title}`);
 
-    return this.prisma.$transaction(async (tx) => {
+    return runSerializableTransaction(this.prisma, async (tx) => {
       const createdTask = await tx.task.create({
         data: {
           ...task,
@@ -334,7 +335,7 @@ export class TasksService {
       );
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    return runSerializableTransaction(this.prisma, async (tx) => {
       // named existingTask, not task, so it does not shadow the `task` update
       // input spread into tx.task.update() below - shadowing it would silently
       // drop the caller's field changes (title, description, ...).
@@ -553,7 +554,7 @@ export class TasksService {
   async deleteById(id: TaskId): Promise<TaskWithoutData> {
     this.logger.log(`Deleting task (id: ${id})`);
 
-    return this.prisma.$transaction(async (tx) => {
+    return runSerializableTransaction(this.prisma, async (tx) => {
       // Fetch task to check if it's public
       const task = await tx.task.findUniqueOrThrow({
         where: { id, deletedAt: null },

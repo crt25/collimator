@@ -85,6 +85,30 @@ export default defineConfig([
           ],
         },
       ],
+
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.property.name='$transaction']",
+          message:
+            "Use runSerializableTransaction() from src/prisma/transactions instead of $transaction directly. Direct usage bypasses the project's SERIALIZABLE isolation requirement.",
+        },
+      ],
+    },
+  },
+  // Allow $transaction inside the transaction helper itself
+  {
+    files: ["src/prisma/transactions.ts", "src/prisma/transactions.spec.ts"],
+    rules: {
+      "no-restricted-syntax": "off",
+    },
+  },
+  // Allow $transaction in spec files that mock the Prisma client
+  {
+    files: ["**/*.spec.ts"],
+    rules: {
+      "no-restricted-syntax": "off",
     },
   },
   // Should be 2nd to last to override other configs, see https://github.com/prettier/eslint-config-prettier?tab=readme-ov-file#installation.
