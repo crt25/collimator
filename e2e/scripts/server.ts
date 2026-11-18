@@ -65,14 +65,48 @@ app.use(
   }),
 );
 
-app.use(
-  "/socket.io",
-  createProxyMiddleware<Request, Response>({
-    target: `${process.env.BACKEND_URL ?? "https://localhost:3001"}/socket.io`,
-    changeOrigin: true,
-    ws: true,
-  }),
-);
+const frontendDevUrl = process.env.FRONTEND_DEV_URL;
+
+if (!frontendDevUrl) {
+  app.use(
+    "/socket.io",
+    createProxyMiddleware<Request, Response>({
+      target: `${process.env.BACKEND_URL ?? "https://localhost:3001"}/socket.io`,
+      changeOrigin: true,
+      ws: true,
+    }),
+  );
+} else {
+  // Frontend mode "dev": forward everything that is not served here to the
+  // Next.js dev server, which resolves dynamic routes itself.
+  console.log(`Forwarding frontend requests to ${frontendDevUrl}`);
+
+  const isServedHere = (urlPath: string): boolean =>
+    ["/socket.io", "/api", "/scratch", "/jupyter"].some(
+      (prefix) => urlPath === prefix || urlPath.startsWith(`${prefix}/`),
+    );
+
+  // Filter by path instead of mounting on a path: the filter also applies to
+  // websocket upgrades, a mount path does not. Without it this proxy would
+  // also grab the dev server's hot-reload websocket.
+  app.use(
+    createProxyMiddleware<Request, Response>({
+      target: process.env.BACKEND_URL ?? "https://localhost:3001",
+      pathFilter: "/socket.io",
+      changeOrigin: true,
+      ws: true,
+    }),
+  );
+
+  app.use(
+    createProxyMiddleware<Request, Response>({
+      target: frontendDevUrl,
+      pathFilter: (urlPath) => !isServedHere(urlPath),
+      changeOrigin: true,
+      ws: true,
+    }),
+  );
+}
 
 app.use((request, response, next) => {
   let [urlPath, search] = request.url.split("?");

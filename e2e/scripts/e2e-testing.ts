@@ -1,5 +1,6 @@
 import { writeFileSync } from "fs";
 import {
+  consumeStdout,
   resetDatabase,
   seedE2eDatabase,
   setupFrontendPort,
@@ -9,6 +10,7 @@ import {
   waitUntilReachable,
 } from "../setup/helpers";
 import { isDebug } from "../helpers";
+import { traceMark, traceSpan } from "../setup/trace";
 import {
   backendPidFile,
   frontendPidFile,
@@ -21,8 +23,12 @@ const main = async (): Promise<void> => {
     throw new Error("DATABASE_URL is not set");
   }
 
+  traceMark("setup script started");
+
   // kill existing processes if they are running
-  await killE2eSetupProcesses();
+  await traceSpan("setup: stop left-over setup processes", () =>
+    killE2eSetupProcesses(),
+  );
 
   // add shutdown hook
   process.on("exit", () => {
@@ -41,10 +47,15 @@ const main = async (): Promise<void> => {
   }
 
   // reset database
-  const reset = resetDatabase({
-    databaseUrl: process.env.DATABASE_URL,
-    seedingMode: process.env.SEEDING_MODE,
-  });
+  const databaseUrl = process.env.DATABASE_URL;
+  const reset = await traceSpan(
+    "setup: reset database (prisma migrate reset + seed)",
+    () =>
+      resetDatabase({
+        databaseUrl,
+        seedingMode: process.env.SEEDING_MODE,
+      }),
+  );
 
   const seedStdOut = reset.stdout.toString("utf-8");
 
@@ -58,9 +69,9 @@ const main = async (): Promise<void> => {
     throw new Error("Could not reset the database");
   }
 
-  const seed = seedE2eDatabase({
-    databaseUrl: process.env.DATABASE_URL,
-  });
+  const seed = await traceSpan("setup: seed (yarn prisma:seed:e2e)", () =>
+    seedE2eDatabase({ databaseUrl }),
+  );
 
   if (isDebug) {
     console.log(seed.stdout.toString("utf-8"));
@@ -78,11 +89,7 @@ const main = async (): Promise<void> => {
     url: process.env.OIDC_MOCK_SERVER_PROXY_URL,
   });
 
-  if (isDebug) {
-    oidcProcess.stdout.on("data", (data) => {
-      console.log("[oidc-server]", data.toString());
-    });
-  }
+  consumeStdout(oidcProcess, "[oidc-server]");
 
   oidcProcess.stderr.on("data", (data) => {
     console.error("[oidc-server]", data.toString());
@@ -107,11 +114,7 @@ const main = async (): Promise<void> => {
     clientId: oidcClientId,
   });
 
-  if (isDebug) {
-    backendProcess.stdout.on("data", (data) => {
-      console.log("[backend]", data.toString());
-    });
-  }
+  consumeStdout(backendProcess, "[backend]");
 
   backendProcess.stderr.on("data", (data) => {
     console.error("[backend]", data.toString());
@@ -142,11 +145,7 @@ const main = async (): Promise<void> => {
     backendUrl: process.env.NEXT_PUBLIC_BACKEND_HOSTNAME,
   });
 
-  if (isDebug) {
-    frontendProcess.stdout.on("data", (data) => {
-      console.log("[frontend]", data.toString());
-    });
-  }
+  consumeStdout(frontendProcess, "[frontend]");
 
   frontendProcess.stderr.on("data", (data) => {
     console.error("[frontend]", data.toString());
@@ -160,6 +159,8 @@ const main = async (): Promise<void> => {
   writeFileSync(frontendPidFile, frontendProcess.pid.toString(), {
     encoding: "utf-8",
   });
+
+  traceMark("setup script done (playwright now waits for the frontend)");
 
   // playwright will wait for the frontend server to be up and running
   // hence, no need to do that here.

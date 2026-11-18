@@ -27,6 +27,20 @@ module.exports = {
   ],
   coverageReporters: ["lcov", "text"],
   testRegex: "src/.*/.*.spec.ts[x]?$",
+  // Transpile-only: skip per-file type-checking (tsc covers it in the build).
+  transform: process.env.SLOW_TS
+    ? baseConfig.transform
+    : {
+        ...baseConfig.transform,
+        "^.+\\.tsx?$": [
+          "ts-jest/legacy",
+          {
+            tsconfig: "./tsconfig.test.json",
+            isolatedModules: true,
+            diagnostics: false,
+          },
+        ],
+      },
   transformIgnorePatterns: [`/node_modules/(?!${esModules}).+`],
   setupFilesAfterEnv: ["./jest.setup.js"],
 };

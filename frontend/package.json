@@ -30,6 +30,7 @@
     "test:ct:debug": "yarn test:pre && playwright test -c playwright-ct.config.ts --debug && nyc report --report-dir coverage-ct",
     "test:playwright": "yarn test:ct",
     "test:storybook": "vitest --project=storybook --coverage --coverage.reportsDirectory coverage-storybook",
+    "test:storybook:fast": "vitest run --project=storybook",
     "storybook": "cross-env NODE_OPTIONS=--preserve-symlinks storybook dev -p 6006",
     "storybook:background:start": "node ./scripts/start-storybook.mjs",
     "storybook:background:stop": "node ./scripts/stop-storybook.mjs",

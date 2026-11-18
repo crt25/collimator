@@ -12,6 +12,8 @@
     "test:cov:enable": "shx cp .babelrc.disabled .babelrc",
     "test:cov:disable": "shx rm .babelrc",
     "test:local": "yarn pretest && SERVER_ALREADY_RUNS=true playwright test && yarn posttest",
+    "test:build": "SCRATCH_TEST_TARGET=build playwright test",
+    "test:dev": "SCRATCH_TEST_TARGET=dev playwright test",
     "test:debug": "SERVER_ALREADY_RUNS=true playwright test --debug --project='iPad Mini landscape'",
     "posttest": "nyc report && yarn test:cov:disable",
     "lint": "eslint src/",

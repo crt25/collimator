@@ -1,3 +1,4 @@
+import { ChildProcessWithoutNullStreams } from "child_process";
 import { Page, Request } from "@playwright/test";
 import {
   expect as expectBase,
@@ -5,8 +6,16 @@ import {
 } from "playwright-test-coverage";
 import pg from "pg";
 import { mockOidcClientId, mockOidcProviderUrl } from "./setup/config";
+import { cloneDatabaseFromTemplate } from "./setup/database";
+import {
+  ensureFastStack,
+  FastStackState,
+  isFastMode,
+  resetFastDatabase,
+} from "./setup/fast-stack";
 import {
   buildClientConfig,
+  consumeStdout,
   getFreePortAndLock,
   getUrl,
   gracefullyStopBackend,
@@ -23,6 +32,7 @@ import {
   waitUntilReachable,
 } from "./setup/helpers";
 import { adminUser, getPublicKeyFingerprint } from "./setup/seeding/user";
+import { isTracing, traceDuration, traceEvent, traceSpan } from "./setup/trace";
 
 export const isDebug = process.env.DEBUG !== undefined;
 
@@ -35,6 +45,7 @@ export type CrtTestOptions = {
   apiURL: string;
   scratchURL: string;
   _databaseSeed: undefined;
+  _trace: undefined;
 };
 
 export type CrtWorkerOptions = {
@@ -46,6 +57,13 @@ export type CrtWorkerOptions = {
     | {
         frontendPort: number;
         backendPort: number;
+      }
+    | {
+        frontendPort: number;
+        backendPort: number;
+
+        // fast mode: a stack that is kept alive between invocations
+        fastStack: FastStackState;
       }
     | {
         frontendPort: number;
@@ -66,66 +84,9 @@ export const getItemIdFromTableTestId = (
   return parseInt(testId.split("-")[1], 10);
 };
 
-/**
- * (Re-)creates a worker database as a clone of the template database.
- *
- * Always connects to the default 'postgres' database, never to the template:
- * CREATE DATABASE ... TEMPLATE fails with "source database is being accessed
- * by other users" if any session is connected to the template — so a worker
- * holding a template connection while cloning makes every other worker's clone
- * (and thereby all its remaining tests) fail. The clone itself is additionally
- * serialized across workers with an advisory lock as insurance against
- * concurrent CREATE DATABASE calls copying the same template.
- */
-const cloneDatabaseFromTemplate = async (
-  postgresConfig: PostgresConfig,
-  uniqueDbName: string,
-): Promise<void> => {
-  const client = new pg.Client({
-    ...postgresConfig,
-    database: "postgres",
-  });
-
-  await client.connect();
-  try {
-    // drop with force, the db may still be used by the backend
-    await client.query(
-      `DROP DATABASE IF EXISTS "${uniqueDbName}" WITH (FORCE)`,
-    );
-    await client.query(
-      "SELECT pg_advisory_lock(hashtext('e2e-template-clone'))",
-    );
-    try {
-      // retry on "source database is being accessed by other users" (55006):
-      // even with the advisory lock, a session outside our control (e.g. the
-      // setup backend's connection pool) may briefly touch the template.
-      const maxAttempts = 5;
-      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-        try {
-          await client.query(
-            `CREATE DATABASE "${uniqueDbName}" TEMPLATE "${postgresConfig.database}"`,
-          );
-          break;
-        } catch (error) {
-          const isObjectInUse =
-            error instanceof pg.DatabaseError && error.code === "55006";
-
-          if (!isObjectInUse || attempt === maxAttempts) {
-            throw error;
-          }
-
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-      }
-    } finally {
-      await client.query(
-        "SELECT pg_advisory_unlock(hashtext('e2e-template-clone'))",
-      );
-    }
-  } finally {
-    await client.end();
-  }
-};
+// set by the worker fixture on platforms where the backend must be restarted
+// after the database has been re-created
+let restartWorkerBackend: (() => Promise<void>) | null = null;
 
 export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
   workerConfig: [
@@ -140,6 +101,18 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         });
       }
 
+      if (isFastMode) {
+        // re-use (or start) the stack that is kept alive between invocations.
+        // Its database is reset here; nothing is torn down afterwards.
+        const fastStack = await ensureFastStack();
+
+        return use({
+          frontendPort: fastStack.frontendPort,
+          backendPort: fastStack.backendPort,
+          fastStack,
+        });
+      }
+
       const dbUrlRaw = process.env.DATABASE_URL;
 
       if (!dbUrlRaw) {
@@ -149,8 +122,12 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       const postgresConfig = buildClientConfig(dbUrlRaw);
       const uniqueDbName = `${postgresConfig.database}-clone-${testInfo.workerIndex}`;
 
+      const workerStartedAt = Date.now();
+
       // create a new database based on the template database
-      await cloneDatabaseFromTemplate(postgresConfig, uniqueDbName);
+      await traceSpan("worker: clone database", () =>
+        cloneDatabaseFromTemplate(postgresConfig, uniqueDbName),
+      );
 
       const testConfig = {
         ...postgresConfig,
@@ -162,9 +139,11 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // the frontend port must be different from the backend port
       // and we cannot sequentially start them using automatic port allocation
       // because they need to know each other's ports before starting (env vars)
+      const portsStartedAt = Date.now();
       const backendPort = await getFreePortAndLock();
       const backendStopPort = await getFreePortAndLock(backendPort + 1);
       const frontendPort = await getFreePortAndLock(backendPort + 2);
+      traceDuration("worker: lock 3 ports", portsStartedAt);
 
       if (isDebug) {
         console.log(
@@ -172,28 +151,55 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         );
       }
 
-      const backendProcess = startBackend({
-        databaseUrl: testUrl,
-        port: backendPort,
-        stopPort: backendStopPort,
-        frontendHostname: `http://localhost:${frontendPort}`,
-        jwkEndpoint: `${mockOidcProviderUrl}/__oidc__/jwks`,
-        userInfoEndpoint: `${mockOidcProviderUrl}/__oidc__/userinfo`,
-        clientId: mockOidcClientId,
-      });
-
-      if (isDebug) {
-        backendProcess.stdout.on("data", (data) => {
-          console.log("[backend]", data.toString());
+      const launchBackend = (): ChildProcessWithoutNullStreams => {
+        const backend = startBackend({
+          databaseUrl: testUrl,
+          port: backendPort,
+          stopPort: backendStopPort,
+          frontendHostname: `http://localhost:${frontendPort}`,
+          jwkEndpoint: `${mockOidcProviderUrl}/__oidc__/jwks`,
+          userInfoEndpoint: `${mockOidcProviderUrl}/__oidc__/userinfo`,
+          clientId: mockOidcClientId,
         });
-      }
 
-      backendProcess.stderr.on("data", (data) => {
-        console.error("[backend]", data.toString());
-      });
+        consumeStdout(backend, "[backend]");
 
-      if (!backendProcess.pid) {
-        throw new Error("Could not start the backend server");
+        backend.stderr.on("data", (data) => {
+          console.error("[backend]", data.toString());
+        });
+
+        if (!backend.pid) {
+          throw new Error("Could not start the backend server");
+        }
+
+        return backend;
+      };
+
+      let backendProcess = launchBackend();
+
+      // On Windows the graceful shutdown (stop port) does not terminate the
+      // backend reliably, so the process tree is killed instead. This means no
+      // coverage output for the backend on Windows, which is irrelevant locally.
+      const stopBackend = async (): Promise<void> => {
+        if (process.platform === "win32") {
+          if (backendProcess.pid !== undefined) {
+            killProcessByPid(backendProcess.pid);
+          }
+        } else {
+          // gracefully stop the backend - this is required for coverage output
+          await gracefullyStopBackend(backendProcess, backendStopPort);
+        }
+      };
+
+      if (process.platform === "win32") {
+        // Dropping the database while the backend is connected leaves dead
+        // connections in the backend's pool on Windows (Docker Desktop), which
+        // makes later requests hang. Restart the backend after each DB reset.
+        restartWorkerBackend = async (): Promise<void> => {
+          await stopBackend();
+          backendProcess = launchBackend();
+          await waitUntilReachable([{ port: backendPort, path: "/api-json" }]);
+        };
       }
 
       const frontendProcess = startFrontendWithBackendProxy({
@@ -201,11 +207,7 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         backendUrl: `http://localhost:${backendPort}`,
       });
 
-      if (isDebug) {
-        frontendProcess.stdout.on("data", (data) => {
-          console.log("[frontend]", data.toString());
-        });
-      }
+      consumeStdout(frontendProcess, "[frontend]");
 
       frontendProcess.stderr.on("data", (data) => {
         console.error("[frontend]", data.toString());
@@ -219,6 +221,8 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         { port: backendPort, path: "/api-json" },
         { port: frontendPort, path: "/" },
       ]);
+
+      traceDuration("worker: start (total)", workerStartedAt);
 
       let error: Error | undefined = undefined;
 
@@ -234,22 +238,37 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         error = e as Error;
       }
 
-      // kill the frontend
-      killProcessByPid(frontendProcess.pid);
+      const teardownStartedAt = Date.now();
 
-      // gracefully stop the backend - this is required for coverage output
-      await gracefullyStopBackend(backendProcess, backendStopPort);
+      // kill the frontend
+      const killFrontendStartedAt = Date.now();
+      killProcessByPid(frontendProcess.pid);
+      traceDuration("teardown: kill frontend proxy", killFrontendStartedAt);
+
+      await traceSpan("worker: stop backend", stopBackend);
 
       // drop the database. Connect to the default 'postgres' database, not the
       // template: a session connected to the template makes any concurrently
       // running CREATE DATABASE ... TEMPLATE of another worker fail with
       // "source database is being accessed by other users".
       {
-        const client = new pg.Client({ ...postgresConfig, database: "postgres" });
-        await client.connect();
-        await client.query(`DROP DATABASE IF EXISTS "${uniqueDbName}"`);
+        const client = new pg.Client({
+          ...postgresConfig,
+          database: "postgres",
+        });
+        await traceSpan("teardown: connect to postgres", () =>
+          client.connect(),
+        );
+        const dropStartedAt = Date.now();
+        // with force: connections of the stopped backend may still be registered
+        await client.query(
+          `DROP DATABASE IF EXISTS "${uniqueDbName}" WITH (FORCE)`,
+        );
+        traceDuration("teardown: drop database", dropStartedAt);
         await client.end();
       }
+
+      traceDuration("worker: teardown (total)", teardownStartedAt);
 
       unlockPort(backendPort);
       unlockPort(backendStopPort);
@@ -306,6 +325,20 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       use,
       testInfo,
     ): Promise<void> => {
+      if ("fastStack" in workerConfig) {
+        // same rule as below (reset when the project or test file changes),
+        // but restoring a snapshot instead of re-creating the database
+        const fastResetKey = `${testInfo.project.name}::${testInfo.titlePath[0]}`;
+        const lastFastResetKey = getLastTestFileName();
+
+        if (lastFastResetKey !== null && lastFastResetKey !== fastResetKey) {
+          await resetFastDatabase(workerConfig.fastStack);
+        }
+
+        setLastTestFileName(fastResetKey);
+        return use(undefined);
+      }
+
       if (!("uniqueDbName" in workerConfig)) {
         // if there is no unique db there is nothing to re-seed
         return use(undefined);
@@ -338,9 +371,13 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
       // database that no longer exists — failing every remaining test in this
       // worker. By recording the key last, a failed reset is simply retried by
       // the next test.
-      await cloneDatabaseFromTemplate(
-        workerConfig.postgresConfig,
-        workerConfig.uniqueDbName,
+      const resetStartedAt = Date.now();
+
+      await traceSpan("reset: clone database", () =>
+        cloneDatabaseFromTemplate(
+          workerConfig.postgresConfig,
+          workerConfig.uniqueDbName,
+        ),
       );
 
       const resetTestUrl = getUrl({
@@ -348,13 +385,21 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         database: workerConfig.uniqueDbName,
       });
 
-      const seedResult = seedE2eDatabase({ databaseUrl: resetTestUrl });
+      const seedResult = await traceSpan(
+        "reset: seed (yarn prisma:seed:e2e)",
+        () => seedE2eDatabase({ databaseUrl: resetTestUrl }),
+      );
 
       if (seedResult.status !== 0) {
         throw new Error(`e2e seed failed: ${seedResult.stderr?.toString()}`);
       }
 
+      if (restartWorkerBackend) {
+        await traceSpan("reset: restart backend", restartWorkerBackend);
+      }
+
       const anyFingerprint = await getPublicKeyFingerprint(adminUser.publicKey);
+      const reconnectStartedAt = Date.now();
 
       // trigger request that will make backend re-connect to the database
       await waitUntil(
@@ -375,6 +420,9 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
         300,
       );
 
+      traceDuration("reset: wait for backend", reconnectStartedAt);
+      traceDuration("reset: database between files (total)", resetStartedAt);
+
       // the reset fully succeeded — only now record it (see comment above)
       setLastTestFileName(resetKey);
 
@@ -383,7 +431,76 @@ export const test = testBase.extend<CrtTestOptions, CrtWorkerOptions>({
     { auto: true, scope: "test", timeout: 100 * 1000 },
   ],
 
+  _trace: [
+    async ({}, use, testInfo): Promise<void> => {
+      const startedAt = Date.now();
+
+      await use(undefined);
+
+      traceDuration(
+        "test",
+        startedAt,
+        `${testInfo.status} | ${testInfo.titlePath.slice(1).join(" › ")}`,
+      );
+    },
+    { auto: true, scope: "test" },
+  ],
+
   page: async ({ page }, use) => {
+    if (isTracing) {
+      // requests that failed, and requests that never got an answer
+      const pending = new Map<Request, number>();
+
+      page.on("request", (request) => pending.set(request, Date.now()));
+      page.on("requestfinished", (request) => pending.delete(request));
+      page.on("requestfailed", (request) => {
+        const startedAt = pending.get(request) ?? Date.now();
+        pending.delete(request);
+
+        traceEvent({
+          t: startedAt,
+          dur: Date.now() - startedAt,
+          name: "browser: failed request",
+          detail: `${request.method()} ${new URL(request.url()).pathname} (${request.failure()?.errorText})`,
+        });
+      });
+      page.on("close", () => {
+        for (const [request, startedAt] of pending) {
+          traceEvent({
+            t: startedAt,
+            dur: Date.now() - startedAt,
+            name: "browser: request without answer when the page closed",
+            detail: `${request.method()} ${new URL(request.url()).pathname}`,
+          });
+        }
+      });
+
+      // record what the browser waited for: page loads, and any slow request
+      page.on("requestfinished", (request) => {
+        const timing = request.timing();
+        const isDocument = request.resourceType() === "document";
+
+        if (
+          timing.responseEnd < 0 ||
+          (!isDocument && timing.responseEnd < 300)
+        ) {
+          return;
+        }
+
+        // time until the first byte, i.e. how long the server took to answer
+        const serverTime = Math.round(
+          timing.responseStart - timing.requestStart,
+        );
+
+        traceEvent({
+          t: Math.round(timing.startTime),
+          dur: Math.round(timing.responseEnd),
+          name: isDocument ? "browser: page load" : "browser: slow request",
+          detail: `${request.method()} ${new URL(request.url()).pathname} (server ${serverTime}ms)`,
+        });
+      });
+    }
+
     // ensure we capture page errors
     const errors: string[] = [];
 

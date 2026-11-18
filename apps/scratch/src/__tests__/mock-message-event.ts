@@ -24,7 +24,8 @@ export const defineCustomMessageEvent = (page: Page): Promise<void> =>
 
         (this as any).source = source;
         (this as any).data = data;
-        (this as any).origin = "http://localhost:3101";
+        // the app is served on other ports as well, see playwright.config.ts
+        (this as any).origin = window.location.origin;
       }
     };
   });

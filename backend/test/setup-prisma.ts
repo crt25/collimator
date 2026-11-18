@@ -1,6 +1,4 @@
 import "@quramy/jest-prisma-node";
-import { promisify } from "util";
-import { exec } from "child_process";
 import { PrismaClient } from "@prisma/client";
 import { classes, users } from "test/seed";
 import { softDeleteExtension } from "src/prisma/extensions/soft-delete-extension";
@@ -44,10 +42,12 @@ async function clearDatabase(prisma: PrismaClient): Promise<void> {
   `;
 }
 
+let baseClient: PrismaClient | undefined;
+
 beforeAll(async () => {
   // NOTE: A few changes were made in migration scripts to support partial unique indexes.
   // We run the migrations because db push does not apply those changes correctly.
-  await promisify(exec)("npx prisma migrate deploy");
+  // (Done once per run in test/global-setup.js instead of once per test file.)
 
   // Provide jest-prisma with a Prisma client that already has our soft-delete
   // extension applied. Each test's transaction client (created by jest-prisma
@@ -55,7 +55,8 @@ beforeAll(async () => {
   // controllers using PrismaService get the same soft-delete behavior as
   // production while remaining inside the per-test transaction that
   // jest-prisma rolls back between tests.
-  const extendedClient = new PrismaClient().$extends(softDeleteExtension);
+  baseClient = new PrismaClient();
+  const extendedClient = baseClient.$extends(softDeleteExtension);
   jestPrisma.initializeClient(extendedClient);
 
   const prisma = jestPrisma.originalClient;
@@ -63,3 +64,9 @@ beforeAll(async () => {
   await clearDatabase(prisma);
   await seedDatabase(prisma);
 }, 60000);
+
+afterAll(async () => {
+  // Close the pools, otherwise jest keeps the process alive after the run.
+  await jestPrisma.originalClient.$disconnect();
+  await baseClient?.$disconnect();
+});

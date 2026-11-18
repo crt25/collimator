@@ -12,6 +12,16 @@ const dirname =
     ? path.dirname(fileURLToPath(import.meta.url))
     : __dirname;
 
+// Vitest's default port for the browser tests (63315) lies in the range from
+// which Windows reserves ports for Hyper-V and Docker; when it is reserved, the
+// tests cannot start (listen EACCES). Only Windows gets another port by
+// default, VITEST_BROWSER_PORT sets one explicitly.
+const browserPort =
+  process.env.VITEST_BROWSER_PORT ??
+  (process.platform === "win32" ? "6316" : undefined);
+const browserApi =
+  browserPort === undefined ? {} : { api: { port: Number(browserPort) } };
+
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   test: {
@@ -30,6 +40,7 @@ export default defineConfig({
             headless: true,
             provider: playwright({}),
             instances: [{ browser: "chromium" }],
+            ...browserApi,
           },
           setupFiles: [".storybook/vitest.setup.ts"],
         },

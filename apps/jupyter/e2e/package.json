@@ -1,0 +1,26 @@
+{
+  "name": "jupyter-e2e",
+  "private": true,
+  "packageManager": "yarn@4.5.3",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"./**/*.ts\" --fix",
+    "serve": "node scripts/serve.mjs",
+    "test": "playwright test",
+    "test:debug": "playwright test --debug --project=Desktop"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  }
+}
